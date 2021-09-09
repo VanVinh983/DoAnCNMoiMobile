@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ChatAppCongNgheMoi</string>
+    <string name="quenmatkhau"><u>Quên mật khẩu</u></string>
 </resources>
