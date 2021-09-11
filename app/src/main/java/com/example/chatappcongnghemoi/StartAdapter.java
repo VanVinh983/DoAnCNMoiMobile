@@ -9,18 +9,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.PagerAdapter;
 
-import com.bumptech.glide.Glide;
 
 import java.util.List;
 
 public class StartAdapter extends RecyclerView.Adapter<StartAdapter.ViewHolder> {
-    private LayoutInflater layoutInflater;
     private List<StartItem> list;
 
-    public StartAdapter(Context context, List<StartItem> list) {
-        this.layoutInflater =LayoutInflater.from(context);
+    public StartAdapter(List<StartItem> list) {
         this.list = list;
     }
 
@@ -28,7 +24,7 @@ public class StartAdapter extends RecyclerView.Adapter<StartAdapter.ViewHolder> 
     @NonNull
     @Override
     public StartAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = layoutInflater.inflate(R.layout.item_start,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_start,parent,false);
         return new ViewHolder(view);
     }
 
@@ -49,7 +45,7 @@ public class StartAdapter extends RecyclerView.Adapter<StartAdapter.ViewHolder> 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             img = itemView.findViewById(R.id.imgStart);
-            name = itemView.findViewById(R.id.nameStart);
+            name = itemView.findViewById(R.id.name);
         }
     }
 }

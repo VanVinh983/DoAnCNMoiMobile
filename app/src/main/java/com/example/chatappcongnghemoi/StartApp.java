@@ -1,39 +1,44 @@
 package com.example.chatappcongnghemoi;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import me.relex.circleindicator.CircleIndicator;
-import me.relex.circleindicator.CircleIndicator2;
 
 public class StartApp extends AppCompatActivity {
     ViewPager2 viewPager2;
     LinearLayout linearLayout;
     StartAdapter adapter;
     TextView[] dots;
+    RecyclerView recyclerView;
     List<StartItem> list = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_app);
         getSupportActionBar().hide();
-        list.add(new StartItem("AAAAAAAAAAAAAAAAA",R.drawable.background_login_screen));
-        list.add(new StartItem("BBBBBBBBBBBBBBBBB",R.drawable.iconappchat));
-        list.add(new StartItem("CCCCCCCCCCCCCCCCC",R.drawable.background_welcome_screen));
+        list.add(new StartItem("Nơi cùng nhau trao đổi, liên lạc với người khác",R.drawable._028004));
+        list.add(new StartItem("Nơi giúp bạn tìm kiếm tri kỷ của đời mình",R.drawable._49058));
+        list.add(new StartItem("Trao đổi hình ảnh chất lượng cao với người khác thật nhanh và dễ dàng",R.drawable.collection_tour));
         viewPager2 = findViewById(R.id.viewpager);
         linearLayout = findViewById(R.id.linearStart);
-        adapter  = new StartAdapter(this,list);
+        adapter  = new StartAdapter(list);
         viewPager2.setAdapter(adapter);
+        viewPager2.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         dots = new TextView[list.size()];
         dotsIndicator();
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -44,6 +49,7 @@ public class StartApp extends AppCompatActivity {
             }
         });
 
+
     }
 
     private void selectIndicator(int position) {
@@ -51,14 +57,14 @@ public class StartApp extends AppCompatActivity {
             if(i == position)
                 dots[i].setTextColor(Color.BLACK);
             else
-                dots[i].setTextColor(Color.GRAY);
+                dots[i].setTextColor(Color.WHITE);
         }
     }
 
     private void dotsIndicator() {
         for (int i = 0 ; i< dots.length;i++){
             dots[i] = new TextView(this);
-            dots[i].setText(Html.fromHtml("&#6979;"));
+            dots[i].setText(Html.fromHtml("&#9679;"));
             dots[i].setTextSize(18);
             linearLayout.addView(dots[i]);
 
