@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">ChatAppCongNgheMoi</string>
     <string name="quenmatkhau"><u>Quên mật khẩu</u></string>
+    <string name="menuHome"><b>Tin nhắn</b></string>
+    <string name="menuDanhBa"><b>Danh bạ</b></string>
+    <string name="menuCaNhan"><b>Cá nhân</b></string>
 </resources>

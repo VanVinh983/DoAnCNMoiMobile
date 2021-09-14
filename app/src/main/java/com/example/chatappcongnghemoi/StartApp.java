@@ -6,11 +6,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,6 +28,7 @@ public class StartApp extends AppCompatActivity {
     TextView[] dots;
     RecyclerView recyclerView;
     List<StartItem> list = new ArrayList<>();
+    Button btnDangKy, btnDangNhap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +52,24 @@ public class StartApp extends AppCompatActivity {
             }
         });
 
+        btnDangKy = findViewById(R.id.btnDangKyStartApp);
+        btnDangNhap = findViewById(R.id.btnDangNhapStartApp);
+        btnDangKy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StartApp.this,SignUp.class);
+                startActivity(intent);
+
+            }
+        });
+        btnDangNhap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StartApp.this,Login.class);
+                startActivity(intent);
+
+            }
+        });
 
     }
 

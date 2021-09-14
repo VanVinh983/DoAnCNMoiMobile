@@ -20,7 +20,7 @@
         app:srcCompat="@drawable/iconappchat" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/btnDangNhapStartApp"
         android:layout_width="205dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -30,7 +30,7 @@
         android:textColor="#FFFFFF"
         android:textSize="22dp"
         app:cornerRadius="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/button5"
+        app:layout_constraintBottom_toTopOf="@+id/btnDangKyStartApp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:strokeColor="#FFFFFF"
@@ -54,13 +54,13 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="68dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/button3"
+        app:layout_constraintBottom_toTopOf="@+id/btnDangNhapStartApp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="@+id/viewpager" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/btnDangKyStartApp"
         android:layout_width="205dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
