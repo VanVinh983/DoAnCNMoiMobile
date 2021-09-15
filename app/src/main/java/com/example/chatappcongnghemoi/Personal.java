@@ -1,9 +1,14 @@
 package com.example.chatappcongnghemoi;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.WindowManager;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class Personal extends AppCompatActivity {
 
@@ -12,5 +17,23 @@ public class Personal extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal);
         getSupportActionBar().hide();
+
+        //initialize
+        BottomNavigationView  bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        //set personal selected
+        bottomNavigationView.setSelectedItemId(R.id.menuCaNhan);
+        //perform ItemSelectedListener
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.menuHome:
+                        startActivity(new Intent(getApplicationContext(), Home.class));
+                        overridePendingTransition(0,0);
+                        return true;
+                }
+                return false;
+            }
+        });
     }
 }

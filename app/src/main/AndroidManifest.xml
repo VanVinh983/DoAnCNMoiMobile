@@ -12,11 +12,7 @@
         <activity
             android:name=".Personal"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".Home" />
         <activity android:name=".SignUp_SDT" />
@@ -24,7 +20,11 @@
         <activity android:name=".StartApp" />
         <activity android:name=".Login" />
         <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <meta-data
