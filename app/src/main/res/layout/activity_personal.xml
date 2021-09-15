@@ -159,6 +159,102 @@
                         tools:ignore="TouchTargetSizeCheck" />
                 </TableRow>
 
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <TextView
+                        android:id="@+id/textView8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal|left"
+                        android:padding="10dp"
+                        android:text="Giới tính"
+                        android:textColor="#000000"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/editTextTextPersonName5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#007C5656"
+                        android:ems="10"
+                        android:gravity="center_horizontal|left"
+                        android:inputType="textPersonName"
+                        android:padding="10dp"
+                        android:text="Nam"
+                        android:textColor="#494848"
+                        android:textSize="20sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <TextView
+                        android:id="@+id/textView11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal|left"
+                        android:padding="10dp"
+                        android:text="Ngày sinh"
+                        android:textColor="#000000"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/editTextTextPersonName7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#007C5656"
+                        android:ems="10"
+                        android:gravity="center_horizontal|left"
+                        android:inputType="textPersonName"
+                        android:padding="10dp"
+                        android:text="07/12/2000"
+                        android:textColor="#494848"
+                        android:textSize="20sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <TextView
+                        android:id="@+id/textView13"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal|left"
+                        android:padding="10dp"
+                        android:text="Điện thoại"
+                        android:textColor="#000000"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/editTextTextPersonName8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#007C5656"
+                        android:ems="10"
+                        android:gravity="center_horizontal|left"
+                        android:inputType="textPersonName"
+                        android:padding="10dp"
+                        android:text="0123456789"
+                        android:textColor="#494848"
+                        android:textSize="20sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+                </TableRow>
+
             </TableLayout>
 
         </LinearLayout>
