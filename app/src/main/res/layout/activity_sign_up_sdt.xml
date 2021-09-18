@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_welcome_screen"
     android:paddingLeft="10dp"
-    tools:context=".SignUp_SDT">
+    tools:context=".activities.SignUp_SDT">
 
     <ImageView
         android:id="@+id/imageView3"

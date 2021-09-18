@@ -1,14 +1,15 @@
-package com.example.chatappcongnghemoi;
+package com.example.chatappcongnghemoi.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+
+import com.example.chatappcongnghemoi.R;
 
 public class MainActivity extends AppCompatActivity {
     Animation topAnim,bottomAnim;

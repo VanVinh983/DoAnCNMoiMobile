@@ -1,9 +1,7 @@
-package com.example.chatappcongnghemoi;
+package com.example.chatappcongnghemoi.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
@@ -14,8 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.adapters.StartAdapter;
+import com.example.chatappcongnghemoi.models.StartItem;
 
 import java.util.ArrayList;
 import java.util.List;

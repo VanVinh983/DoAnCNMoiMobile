@@ -1,4 +1,4 @@
-package com.example.chatappcongnghemoi;
+package com.example.chatappcongnghemoi.models;
 
 public class StartItem {
     private String name;

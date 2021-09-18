@@ -5,48 +5,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Home">
+    tools:context=".activities.Home">
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:background="#1E34F6"
         android:layout_height="0dp"
         android:layout_weight="0.07"
-
-
-        >
+        android:background="#1E34F6">
 
         <ImageView
             android:id="@+id/imageView5"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
             app:srcCompat="@drawable/loupe"
             app:tint="@color/white" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:text="Tìm kiếm bạn bè"
             android:textColor="@color/white"
-            android:textSize="20dp"
-            android:layout_margin="10dp"
-            />
+            android:textSize="20dp" />
 
         <ImageView
             android:id="@+id/imageView6"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="80dp"
+            android:layout_marginTop="10dp"
             app:srcCompat="@drawable/add_user_"
             app:tint="@color/white" />
+
         <ImageView
             android:id="@+id/imageView7"
             android:layout_width="40dp"
             android:layout_height="35dp"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
             app:srcCompat="@drawable/add_group"
             app:tint="@color/white" />
     </LinearLayout>
@@ -54,7 +52,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.8"/>
+        android:layout_weight="0.8" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomnavigationview_home"
