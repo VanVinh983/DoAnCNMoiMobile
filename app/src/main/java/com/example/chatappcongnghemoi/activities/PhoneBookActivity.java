@@ -58,6 +58,7 @@ public class PhoneBookActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), GroupActivity.class));
+                overridePendingTransition(0,0);
             }
         });
     }
