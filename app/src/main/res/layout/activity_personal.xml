@@ -19,8 +19,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp">
 
+
                 <ImageView
-                    android:id="@+id/imageView22"
+                    android:id="@+id/image_personal_background"
                     android:layout_width="wrap_content"
                     android:layout_height="270dp"
                     android:scaleType="centerCrop"
@@ -33,7 +34,7 @@
                     app:srcCompat="@drawable/anh_bia" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/circleImageView"
+                    android:id="@+id/image_personal_avatar"
                     android:layout_width="130dp"
                     android:layout_height="130dp"
                     android:src="@drawable/avatar"
@@ -52,7 +53,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:orientation="horizontal"
-                    app:layout_constraintBottom_toTopOf="@+id/circleImageView"
+                    app:layout_constraintBottom_toTopOf="@+id/image_personal_avatar"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +61,6 @@
                     app:layout_constraintVertical_bias="0.0">
 
                     <ImageView
-                        android:id="@+id/imageView5"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginTop="10dp"
@@ -69,6 +69,7 @@
                         app:tint="@color/white" />
 
                     <TextView
+                        android:id="@+id/input_personal_search"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:layout_margin="10dp"
@@ -79,7 +80,7 @@
                         android:textSize="20dp" />
 
                     <ImageView
-                        android:id="@+id/imageView6"
+                        android:id="@+id/btn_personal_addfriend"
                         android:layout_width="40dp"
                         android:layout_height="30dp"
                         android:layout_marginTop="10dp"
@@ -88,7 +89,7 @@
                         app:tint="@color/white" />
 
                     <ImageView
-                        android:id="@+id/imageView7"
+                        android:id="@+id/input_personal_creategroundfriends"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_marginLeft="20dp"
@@ -101,7 +102,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/txt_personal_name_primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -109,7 +110,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="10dp"
                 android:gravity="center"
-                android:text="Van Vinh"
+                android:hint="User Name"
                 android:textColor="#000000"
                 android:textSize="34sp"
                 android:textStyle="bold" />
@@ -157,16 +158,16 @@
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/editTextTextPersonName6"
+                        android:id="@+id/input_personal_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="#007C5656"
                         android:ems="10"
                         android:gravity="center_horizontal|left"
+                        android:hint="User name"
                         android:inputType="textPersonName"
                         android:padding="10dp"
-                        android:text="Van Vinh"
                         android:textColor="#494848"
                         android:textSize="20sp"
                         tools:ignore="TouchTargetSizeCheck" />
@@ -189,16 +190,16 @@
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/editTextTextPersonName10"
+                        android:id="@+id/input_personal_email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="#007C5656"
                         android:ems="10"
                         android:gravity="center_horizontal|left"
+                        android:hint="email"
                         android:inputType="textMultiLine"
                         android:padding="10dp"
-                        android:text="doanvinh983@gmail.com"
                         android:textColor="#494848"
                         android:textSize="20sp"
                         tools:ignore="TouchTargetSizeCheck" />
@@ -222,16 +223,16 @@
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/editTextTextPersonName5"
+                        android:id="@+id/input_personal_gender"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="#007C5656"
                         android:ems="10"
                         android:gravity="center_horizontal|left"
+                        android:hint="giới tính"
                         android:inputType="textPersonName"
                         android:padding="10dp"
-                        android:text="Nam"
                         android:textColor="#494848"
                         android:textSize="20sp"
                         tools:ignore="TouchTargetSizeCheck" />
@@ -254,16 +255,16 @@
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/editTextTextPersonName7"
+                        android:id="@+id/input_personal_yearOfBirth"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="#007C5656"
                         android:ems="10"
                         android:gravity="center_horizontal|left"
+                        android:hint="ngày sinh"
                         android:inputType="textPersonName"
                         android:padding="10dp"
-                        android:text="07/12/2000"
                         android:textColor="#494848"
                         android:textSize="20sp"
                         tools:ignore="TouchTargetSizeCheck" />
@@ -286,16 +287,16 @@
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/editTextTextPersonName8"
+                        android:id="@+id/input_personal_numberphone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="#007C5656"
                         android:ems="10"
                         android:gravity="center_horizontal|left"
+                        android:hint="số điện thoại"
                         android:inputType="textPersonName"
                         android:padding="10dp"
-                        android:text="0123456789"
                         android:textColor="#494848"
                         android:textSize="20sp"
                         tools:ignore="TouchTargetSizeCheck" />
@@ -318,16 +319,16 @@
                         android:textStyle="bold" />
 
                     <EditText
-                        android:id="@+id/editTextTextPersonName9"
+                        android:id="@+id/input_personal_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="#007C5656"
                         android:ems="10"
                         android:gravity="center_horizontal|left"
+                        android:hint="địa chỉ"
                         android:inputType="textMultiLine"
                         android:padding="10dp"
-                        android:text="nguyen van bao"
                         android:textColor="#494848"
                         android:textSize="20sp"
                         tools:ignore="TouchTargetSizeCheck" />
@@ -336,7 +337,7 @@
             </TableLayout>
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/btn_personal_update"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
