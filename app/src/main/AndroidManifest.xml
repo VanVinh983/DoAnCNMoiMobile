@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatAppCongNgheMoi">
         <activity
+            android:name=".PersonalOfOthers"
+            android:exported="true" />
+        <activity
             android:name=".UpdateIntroduce"
             android:exported="true" />
         <activity

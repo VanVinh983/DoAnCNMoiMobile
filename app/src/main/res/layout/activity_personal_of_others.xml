@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="300dp">
+
+
+                <ImageView
+                    android:id="@+id/personal_friend_image_personal_background"
+                    android:layout_width="wrap_content"
+                    android:layout_height="270dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:srcCompat="@drawable/anh_bia" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/personal_friend_image_personal_avatar"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:src="@drawable/avatar"
+                    app:civ_border_color="#FFFFFF"
+                    app:civ_border_width="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.498"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <Button
+                    android:id="@+id/button13"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:backgroundTint="#00FFFFFF"
+                    android:foreground="@drawable/ic_baseline_arrow_back_24"
+                    android:foregroundGravity="center"
+                    android:foregroundTint="#FFFFFF"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/txt_personal_friend_name_primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:hint="User Name"
+                android:text="Van Vinh"
+                android:textColor="#000000"
+                android:textSize="34sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_personal_friend_introduce"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:drawablePadding="10dp"
+                android:drawableTint="#2196F3"
+                android:gravity="center"
+                android:hint="Giới thiệu"
+                android:inputType="textMultiLine"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:textColor="#8E8E8E"
+                android:textColorHint="#13A0DF"
+                android:textSize="20sp"
+                android:textStyle="normal|italic" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:drawablePadding="10dp"
+                android:drawableTint="#2196F3"
+                android:gravity="center"
+                android:inputType="textMultiLine"
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:text="Hãy kết bạn với nhau để cùng tạo nên những cuộc trò chuyện thú vị và đáng nhớ!"
+                android:textColor="#8E8E8E"
+                android:textColorHint="#13A0DF"
+                android:textSize="20sp"
+                android:textStyle="normal|italic" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingLeft="30dp"
+                android:paddingTop="10dp"
+                android:paddingRight="30dp"
+                android:paddingBottom="10dp">
+
+                <Button
+                    android:id="@+id/button8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#AFDAED"
+                    android:padding="10dp"
+                    android:text="nhắn tin"
+                    android:textColor="#2196F3"
+                    android:textSize="16sp"
+                    app:cornerRadius="30dp" />
+
+                <Button
+                    android:id="@+id/button9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#2196F3"
+                    android:padding="10dp"
+                    android:text="kết bạn"
+                    android:textSize="16sp"
+                    app:cornerRadius="30dp" />
+            </LinearLayout>
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/personal_friend_textView12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal|left"
+                        android:padding="10dp"
+                        android:text="Tên"
+                        android:textColor="#000000"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/input_personal_friend_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#007C5656"
+                        android:ems="10"
+                        android:gravity="center_horizontal|left"
+                        android:hint="User name"
+                        android:inputType="textPersonName"
+                        android:padding="10dp"
+                        android:textColor="#494848"
+                        android:textSize="20sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/personal_friend_textView19"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal|left"
+                        android:padding="10dp"
+                        android:text="Email"
+                        android:textColor="#000000"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/input_personal_friend_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#007C5656"
+                        android:ems="10"
+                        android:gravity="center_horizontal|left"
+                        android:hint="email"
+                        android:inputType="textMultiLine"
+                        android:padding="10dp"
+                        android:textColor="#494848"
+                        android:textSize="20sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/personal_friend_textView8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal|left"
+                        android:padding="10dp"
+                        android:text="Giới tính"
+                        android:textColor="#000000"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/input_personal_friend_gender"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#007C5656"
+                        android:ems="10"
+                        android:gravity="center_horizontal|left"
+                        android:hint="giới tính"
+                        android:inputType="textPersonName"
+                        android:padding="10dp"
+                        android:textColor="#494848"
+                        android:textSize="20sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/personal_friend_textView11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal|left"
+                        android:padding="10dp"
+                        android:text="Ngày sinh"
+                        android:textColor="#000000"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/input_personal_friend_yearOfBirth"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#007C5656"
+                        android:ems="10"
+                        android:gravity="center_horizontal|left"
+                        android:hint="ngày sinh"
+                        android:inputType="textPersonName"
+                        android:padding="10dp"
+                        android:textColor="#494848"
+                        android:textSize="20sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/personal_friend_textView13"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal|left"
+                        android:padding="10dp"
+                        android:text="Điện thoại"
+                        android:textColor="#000000"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/input_personal_friend_numberphone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#007C5656"
+                        android:ems="10"
+                        android:gravity="center_horizontal|left"
+                        android:hint="số điện thoại"
+                        android:inputType="textPersonName"
+                        android:padding="10dp"
+                        android:textColor="#494848"
+                        android:textSize="20sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/personal_friend_textView16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal|left"
+                        android:padding="10dp"
+                        android:text="Địa chỉ"
+                        android:textColor="#000000"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/input_personal_friend_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#007C5656"
+                        android:ems="10"
+                        android:gravity="center_horizontal|left"
+                        android:hint="địa chỉ"
+                        android:inputType="textMultiLine"
+                        android:padding="10dp"
+                        android:textColor="#494848"
+                        android:textSize="20sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+                </TableRow>
+
+            </TableLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>
