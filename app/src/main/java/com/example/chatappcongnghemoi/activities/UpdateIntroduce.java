@@ -1,4 +1,4 @@
-package com.example.chatappcongnghemoi;
+package com.example.chatappcongnghemoi.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.example.chatappcongnghemoi.R;
 
 public class UpdateIntroduce extends AppCompatActivity {
     private EditText input_introduce;

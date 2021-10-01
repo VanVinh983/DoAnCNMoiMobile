@@ -1,8 +1,10 @@
-package com.example.chatappcongnghemoi;
+package com.example.chatappcongnghemoi.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.chatappcongnghemoi.R;
 
 public class PersonalOfOthers extends AppCompatActivity {
 

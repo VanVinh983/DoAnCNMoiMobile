@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#EDEDED"
     android:orientation="vertical"
-    tools:context=".UpdateIntroduce">
+    tools:context=".activities.UpdateIntroduce">
 
     <LinearLayout
         android:layout_width="match_parent"

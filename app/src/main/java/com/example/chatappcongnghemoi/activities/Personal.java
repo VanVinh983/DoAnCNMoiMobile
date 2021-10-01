@@ -21,7 +21,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.chatappcongnghemoi.R;
-import com.example.chatappcongnghemoi.UpdateIntroduce;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Calendar;

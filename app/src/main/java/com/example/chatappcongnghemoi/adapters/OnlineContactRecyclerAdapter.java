@@ -19,7 +19,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class OnlineContactRecyclerAdapter extends RecyclerView.Adapter<OnlineContactRecyclerAdapter.ViewHolder> {
 
-    private final int LIMIT_CONTACT_DISPLAY = 3;
     private Context context;
     private ArrayList<User> users;
 
@@ -45,10 +44,7 @@ public class OnlineContactRecyclerAdapter extends RecyclerView.Adapter<OnlineCon
 
     @Override
     public int getItemCount() {
-        if (users.size() < LIMIT_CONTACT_DISPLAY)
             return users.size();
-        else
-            return LIMIT_CONTACT_DISPLAY;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

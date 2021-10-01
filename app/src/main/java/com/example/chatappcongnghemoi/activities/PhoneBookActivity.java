@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -46,6 +47,8 @@ public class PhoneBookActivity extends AppCompatActivity {
     private ArrayList<User> contactUserList;
     private ContactRecyclerAdapter contactRecyclerAdapter;
     private OnlineContactRecyclerAdapter onlineContactRecyclerAdapter;
+    private LinearLayout lineFriendRequest;
+    private LinearLayout lineLoadPhoneBook;
 
     boolean checkRequest = false;
 
@@ -70,6 +73,12 @@ public class PhoneBookActivity extends AppCompatActivity {
             }
         }, 500);
 
+        lineFriendRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(PhoneBookActivity.this, FriendRequestActivity.class));
+            }
+        });
 
     }
 
@@ -78,6 +87,8 @@ public class PhoneBookActivity extends AppCompatActivity {
         mRecyclerContact = findViewById(R.id.actPhonebook_listContact);
         mRecyclerOnlineContact = findViewById(R.id.actPhonebook_listOnlineContact);
         mTxtThongBao = findViewById(R.id.actPhonebook_txtThongBao);
+        lineFriendRequest = findViewById(R.id.actPhoneBook_friendReq);
+        lineLoadPhoneBook = findViewById(R.id.actPhonebook_loadPhonebook);
     }
 
     public void init() {
@@ -168,6 +179,9 @@ public class PhoneBookActivity extends AppCompatActivity {
 //                        contactUserList.forEach(u->{
 //                            Log.d("tag", u.toString());
 //                        });
+//                        for(int i=0; i<4; i++){
+//                            contactUserList.add(contactUserList.get(i));
+//                        }
                         contactUserList.sort(new Comparator<User>() {
                             @Override
                             public int compare(User o1, User o2) {
@@ -217,11 +231,14 @@ public class PhoneBookActivity extends AppCompatActivity {
     }
 
     public void getOnlineContactList() {
-        onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, contactUserList);
-        mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
-        if(contactUserList.size()>3){
+
+        if (contactUserList.size() > 3) {
+            onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this,  new ArrayList<User>(contactUserList.subList(0, 3)));
+            mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
             mTxtThongBao.setText("Xem thêm...");
-        }else if(contactIdList.size() <= 0){
+        } else if (contactIdList.size() <= 0) {
+            onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, contactUserList);
+            mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
             mTxtThongBao.setText("Không có bạn bè đang online");
         }
     }
