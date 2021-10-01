@@ -168,9 +168,6 @@ public class PhoneBookActivity extends AppCompatActivity {
 //                        contactUserList.forEach(u->{
 //                            Log.d("tag", u.toString());
 //                        });
-                        for(int i=0; i<4; i++){
-                            contactUserList.add(contactUserList.get(i));
-                        }
                         contactUserList.sort(new Comparator<User>() {
                             @Override
                             public int compare(User o1, User o2) {
