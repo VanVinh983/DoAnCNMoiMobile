@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Objects;
 
 public class PhoneBookActivity extends AppCompatActivity {
@@ -167,16 +168,19 @@ public class PhoneBookActivity extends AppCompatActivity {
 //                        contactUserList.forEach(u->{
 //                            Log.d("tag", u.toString());
 //                        });
+                        for(int i=0; i<4; i++){
+                            contactUserList.add(contactUserList.get(i));
+                        }
+                        contactUserList.sort(new Comparator<User>() {
+                            @Override
+                            public int compare(User o1, User o2) {
+                                return o1.getUserName().compareToIgnoreCase(o2.getUserName());
+                            }
+                        });
                         contactRecyclerAdapter = new ContactRecyclerAdapter(PhoneBookActivity.this, contactUserList);
                         mRecyclerContact.setAdapter(contactRecyclerAdapter);
 
-                        onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, contactUserList);
-                        mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
-                        if(contactUserList.size()>3){
-                            mTxtThongBao.setText("Xem thêm...");
-                        }else if(contactIdList.size() <= 0){
-                            mTxtThongBao.setText("Không có bạn bè đang online");
-                        }
+                        getOnlineContactList();
                     } else
                         handler.postDelayed(this, 500);
                 }
@@ -214,4 +218,15 @@ public class PhoneBookActivity extends AppCompatActivity {
         });
         requestQueue.add(stringRequest);
     }
+
+    public void getOnlineContactList() {
+        onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, contactUserList);
+        mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
+        if(contactUserList.size()>3){
+            mTxtThongBao.setText("Xem thêm...");
+        }else if(contactIdList.size() <= 0){
+            mTxtThongBao.setText("Không có bạn bè đang online");
+        }
+    }
+
 }

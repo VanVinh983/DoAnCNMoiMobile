@@ -31,7 +31,7 @@ public class OnlineContactRecyclerAdapter extends RecyclerView.Adapter<OnlineCon
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_contact, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_online_contact, parent, false);
         return new ViewHolder(view);
 
     }
@@ -57,10 +57,10 @@ public class OnlineContactRecyclerAdapter extends RecyclerView.Adapter<OnlineCon
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            avatar = itemView.findViewById(R.id.itmContact_avatar);
-            btnCall = itemView.findViewById(R.id.itmContact_btnCall);
-            btnVideoCall = itemView.findViewById(R.id.itmContact_btnVideoCall);
-            txtName = itemView.findViewById(R.id.itmContact_txtName);
+            avatar = itemView.findViewById(R.id.itmOnlineContact_avatar);
+            btnCall = itemView.findViewById(R.id.itmOnlineContact_btnCall);
+            btnVideoCall = itemView.findViewById(R.id.itmOnlineOnlineContact_btnVideoCall);
+            txtName = itemView.findViewById(R.id.itmOnlineContact_txtName);
         }
     }
 }

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    android:orientation="horizontal"
+    android:weightSum="10">
+
+    <FrameLayout
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_weight="1">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/itmOnlineContact_avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+           dandroid:layout_gravity="center"
+            android:src="@drawable/avatar" />
+
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:background="@drawable/online_dot"
+            android:layout_gravity="bottom|center"
+            android:layout_marginStart="15dp"
+            />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/itmOnlineContact_txtName"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="7"
+        android:gravity="left|center"
+        android:text="Nguyễn Văn A"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/itmOnlineContact_btnCall"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:src="@drawable/ic_phone_call" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/itmOnlineOnlineContact_btnVideoCall"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:src="@drawable/ic_video_call" />
+
+
+</LinearLayout>
