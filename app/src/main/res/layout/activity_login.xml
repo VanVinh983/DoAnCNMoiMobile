@@ -8,7 +8,7 @@
     android:background="@drawable/background_welcome_screen">
 
     <Button
-        android:id="@+id/btnDangKyLogin"
+        android:id="@+id/btnSignUpLogin"
         android:layout_width="205dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -18,10 +18,10 @@
         android:textColor="#0C81C1"
         android:textSize="22dp"
         app:cornerRadius="20dp"
-        app:layout_constraintEnd_toEndOf="@+id/textView4"
+        app:layout_constraintEnd_toEndOf="@+id/tvForgetPassword"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:layout_constraintStart_toStartOf="@+id/tvForgetPassword"
+        app:layout_constraintTop_toBottomOf="@+id/tvForgetPassword"
         app:strokeColor="#000000"
         app:strokeWidth="2dp" />
 
@@ -37,7 +37,7 @@
         app:srcCompat="@drawable/iconappchat" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/txtSDT_Login"
         android:layout_width="312dp"
         android:layout_height="43dp"
         android:layout_marginTop="12dp"
@@ -95,10 +95,10 @@
         app:layout_constraintEnd_toEndOf="@+id/textView2"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView2"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+        app:layout_constraintTop_toBottomOf="@+id/txtSDT_Login" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName3"
+        android:id="@+id/txtPassword_Login"
         android:layout_width="0dp"
         android:layout_height="43dp"
         android:layout_marginTop="16dp"
@@ -108,13 +108,13 @@
         android:inputType="textPersonName"
         android:paddingLeft="10dp"
         android:textColor="#000000"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/txtSDT_Login"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView3"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnLogin_Login"
         android:layout_width="205dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -124,15 +124,15 @@
         android:textColor="#FFFFFF"
         android:textSize="22dp"
         app:cornerRadius="20dp"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName3"
+        app:layout_constraintEnd_toEndOf="@+id/txtPassword_Login"
         app:layout_constraintHorizontal_bias="0.523"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName3"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName3"
+        app:layout_constraintStart_toStartOf="@+id/txtPassword_Login"
+        app:layout_constraintTop_toBottomOf="@+id/txtPassword_Login"
         app:strokeColor="#FFFFFF"
         app:strokeWidth="2dp" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/tvForgetPassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -141,10 +141,10 @@
         android:textColor="#FFFFFF"
         android:textSize="20dp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="@+id/btnLogin_Login"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/button"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintStart_toStartOf="@+id/btnLogin_Login"
+        app:layout_constraintTop_toBottomOf="@+id/btnLogin_Login" />
 
     <ImageView
         android:id="@+id/imgBackLogin"

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.chatappcongnghemoi.R;
@@ -32,6 +33,7 @@ public class SignUp_SDT extends AppCompatActivity {
     Button btnNext;
     EditText txtSDT;
     FirebaseAuth auth;
+    ImageView imgBackSignUpSDT;
     public static final  String TAG = SignUp_SDT.class.getName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,14 @@ public class SignUp_SDT extends AppCompatActivity {
         btnNext = findViewById(R.id.btnNextSignUpSDT);
         txtSDT = findViewById(R.id.txtSDT_SignUp);
         auth = FirebaseAuth.getInstance();
+        imgBackSignUpSDT = findViewById(R.id.imgBackSignUpSDT);
+        imgBackSignUpSDT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent_SignUpSDT_SignUp = new Intent(SignUp_SDT.this,SignUp.class);
+                startActivity(intent_SignUpSDT_SignUp);
+            }
+        });
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

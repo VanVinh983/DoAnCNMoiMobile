@@ -4,4 +4,5 @@
     <string name="menuHome"><b>Tin nhắn</b></string>
     <string name="menuDanhBa"><b>Danh bạ</b></string>
     <string name="menuCaNhan"><b>Cá nhân</b></string>
+    <string name="resendOTP"><u>Gửi lại mã xác nhận</u></string>
 </resources>

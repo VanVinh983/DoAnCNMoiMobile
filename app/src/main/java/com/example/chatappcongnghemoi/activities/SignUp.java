@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.chatappcongnghemoi.R;
@@ -15,7 +16,7 @@ public class SignUp extends AppCompatActivity {
 
     EditText txtUsername;
     Button btnNext,btnLogin;
-
+    ImageView btnBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +25,15 @@ public class SignUp extends AppCompatActivity {
         txtUsername = findViewById(R.id.txtUsernameSignUp);
         btnNext = findViewById(R.id.btnNextSignUp);
         btnLogin = findViewById(R.id.btnLogin_SignUp);
+        btnBack = findViewById(R.id.imgBackSignUp);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SignUp.this,StartApp.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -36,7 +46,7 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String username = txtUsername.getText().toString().trim();
-                if(username.matches("[^\\d\\W]{2,40}")) {
+                if(username.matches("^[a-zA-Z][a-zA-Z\\s]{2,40}$")) {
                     Intent intent = new Intent(SignUp.this,SignUp_SDT.class);
                     intent.putExtra("username",username);
                     startActivity(intent);

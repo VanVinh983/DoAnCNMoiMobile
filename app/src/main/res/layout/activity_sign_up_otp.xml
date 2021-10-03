@@ -67,22 +67,21 @@
         android:id="@+id/btnConfirm"
         android:layout_width="205dp"
         android:layout_height="60dp"
-        android:layout_marginTop="76dp"
+        android:layout_marginTop="24dp"
         android:backgroundTint="#0C81C1"
         android:fontFamily="@font/bangers"
         android:text="Xác nhận"
         android:textColor="#FFFFFF"
         android:textSize="22dp"
         app:cornerRadius="20dp"
-        app:layout_constraintEnd_toEndOf="@+id/txtOTP_SignUp"
-        app:layout_constraintHorizontal_bias="0.486"
-        app:layout_constraintStart_toStartOf="@+id/txtOTP_SignUp"
-        app:layout_constraintTop_toBottomOf="@+id/txtOTP_SignUp"
+        app:layout_constraintEnd_toEndOf="@+id/tvResendOTP"
+        app:layout_constraintStart_toStartOf="@+id/tvResendOTP"
+        app:layout_constraintTop_toBottomOf="@+id/tvResendOTP"
         app:strokeColor="#FFFFFF"
         app:strokeWidth="2dp" />
 
     <ImageView
-        android:id="@+id/imgBackSignUpSDT"
+        android:id="@+id/imgBackSignUpOTP"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
@@ -91,5 +90,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/left_arrow" />
+
+    <TextView
+        android:id="@+id/tvResendOTP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/resendOTP"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/txtOTP_SignUp"
+        app:layout_constraintHorizontal_bias="0.489"
+        app:layout_constraintStart_toStartOf="@+id/txtOTP_SignUp"
+        app:layout_constraintTop_toBottomOf="@+id/txtOTP_SignUp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
