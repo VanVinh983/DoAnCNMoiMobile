@@ -7,17 +7,20 @@
     android:orientation="vertical"
     tools:context=".activities.FriendRequestActivity">
     <LinearLayout
+        android:background="#001FFD"
+        android:padding="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal">
         <ImageButton
+            android:id="@+id/actFr_btnBack"
             android:layout_width="0dp"
             android:layout_height="30dp"
             android:padding="5dp"
             android:scaleType="fitXY"
-            android:background="@color/white"
-            android:src="@drawable/left_arrow"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_left_arrow"
             android:layout_weight="1"
         />
         <TextView
@@ -26,11 +29,11 @@
             android:layout_weight="9"
             android:text="Lời mời kết bạn"
             android:gravity="center"
-            android:textColor="@color/black"
-            android:textStyle="bold"
+            android:textColor="@color/white"
             android:textSize="20sp"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/actFR_recyclerView"/>

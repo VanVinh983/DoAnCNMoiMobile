@@ -24,6 +24,7 @@ import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.adapters.ContactRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.OnlineContactRecyclerAdapter;
 import com.example.chatappcongnghemoi.models.User;
+import com.example.chatappcongnghemoi.until.RestfulLink;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
@@ -35,16 +36,13 @@ import java.util.Comparator;
 import java.util.Objects;
 
 public class PhoneBookActivity extends AppCompatActivity {
-    private String userIdLoggedIn = "614ddf15fe79c83cac2a7423";
-    private final String BASE_URL_USER = "http://192.168.56.1:4000/users/";
-    private final String BASE_URL_CONTACT = "http://192.168.56.1:4000/contacts/";
 
     private TextView mTxtThongBao;
     private RecyclerView mRecyclerContact;
     private RecyclerView mRecyclerOnlineContact;
     private TextView mTabGroup;
-    private ArrayList<String> contactIdList; //Id Friend User
-    private ArrayList<User> contactUserList;
+    private ArrayList<String> friendIdList; //Id Friend User
+    private ArrayList<User> friendList;
     private ContactRecyclerAdapter contactRecyclerAdapter;
     private OnlineContactRecyclerAdapter onlineContactRecyclerAdapter;
     private LinearLayout lineFriendRequest;
@@ -60,18 +58,6 @@ public class PhoneBookActivity extends AppCompatActivity {
 
         mapping();
         init();
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!checkRequest) {
-                    getContactUserList();
-                    handler.removeCallbacks(this);
-                } else
-                    handler.postDelayed(this, 500);
-            }
-        }, 500);
 
         lineFriendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,14 +111,28 @@ public class PhoneBookActivity extends AppCompatActivity {
         mRecyclerContact.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerOnlineContact.setLayoutManager(new LinearLayoutManager(this));
 
-        getContactUserIdList();
+        getFriendIdList();
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!checkRequest) {
+                    getFriendList();
+                    handler.removeCallbacks(this);
+                } else
+                    handler.postDelayed(this, 500);
+            }
+        }, 500);
+
+
     }
 
-    public void getContactUserIdList() {
-        contactIdList = new ArrayList<>();
+    public void getFriendIdList() {
+        friendIdList = new ArrayList<>();
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         checkRequest = true;
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, BASE_URL_CONTACT, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, RestfulLink.BASE_URL_CONTACT, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -140,14 +140,14 @@ public class PhoneBookActivity extends AppCompatActivity {
                     JSONArray contacts = jsonObject.getJSONArray("contacts");
                     for (int i = 0; i < contacts.length(); i++) {
                         JSONObject contact = (JSONObject) contacts.get(i);
-                        String userId = contact.getString("userId");
-                        String contactId = contact.getString("contactId");
+                        String senderId = contact.getString("senderId");
+                        String receiverId = contact.getString("receiverId");
                         Boolean status = contact.getBoolean("status");
 
-                        if (userId.equals(userIdLoggedIn) && status) {
-                            contactIdList.add(contactId);
-                        } else if (contactId.equals(userIdLoggedIn) && status) {
-                            contactIdList.add(userId);
+                        if (senderId.equals(RestfulLink.userIdLoggedIn) && status) {
+                            friendIdList.add(receiverId);
+                        } else if (receiverId.equals(RestfulLink.userIdLoggedIn) && status) {
+                            friendIdList.add(senderId);
                         }
                     }
                 } catch (JSONException e) {
@@ -165,11 +165,11 @@ public class PhoneBookActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-    public void getContactUserList() {
-        contactUserList = new ArrayList<>();
-        if (contactIdList != null && contactIdList.size() > 0) {
-            for (int i = 0; i < contactIdList.size(); i++) {
-                getUserById(contactIdList.get(i));
+    public void getFriendList() {
+        friendList = new ArrayList<>();
+        if (friendIdList != null && friendIdList.size() > 0) {
+            for (int i = 0; i < friendIdList.size(); i++) {
+                getUserById(friendIdList.get(i));
             }
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -182,16 +182,16 @@ public class PhoneBookActivity extends AppCompatActivity {
 //                        for(int i=0; i<4; i++){
 //                            contactUserList.add(contactUserList.get(i));
 //                        }
-                        contactUserList.sort(new Comparator<User>() {
+                        friendList.sort(new Comparator<User>() {
                             @Override
                             public int compare(User o1, User o2) {
                                 return o1.getUserName().compareToIgnoreCase(o2.getUserName());
                             }
                         });
-                        contactRecyclerAdapter = new ContactRecyclerAdapter(PhoneBookActivity.this, contactUserList);
+                        contactRecyclerAdapter = new ContactRecyclerAdapter(PhoneBookActivity.this, friendList);
                         mRecyclerContact.setAdapter(contactRecyclerAdapter);
 
-                        getOnlineContactList();
+                        getOnlineFriendList();
                     } else
                         handler.postDelayed(this, 500);
                 }
@@ -203,7 +203,7 @@ public class PhoneBookActivity extends AppCompatActivity {
     public void getUserById(String id) {
         checkRequest = true;
         RequestQueue requestQueue = Volley.newRequestQueue(PhoneBookActivity.this);
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, BASE_URL_USER + "/" + id, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, RestfulLink.BASE_URL_USER + "/" + id, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -214,7 +214,7 @@ public class PhoneBookActivity extends AppCompatActivity {
                     user.setUserName(jsonUser.getString("userName"));
                     user.setAvatar(jsonUser.getString("avatar"));
 
-                    contactUserList.add(user);
+                    friendList.add(user);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -230,15 +230,15 @@ public class PhoneBookActivity extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-    public void getOnlineContactList() {
-
-        if (contactUserList.size() > 3) {
-            onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this,  new ArrayList<User>(contactUserList.subList(0, 3)));
+    public void getOnlineFriendList() {
+        if (friendList.size() > 3) {
+            onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this,  new ArrayList<User>(friendList.subList(0, 3)));
             mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
             mTxtThongBao.setText("Xem thêm...");
-        } else if (contactIdList.size() <= 0) {
-            onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, contactUserList);
+        } else if (friendList.size() <= 3 && friendList.size() > 0) {
+            onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, friendList);
             mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
+        }else {
             mTxtThongBao.setText("Không có bạn bè đang online");
         }
     }
