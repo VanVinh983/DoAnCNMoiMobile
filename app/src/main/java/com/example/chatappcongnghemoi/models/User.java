@@ -5,6 +5,7 @@ public class User {
     private String userName;
     private String avatar;
     private String phone;
+    private String password;
 
     //User có online hay không
     private boolean isOnline;
@@ -69,6 +70,14 @@ public class User {
         isActive = active;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -76,6 +85,7 @@ public class User {
                 ", userName='" + userName + '\'' +
                 ", avatar='" + avatar + '\'' +
                 ", phone='" + phone + '\'' +
+                ", password='" + password + '\'' +
                 ", isOnline=" + isOnline +
                 ", isActive=" + isActive +
                 ", background='" + background + '\'' +

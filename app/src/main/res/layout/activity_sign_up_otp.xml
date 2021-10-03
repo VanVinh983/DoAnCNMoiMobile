@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:fontFamily="@font/bangers"
-        android:text="Đăng ký tài khoản"
+        android:text="Xác nhận tài khoản"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="24sp"
@@ -39,7 +39,7 @@
         android:layout_height="44dp"
         android:layout_marginTop="60dp"
         android:fontFamily="@font/bangers"
-        android:text="Số điện thoại"
+        android:text="Mã xác nhận"
         android:textColor="#000000"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@+id/textView9"
@@ -48,13 +48,13 @@
         app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
     <EditText
-        android:id="@+id/txtSDT_SignUp"
+        android:id="@+id/txtOTP_SignUp"
         android:layout_width="0dp"
         android:layout_height="52dp"
         android:layout_marginTop="28dp"
         android:background="@drawable/background_textplain"
         android:ems="10"
-        android:hint="Nhập số điện thoại"
+        android:hint="Nhập mã xác nhận"
         android:inputType="textPersonName"
         android:paddingLeft="10dp"
         android:textColorHint="#737272"
@@ -64,20 +64,20 @@
         app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
     <Button
-        android:id="@+id/btnNextSignUpSDT"
+        android:id="@+id/btnConfirm"
         android:layout_width="205dp"
         android:layout_height="60dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="76dp"
         android:backgroundTint="#0C81C1"
         android:fontFamily="@font/bangers"
-        android:text="Tiếp tục >"
+        android:text="Xác nhận"
         android:textColor="#FFFFFF"
         android:textSize="22dp"
         app:cornerRadius="20dp"
-        app:layout_constraintEnd_toEndOf="@+id/txtSDT_SignUp"
+        app:layout_constraintEnd_toEndOf="@+id/txtOTP_SignUp"
         app:layout_constraintHorizontal_bias="0.486"
-        app:layout_constraintStart_toStartOf="@+id/txtSDT_SignUp"
-        app:layout_constraintTop_toBottomOf="@+id/txtSDT_SignUp"
+        app:layout_constraintStart_toStartOf="@+id/txtOTP_SignUp"
+        app:layout_constraintTop_toBottomOf="@+id/txtOTP_SignUp"
         app:strokeColor="#FFFFFF"
         app:strokeWidth="2dp" />
 

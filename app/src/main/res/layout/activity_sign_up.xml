@@ -47,9 +47,9 @@
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName2"
+        android:id="@+id/txtUsernameSignUp"
         android:layout_width="0dp"
-        android:layout_height="47dp"
+        android:layout_height="48dp"
         android:layout_marginTop="32dp"
         android:background="@drawable/background_textplain"
         android:ems="10"
@@ -62,7 +62,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/btnNextSignUp"
         android:layout_width="178dp"
         android:layout_height="0dp"
         android:layout_marginTop="28dp"
@@ -72,10 +72,10 @@
         android:textColor="#FFFFFF"
         android:textSize="22dp"
         app:cornerRadius="20dp"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName2"
+        app:layout_constraintEnd_toEndOf="@+id/txtUsernameSignUp"
         app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName2"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName2"
+        app:layout_constraintStart_toStartOf="@+id/txtUsernameSignUp"
+        app:layout_constraintTop_toBottomOf="@+id/txtUsernameSignUp"
         app:strokeColor="#FFFFFF"
         app:strokeWidth="2dp" />
 
@@ -91,7 +91,7 @@
         app:srcCompat="@drawable/left_arrow" />
 
     <Button
-        android:id="@+id/btnDangNhapSignUp"
+        android:id="@+id/btnLogin_SignUp"
         android:layout_width="178dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
@@ -101,9 +101,9 @@
         android:textColor="#0C81C1"
         android:textSize="22dp"
         app:cornerRadius="20dp"
-        app:layout_constraintEnd_toEndOf="@+id/button4"
-        app:layout_constraintStart_toStartOf="@+id/button4"
-        app:layout_constraintTop_toBottomOf="@+id/button4"
+        app:layout_constraintEnd_toEndOf="@+id/btnNextSignUp"
+        app:layout_constraintStart_toStartOf="@+id/btnNextSignUp"
+        app:layout_constraintTop_toBottomOf="@+id/btnNextSignUp"
         app:strokeColor="#000000"
         app:strokeWidth="2dp" />
 
