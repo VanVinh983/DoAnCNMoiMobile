@@ -1,4 +1,4 @@
-package com.example.chatappcongnghemoi.until;
+package com.example.chatappcongnghemoi.utils;
 
 public interface RestfulLink {
 

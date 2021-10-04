@@ -24,7 +24,7 @@ import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.adapters.ContactRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.OnlineContactRecyclerAdapter;
 import com.example.chatappcongnghemoi.models.User;
-import com.example.chatappcongnghemoi.until.RestfulLink;
+import com.example.chatappcongnghemoi.utils.RestfulLink;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
