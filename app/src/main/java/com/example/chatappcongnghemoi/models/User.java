@@ -1,49 +1,99 @@
 package com.example.chatappcongnghemoi.models;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class User {
-    private String userId;
+
+    @SerializedName("local")
+    @Expose
+    private Local local;
+    @SerializedName("_id")
+    @Expose
+    private String id;
+    @SerializedName("userName")
+    @Expose
     private String userName;
+    @SerializedName("gender")
+    @Expose
+    private String gender;
+    @SerializedName("birthday")
+    @Expose
+    private Long birthday;
+    @SerializedName("address")
+    @Expose
+    private Long address;
+    @SerializedName("avatar")
+    @Expose
     private String avatar;
-    private String phone;
-    private String password;
+    @SerializedName("role")
+    @Expose
+    private String role;
+    @SerializedName("updatedAt")
+    @Expose
+    private Long updatedAt;
+    @SerializedName("deletedAt")
+    @Expose
+    private Long deletedAt;
+    @SerializedName("createdAt")
+    @Expose
+    private Long createdAt;
+    @SerializedName("__v")
+    @Expose
+    private Integer v;
 
-    //User có online hay không
-    private boolean isOnline;
-    //Tài khoản có bị khóa hay không
-    private boolean isActive;
-    //Ảnh bìa bên trang cá nhân
-    private String background;
-
-    public String getPhone() {
-        return phone;
+    /**
+     * No args constructor for use in serialization
+     *
+     */
+    public User() {
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    /**
+     *
+     * @param birthday
+     * @param createdAt
+     * @param deletedAt
+     * @param address
+     * @param role
+     * @param gender
+     * @param v
+     * @param id
+     * @param avatar
+     * @param userName
+     * @param local
+     * @param updatedAt
+     */
+    public User(Local local, String id, String userName, String gender, Long birthday, Long address, String avatar, String role, Long updatedAt, Long deletedAt, Long createdAt, Integer v) {
+        super();
+        this.local = local;
+        this.id = id;
+        this.userName = userName;
+        this.gender = gender;
+        this.birthday = birthday;
+        this.address = address;
+        this.avatar = avatar;
+        this.role = role;
+        this.updatedAt = updatedAt;
+        this.deletedAt = deletedAt;
+        this.createdAt = createdAt;
+        this.v = v;
     }
 
-    public boolean isOnline() {
-        return isOnline;
+    public Local getLocal() {
+        return local;
     }
 
-    public void setOnline(boolean online) {
-        isOnline = online;
+    public void setLocal(Local local) {
+        this.local = local;
     }
 
-    public String getBackground() {
-        return background;
+    public String getId() {
+        return id;
     }
 
-    public void setBackground(String background) {
-        this.background = background;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUserName() {
@@ -54,6 +104,30 @@ public class User {
         this.userName = userName;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Long getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Long birthday) {
+        this.birthday = birthday;
+    }
+
+    public Long getAddress() {
+        return address;
+    }
+
+    public void setAddress(Long address) {
+        this.address = address;
+    }
+
     public String getAvatar() {
         return avatar;
     }
@@ -62,33 +136,44 @@ public class User {
         this.avatar = avatar;
     }
 
-    public boolean isActive() {
-        return isActive;
+    public String getRole() {
+        return role;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setRole(String role) {
+        this.role = role;
     }
 
-    public String getPassword() {
-        return password;
+    public Long getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUpdatedAt(Long updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId='" + userId + '\'' +
-                ", userName='" + userName + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", phone='" + phone + '\'' +
-                ", password='" + password + '\'' +
-                ", isOnline=" + isOnline +
-                ", isActive=" + isActive +
-                ", background='" + background + '\'' +
-                '}';
+    public Long getDeletedAt() {
+        return deletedAt;
     }
+
+    public void setDeletedAt(Long deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public Long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Integer getV() {
+        return v;
+    }
+
+    public void setV(Integer v) {
+        this.v = v;
+    }
+
 }

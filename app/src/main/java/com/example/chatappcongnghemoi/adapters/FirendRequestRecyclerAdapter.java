@@ -17,37 +17,39 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.chatappcongnghemoi.R;
-import com.example.chatappcongnghemoi.activities.MainActivity;
 import com.example.chatappcongnghemoi.models.Contact;
+import com.example.chatappcongnghemoi.models.ContactDTO;
 import com.example.chatappcongnghemoi.models.User;
+import com.example.chatappcongnghemoi.retrofit.ApiService;
+import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.http.DELETE;
+import retrofit2.http.PUT;
 
 public class FirendRequestRecyclerAdapter extends RecyclerView.Adapter<FirendRequestRecyclerAdapter.ViewHolder> {
 
     private Context context;
     private ArrayList<User> users;
     private ArrayList<Contact> contacts;
-    private String url;
 
-    public FirendRequestRecyclerAdapter(Context context, ArrayList<User> users, ArrayList<Contact> contacts, String url) {
+    public FirendRequestRecyclerAdapter(Context context, ArrayList<User> users, ArrayList<Contact> contacts) {
         this.context = context;
         this.users = users;
         this.contacts = contacts;
-        this.url = url;
     }
 
     @NonNull
@@ -71,10 +73,10 @@ public class FirendRequestRecyclerAdapter extends RecyclerView.Adapter<FirendReq
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
-                            case DialogInterface.BUTTON_POSITIVE:
-                                deleteApi(url, contacts.get(position).get_id());
-                                break;
                             case DialogInterface.BUTTON_NEGATIVE:
+                                deleteApi(contacts.get(position).getId());
+                                break;
+                            case DialogInterface.BUTTON_POSITIVE:
                                 break;
                         }
                     }
@@ -82,15 +84,17 @@ public class FirendRequestRecyclerAdapter extends RecyclerView.Adapter<FirendReq
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setMessage("Bạn có muốn xóa yêu cầu kết bạn này?")
-                        .setPositiveButton("Có", dialogClickListener)
-                        .setNegativeButton("Không", dialogClickListener).show();
+                        .setPositiveButton("Không", dialogClickListener)
+                        .setNegativeButton("Có", dialogClickListener).show();
             }
         });
 
         holder.btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                putApi(url, contacts.get(position).get_id());
+                Contact contact = contacts.get(0);
+                contact.setStatus(true);
+                putApi(contact.getId(), contact);
             }
         });
     }
@@ -114,51 +118,44 @@ public class FirendRequestRecyclerAdapter extends RecyclerView.Adapter<FirendReq
         }
     }
 
-    private void putApi(String url, String _id) {
-        StringRequest stringRequest = new StringRequest(
-                Request.Method.PUT, url + _id, new Response.Listener<String>() {
+    private void putApi(String id, Contact contact) {
+        DataService dataService = ApiService.getService();
+        Call<PUT> callback = dataService.updateContact(id, contact);
+        callback.enqueue(new Callback<PUT>() {
             @Override
-            public void onResponse(String response) {
-                Toast.makeText(context, "Chấp nhận kêt bạn thành công!", Toast.LENGTH_SHORT).show();
-                restartActivity((Activity) context);
+            public void onResponse(Call<PUT> call, retrofit2.Response<PUT> response) {
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("tag", error.toString());
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                HashMap<String, String> params = new HashMap<>();
-                params.put("status", "true");
-                return params;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
-    }
 
-    private void deleteApi(String url, String _id) {
-        StringRequest stringRequest = new StringRequest(
-                Request.Method.DELETE, url + _id, new Response.Listener<String>() {
             @Override
-            public void onResponse(String response) {
-                Toast.makeText(context, "Xóa yêu cầu kết bạn thành công!", Toast.LENGTH_SHORT).show();
-                restartActivity((Activity) context);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("tag", error.toString());
+            public void onFailure(Call<PUT> call, Throwable t) {
+                t.printStackTrace();
             }
         });
 
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
+        Toast.makeText(context, "Thêm bạn thành công", Toast.LENGTH_SHORT).show();
+        restartActivity((Activity) context);
+
     }
 
-    public static void restartActivity(Activity act) {
+    private void deleteApi(String id) {
+        DataService dataService = ApiService.getService();
+        Call<DELETE> callback = dataService.deteleContactById(id);
+        callback.enqueue(new Callback<DELETE>() {
+            @Override
+            public void onResponse(Call<DELETE> call, Response<DELETE> response) {
+            }
+
+            @Override
+            public void onFailure(Call<DELETE> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
+        Toast.makeText(context, "Xóa yêu cầu kết bạn thành công", Toast.LENGTH_SHORT).show();
+        restartActivity((Activity) context);
+    }
+
+    public void restartActivity(Activity act) {
         Intent intent = new Intent(act, act.getClass());
         act.finish();
         act.startActivity(intent);

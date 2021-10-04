@@ -14,26 +14,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.adapters.ContactRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.OnlineContactRecyclerAdapter;
+import com.example.chatappcongnghemoi.models.Contact;
+import com.example.chatappcongnghemoi.models.ContactList;
 import com.example.chatappcongnghemoi.models.User;
-import com.example.chatappcongnghemoi.utils.RestfulLink;
+import com.example.chatappcongnghemoi.models.UserDTO;
+import com.example.chatappcongnghemoi.retrofit.ApiService;
+import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class PhoneBookActivity extends AppCompatActivity {
 
@@ -47,8 +45,7 @@ public class PhoneBookActivity extends AppCompatActivity {
     private OnlineContactRecyclerAdapter onlineContactRecyclerAdapter;
     private LinearLayout lineFriendRequest;
     private LinearLayout lineLoadPhoneBook;
-
-    boolean checkRequest = false;
+    private DataService dataService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +75,7 @@ public class PhoneBookActivity extends AppCompatActivity {
     }
 
     public void init() {
+        dataService = ApiService.getService();
         //initialize
         BottomNavigationView bottomNavigationView = findViewById(R.id.actPhonebook_bottomNavagation);
         //set personal selected
@@ -117,7 +115,7 @@ public class PhoneBookActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (!checkRequest) {
+                if (friendIdList != null) {
                     getFriendList();
                     handler.removeCallbacks(this);
                 } else
@@ -129,40 +127,27 @@ public class PhoneBookActivity extends AppCompatActivity {
     }
 
     public void getFriendIdList() {
-        friendIdList = new ArrayList<>();
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        checkRequest = true;
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, RestfulLink.BASE_URL_CONTACT, new Response.Listener<String>() {
+        Call<ContactList> callback = dataService.getContactList();
+        callback.enqueue(new Callback<ContactList>() {
             @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    JSONArray contacts = jsonObject.getJSONArray("contacts");
-                    for (int i = 0; i < contacts.length(); i++) {
-                        JSONObject contact = (JSONObject) contacts.get(i);
-                        String senderId = contact.getString("senderId");
-                        String receiverId = contact.getString("receiverId");
-                        Boolean status = contact.getBoolean("status");
-
-                        if (senderId.equals(RestfulLink.userIdLoggedIn) && status) {
-                            friendIdList.add(receiverId);
-                        } else if (receiverId.equals(RestfulLink.userIdLoggedIn) && status) {
-                            friendIdList.add(senderId);
-                        }
+            public void onResponse(Call<ContactList> call, retrofit2.Response<ContactList> response) {
+                ArrayList<Contact> contacts = response.body().getContacts();
+                friendIdList = new ArrayList<>();
+                for (int i = 0; i < contacts.size(); i++){
+                Contact contact = contacts.get(i);
+                    if (contact.getSenderId().equals(DataLoggedIn.userIdLoggedIn) && contact.getStatus()) {
+                        friendIdList.add(contact.getReceiverId());
+                    } else if (contact.getReceiverId().equals(DataLoggedIn.userIdLoggedIn) && contact.getStatus()) {
+                        friendIdList.add(contact.getSenderId());
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-                checkRequest = false;
             }
-        }, new Response.ErrorListener() {
+
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("error", error.toString());
-                checkRequest = false;
+            public void onFailure(Call<ContactList> call, Throwable t) {
+                t.printStackTrace();
             }
         });
-        requestQueue.add(stringRequest);
     }
 
     public void getFriendList() {
@@ -175,19 +160,14 @@ public class PhoneBookActivity extends AppCompatActivity {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (!checkRequest) {
-//                        contactUserList.forEach(u->{
-//                            Log.d("tag", u.toString());
-//                        });
-//                        for(int i=0; i<4; i++){
-//                            contactUserList.add(contactUserList.get(i));
-//                        }
+                    if (friendList.size() == friendIdList.size()) {
                         friendList.sort(new Comparator<User>() {
                             @Override
                             public int compare(User o1, User o2) {
                                 return o1.getUserName().compareToIgnoreCase(o2.getUserName());
                             }
                         });
+
                         contactRecyclerAdapter = new ContactRecyclerAdapter(PhoneBookActivity.this, friendList);
                         mRecyclerContact.setAdapter(contactRecyclerAdapter);
 
@@ -201,44 +181,30 @@ public class PhoneBookActivity extends AppCompatActivity {
     }
 
     public void getUserById(String id) {
-        checkRequest = true;
-        RequestQueue requestQueue = Volley.newRequestQueue(PhoneBookActivity.this);
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, RestfulLink.BASE_URL_USER + "/" + id, new Response.Listener<String>() {
+        Call<UserDTO> callback = dataService.getUserById(id);
+        callback.enqueue(new Callback<UserDTO>() {
             @Override
-            public void onResponse(String response) {
-                try {
-                    User user = new User();
-                    JSONObject jsonObject = new JSONObject(response);
-                    JSONObject jsonUser = jsonObject.getJSONObject("user");
-                    user.setUserId(jsonUser.getString("_id"));
-                    user.setUserName(jsonUser.getString("userName"));
-                    user.setAvatar(jsonUser.getString("avatar"));
-
-                    friendList.add(user);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                checkRequest = false;
+            public void onResponse(Call<UserDTO> call, retrofit2.Response<UserDTO> response) {
+                User user = response.body().getUser();
+                friendList.add(user);
             }
-        }, new Response.ErrorListener() {
+
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("error", error.toString());
+            public void onFailure(Call<UserDTO> call, Throwable t) {
+                t.printStackTrace();
             }
         });
-        requestQueue.add(stringRequest);
     }
 
     public void getOnlineFriendList() {
         if (friendList.size() > 3) {
-            onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this,  new ArrayList<User>(friendList.subList(0, 3)));
+            onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, new ArrayList<User>(friendList.subList(0, 3)));
             mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
             mTxtThongBao.setText("Xem thêm...");
         } else if (friendList.size() <= 3 && friendList.size() > 0) {
             onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, friendList);
             mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
-        }else {
+        } else {
             mTxtThongBao.setText("Không có bạn bè đang online");
         }
     }

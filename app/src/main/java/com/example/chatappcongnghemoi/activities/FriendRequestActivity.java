@@ -7,30 +7,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.chatappcongnghemoi.R;
-import com.example.chatappcongnghemoi.adapters.ContactRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.FirendRequestRecyclerAdapter;
 import com.example.chatappcongnghemoi.models.Contact;
+import com.example.chatappcongnghemoi.models.ContactList;
 import com.example.chatappcongnghemoi.models.User;
-import com.example.chatappcongnghemoi.until.RestfulLink;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.example.chatappcongnghemoi.models.UserDTO;
+import com.example.chatappcongnghemoi.retrofit.ApiService;
+import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class FriendRequestActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -39,7 +34,7 @@ public class FriendRequestActivity extends AppCompatActivity {
 
     private ArrayList<User> senderList;
     private ArrayList<Contact> contactList;
-    private boolean checkRequest;
+    private DataService dataService;
 
 
     @Override
@@ -67,6 +62,7 @@ public class FriendRequestActivity extends AppCompatActivity {
     }
 
     public void init() {
+        dataService = ApiService.getService();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -76,7 +72,7 @@ public class FriendRequestActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (!checkRequest) {
+                if (contactList != null) {
                     getSenderList();
                     handler.removeCallbacks(this);
                 } else
@@ -86,43 +82,25 @@ public class FriendRequestActivity extends AppCompatActivity {
     }
 
     public void getSenderIdList() {
-        contactList = new ArrayList<>();
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        checkRequest = true;
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, RestfulLink.BASE_URL_CONTACT, new Response.Listener<String>() {
+        Call<ContactList> callback = dataService.getContactList();
+        callback.enqueue(new Callback<ContactList>() {
             @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    JSONArray contacts = jsonObject.getJSONArray("contacts");
-                    for (int i = 0; i < contacts.length(); i++) {
-                        JSONObject contact = (JSONObject) contacts.get(i);
-                        String _id = contact.getString("_id");
-                        String receiverId = contact.getString("receiverId");
-                        String senderId = contact.getString("senderId");
-                        boolean status = contact.getBoolean("status");
-
-
-                        if (receiverId.equals(RestfulLink.userIdLoggedIn) && !status) {
-                            contactList.add(new Contact(_id, senderId, receiverId, status));
-                        }
-
+            public void onResponse(Call<ContactList> call, retrofit2.Response<ContactList> response) {
+                ArrayList<Contact> contacts = response.body().getContacts();
+                contactList = new ArrayList<>();
+                for (int i = 0; i < contacts.size(); i++){
+                    Contact contact = contacts.get(i);
+                    if (contact.getReceiverId().equals(DataLoggedIn.userIdLoggedIn) && !contact.getStatus()) {
+                        contactList.add(contact);
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-                checkRequest = false;
-//                Log.d("tag", contactList.size() + "");
             }
-        }, new Response.ErrorListener() {
+
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("error", error.toString());
-                checkRequest = false;
+            public void onFailure(Call<ContactList> call, Throwable t) {
+                t.printStackTrace();
             }
         });
-        requestQueue.add(stringRequest);
     }
 
     public void getSenderList() {
@@ -135,14 +113,14 @@ public class FriendRequestActivity extends AppCompatActivity {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (!checkRequest) {
+                    if (senderList.size() == contactList.size()) {
                         senderList.sort(new Comparator<User>() {
                             @Override
                             public int compare(User o1, User o2) {
                                 return o1.getUserName().compareToIgnoreCase(o2.getUserName());
                             }
                         });
-                        adapter = new FirendRequestRecyclerAdapter(FriendRequestActivity.this, senderList, contactList, RestfulLink.BASE_URL_CONTACT);
+                        adapter = new FirendRequestRecyclerAdapter(FriendRequestActivity.this, senderList, contactList);
                         recyclerView.setAdapter(adapter);
                     } else
                         handler.postDelayed(this, 500);
@@ -153,33 +131,19 @@ public class FriendRequestActivity extends AppCompatActivity {
     }
 
     public void getUserById(String id) {
-        checkRequest = true;
-        RequestQueue requestQueue = Volley.newRequestQueue(FriendRequestActivity.this);
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, RestfulLink.BASE_URL_USER + "/" + id, new Response.Listener<String>() {
+        Call<UserDTO> callback = dataService.getUserById(id);
+        callback.enqueue(new Callback<UserDTO>() {
             @Override
-            public void onResponse(String response) {
-                try {
-                    User user = new User();
-                    JSONObject jsonObject = new JSONObject(response);
-                    JSONObject jsonUser = jsonObject.getJSONObject("user");
-                    user.setUserId(jsonUser.getString("_id"));
-                    user.setUserName(jsonUser.getString("userName"));
-                    user.setAvatar(jsonUser.getString("avatar"));
-
-                    senderList.add(user);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                checkRequest = false;
+            public void onResponse(Call<UserDTO> call, retrofit2.Response<UserDTO> response) {
+                User user = response.body().getUser();
+                senderList.add(user);
             }
-        }, new Response.ErrorListener() {
+
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("error", error.toString());
+            public void onFailure(Call<UserDTO> call, Throwable t) {
+                t.printStackTrace();
             }
         });
-        requestQueue.add(stringRequest);
     }
 
 
