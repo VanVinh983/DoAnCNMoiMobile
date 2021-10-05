@@ -19,10 +19,10 @@ public class User {
     private String gender;
     @SerializedName("birthday")
     @Expose
-    private Long birthday;
+    private String birthday;
     @SerializedName("address")
     @Expose
-    private Long address;
+    private String address;
     @SerializedName("avatar")
     @Expose
     private String avatar;
@@ -64,7 +64,7 @@ public class User {
      * @param local
      * @param updatedAt
      */
-    public User(Local local, String id, String userName, String gender, Long birthday, Long address, String avatar, String role, Long updatedAt, Long deletedAt, Long createdAt, Integer v) {
+    public User(Local local, String id, String userName, String gender, String birthday, String address, String avatar, String role, Long updatedAt, Long deletedAt, Long createdAt, Integer v) {
         super();
         this.local = local;
         this.id = id;
@@ -112,19 +112,19 @@ public class User {
         this.gender = gender;
     }
 
-    public Long getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Long birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
-    public Long getAddress() {
+    public String getAddress() {
         return address;
     }
 
-    public void setAddress(Long address) {
+    public void setAddress(String address) {
         this.address = address;
     }
 
@@ -176,4 +176,21 @@ public class User {
         this.v = v;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "local=" + local +
+                ", id='" + id + '\'' +
+                ", userName='" + userName + '\'' +
+                ", gender='" + gender + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", address='" + address + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", role='" + role + '\'' +
+                ", updatedAt=" + updatedAt +
+                ", deletedAt=" + deletedAt +
+                ", createdAt=" + createdAt +
+                ", v=" + v +
+                '}';
+    }
 }

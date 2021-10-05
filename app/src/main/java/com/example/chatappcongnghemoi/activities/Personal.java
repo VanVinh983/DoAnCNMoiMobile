@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,13 +20,24 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.models.User;
+import com.example.chatappcongnghemoi.models.UserDTO;
+import com.example.chatappcongnghemoi.retrofit.ApiService;
+import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Personal extends AppCompatActivity implements View.OnClickListener {
     private EditText input_name, input_email, input_gender, input_yearOfBirth, input_numberPhone, input_address;
@@ -33,6 +45,8 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
     private Button btn_update_info;
     private CircleImageView imageView_Avatar;
     private TextView txt_introduce;
+    private DataService dataService;
+    private User user = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +64,8 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
         btn_update_info = findViewById(R.id.btn_personal_update);
         imageView_Avatar = findViewById(R.id.image_personal_avatar);
         txt_introduce = findViewById(R.id.txt_personal_introduce);
+        //initialize dataservice
+        dataService = ApiService.getService();
 
         //set edit text can't input letter
 
@@ -119,6 +135,18 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                 startActivityForResult(intent, 1);
             }
         });
+        getUserById("6159c1f9bf628567ac523586");
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (user==null){
+                    handler.postDelayed(this,100);
+                    System.out.println("chua xong");
+                }
+                 System.out.println("hoàn thành"+user.toString());
+            }
+        },500);
     }
 
     @Override
@@ -183,5 +211,19 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                 }
             }
         }
+    }
+    private void getUserById(String id){
+        Call<UserDTO> dtoCall = dataService.getUserById(id);
+        dtoCall.enqueue(new Callback<UserDTO>() {
+            @Override
+            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                user = response.body().getUser();
+            }
+            @Override
+            public void onFailure(Call<UserDTO> call, Throwable t) {
+                Toast.makeText(Personal.this, "Fail get User By Id", Toast.LENGTH_SHORT).show();
+                System.err.println("Fail get User By Id"+t.toString());
+            }
+        });
     }
 }
