@@ -35,13 +35,14 @@ public class SignUp_SDT extends AppCompatActivity {
     FirebaseAuth auth;
     ImageView imgBackSignUpSDT;
     public static final  String TAG = SignUp_SDT.class.getName();
+    String username,phone;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_sdt);
         getSupportActionBar().hide();
         Intent intent = getIntent();
-        String username = intent.getStringExtra("username");
+        username = intent.getStringExtra("username");
         btnNext = findViewById(R.id.btnNextSignUpSDT);
         txtSDT = findViewById(R.id.txtSDT_SignUp);
         auth = FirebaseAuth.getInstance();
@@ -57,6 +58,7 @@ public class SignUp_SDT extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String sdt = txtSDT.getText().toString().trim();
+                //Lấy danh sách sđt nếu đã tồn tại thì chuyển sang activity thông bào tồn tại
 //                if(sdt.matches("^0[0-9]{8,10}")) {
 //                    String sdtOTP = "+84"+sdt.substring(1);
                     sendOTP("+84"+sdt.substring(1));
@@ -94,9 +96,12 @@ public class SignUp_SDT extends AppCompatActivity {
         PhoneAuthProvider.verifyPhoneNumber(options);
     }
     private void goToSignUpOTP(String phoneNumber,String verificationId){
+        phone = txtSDT.getText().toString().trim();
         Intent intent_OPT = new Intent(SignUp_SDT.this,SignUp_OTP.class);
         intent_OPT.putExtra("phone_number",phoneNumber);
         intent_OPT.putExtra("verificationId",verificationId);
+        intent_OPT.putExtra("username",username);
+        intent_OPT.putExtra("phone",phone);
         startActivity(intent_OPT);
     }
 
