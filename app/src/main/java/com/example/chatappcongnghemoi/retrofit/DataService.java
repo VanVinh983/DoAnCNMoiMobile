@@ -4,6 +4,7 @@ package com.example.chatappcongnghemoi.retrofit;
 import com.example.chatappcongnghemoi.models.Contact;
 import com.example.chatappcongnghemoi.models.ContactDTO;
 import com.example.chatappcongnghemoi.models.ContactList;
+import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 
 import retrofit2.Call;
@@ -11,6 +12,7 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
@@ -28,5 +30,7 @@ public interface DataService {
     @DELETE("contacts/{id}")
     Call<DELETE> deteleContactById(@Path("id") String id);
 
+    @PUT("users/{id}")
+    Call<UserDTO> updateUser(@Path("id") String id, @Body User user);
 
 }

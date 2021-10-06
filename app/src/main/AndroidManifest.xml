@@ -13,6 +13,9 @@
         android:theme="@style/Theme.ChatAppCongNgheMoi"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Full_Image_Avatar"
+            android:exported="true" />
+        <activity
             android:name=".activities.SignUp_OTP"
             android:exported="true" />
         <activity

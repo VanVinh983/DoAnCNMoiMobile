@@ -23,7 +23,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.chatappcongnghemoi.Full_Image_Avatar;
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.models.Local;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
@@ -40,6 +42,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.PUT;
 
 public class Personal extends AppCompatActivity implements View.OnClickListener {
     private EditText input_name, input_email, input_gender, input_yearOfBirth, input_numberPhone, input_address;
@@ -179,6 +182,7 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                     input_address.setEnabled(false);
                     input_numberPhone.setEnabled(false);
                     input_yearOfBirth.setEnabled(false);
+                    updateUser();
                 }
             }
         }
@@ -206,6 +210,16 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
          }else {
              dialog.setCancelable(false);
          }
+         Button btn_fullscreen = dialog.findViewById(R.id.btn_dialogavatar_fullscreen);
+
+         btn_fullscreen.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 Intent intent = new Intent(Personal.this, Full_Image_Avatar.class);
+                 intent.putExtra("url", user.getAvatar());
+                 Personal.this.startActivity(intent);
+             }
+         });
          dialog.show();
     }
 
@@ -234,5 +248,25 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                 System.err.println("Fail get User By Id"+t.toString());
             }
         });
+    }
+    private void updateUser(){
+       user.setUserName(input_name.getText().toString());
+       user.setGender(input_gender.getText().toString());
+       user.setBirthday(input_yearOfBirth.getText().toString());
+       user.getLocal().setPhone(input_numberPhone.getText().toString());
+       user.setAddress(input_address.getText().toString());
+
+       Call<UserDTO> putCall = dataService.updateUser(user.getId(), user);
+       putCall.enqueue(new Callback<UserDTO>() {
+           @Override
+           public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+              Toast.makeText(Personal.this, "Thành Công !", Toast.LENGTH_LONG).show();
+           }
+
+           @Override
+           public void onFailure(Call<UserDTO> call, Throwable t) {
+                System.err.println("Fail Put User "+ t.getMessage().toString());
+           }
+       });
     }
 }
