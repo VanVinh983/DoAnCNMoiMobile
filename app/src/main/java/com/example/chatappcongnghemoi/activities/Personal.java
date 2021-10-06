@@ -22,12 +22,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,7 +46,7 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
     private BottomNavigationView bottomNavigationView;
     private Button btn_update_info;
     private CircleImageView imageView_Avatar;
-    private TextView txt_introduce;
+    private TextView txt_introduce, txt_personal_primary;
     private DataService dataService;
     private User user = null;
     @Override
@@ -64,6 +66,7 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
         btn_update_info = findViewById(R.id.btn_personal_update);
         imageView_Avatar = findViewById(R.id.image_personal_avatar);
         txt_introduce = findViewById(R.id.txt_personal_introduce);
+        txt_personal_primary = findViewById(R.id.txt_personal_name_primary);
         //initialize dataservice
         dataService = ApiService.getService();
 
@@ -140,11 +143,17 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (user==null){
-                    handler.postDelayed(this,100);
-                    System.out.println("chua xong");
+                if (user != null){
+                    txt_personal_primary.setText(user.getUserName());
+                    input_name.setText(user.getUserName());
+                    input_gender.setText(user.getGender());
+                    input_yearOfBirth.setText(user.getBirthday());
+                    input_numberPhone.setText(user.getLocal().getPhone());
+                    input_address.setText(user.getAddress());
+                    Glide.with( Personal.this).load(user.getAvatar()).into(imageView_Avatar);
+                }else {
+                    handler.postDelayed(this, 500);
                 }
-                 System.out.println("hoàn thành"+user.toString());
             }
         },500);
     }
