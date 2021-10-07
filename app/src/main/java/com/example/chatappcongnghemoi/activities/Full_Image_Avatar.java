@@ -1,4 +1,4 @@
-package com.example.chatappcongnghemoi;
+package com.example.chatappcongnghemoi.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.chatappcongnghemoi.R;
 
 public class Full_Image_Avatar extends AppCompatActivity {
     private ImageView image_avatar;

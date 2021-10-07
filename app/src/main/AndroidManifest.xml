@@ -16,7 +16,10 @@
             android:name=".activities.ConfirmPassword"
             android:exported="true" />
         <activity
-            android:name=".Full_Image_Avatar"
+            android:name=".activities.SearchUser"
+            android:exported="true" />
+        <activity
+            android:name=".activities.Full_Image_Avatar"
             android:exported="true" />
         <activity
             android:name=".activities.SignUp_OTP"
@@ -39,17 +42,19 @@
         <activity
             android:name=".activities.Personal"
             android:exported="true" />
-        <activity android:name=".activities.Home" />
-        <activity android:name=".activities.SignUp_SDT" />
-        <activity android:name=".activities.SignUp" />
-        <activity android:name=".activities.StartApp" />
-        <activity android:name=".activities.Login" />
-        <activity android:name=".activities.MainActivity">
+        <activity android:name=".activities.Home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".activities.SignUp_SDT" />
+        <activity android:name=".activities.SignUp" />
+        <activity android:name=".activities.StartApp" />
+        <activity android:name=".activities.Login" />
+        <activity android:name=".activities.MainActivity">
+
         </activity>
 
         <meta-data

@@ -23,35 +23,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.chatappcongnghemoi.Full_Image_Avatar;
 import com.example.chatappcongnghemoi.R;
-import com.example.chatappcongnghemoi.models.Local;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
+import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.squareup.picasso.Picasso;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.PUT;
 
 public class Personal extends AppCompatActivity implements View.OnClickListener {
     private EditText input_name, input_email, input_gender, input_yearOfBirth, input_numberPhone, input_address;
     private BottomNavigationView bottomNavigationView;
     private Button btn_update_info;
     private CircleImageView imageView_Avatar;
-    private TextView txt_introduce, txt_personal_primary;
+    private TextView txt_introduce, txt_personal_primary, txt_search_user;
     private DataService dataService;
     private User user = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +65,7 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
         imageView_Avatar = findViewById(R.id.image_personal_avatar);
         txt_introduce = findViewById(R.id.txt_personal_introduce);
         txt_personal_primary = findViewById(R.id.txt_personal_name_primary);
+        txt_search_user = findViewById(R.id.input_personal_search);
         //initialize dataservice
         dataService = ApiService.getService();
 
@@ -141,7 +137,7 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                 startActivityForResult(intent, 1);
             }
         });
-        getUserById("6159c1f9bf628567ac523586");
+        getUserById(DataLoggedIn.userIdLoggedIn);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -159,6 +155,13 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                 }
             }
         },500);
+        // onclick search
+        txt_search_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Personal.this.startActivity(new Intent(Personal.this, SearchUser.class));
+            }
+        });
     }
 
     @Override

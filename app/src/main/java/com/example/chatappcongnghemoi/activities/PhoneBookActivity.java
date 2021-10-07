@@ -38,7 +38,7 @@ public class PhoneBookActivity extends AppCompatActivity {
     private TextView mTxtThongBao;
     private RecyclerView mRecyclerContact;
     private RecyclerView mRecyclerOnlineContact;
-    private TextView mTabGroup;
+    private TextView mTabGroup, txt_search_user;
     private ArrayList<String> friendIdList; //Id Friend User
     private ArrayList<User> friendList;
     private ContactRecyclerAdapter contactRecyclerAdapter;
@@ -72,6 +72,7 @@ public class PhoneBookActivity extends AppCompatActivity {
         mTxtThongBao = findViewById(R.id.actPhonebook_txtThongBao);
         lineFriendRequest = findViewById(R.id.actPhoneBook_friendReq);
         lineLoadPhoneBook = findViewById(R.id.actPhonebook_loadPhonebook);
+        txt_search_user = findViewById(R.id.txt_phonebook_search_user);
     }
 
     public void init() {
@@ -103,6 +104,13 @@ public class PhoneBookActivity extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), GroupActivity.class));
                 overridePendingTransition(0, 0);
+            }
+        });
+
+        txt_search_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), SearchUser.class));
             }
         });
 

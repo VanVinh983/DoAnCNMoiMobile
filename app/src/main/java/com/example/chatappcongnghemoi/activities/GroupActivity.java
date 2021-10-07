@@ -14,7 +14,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class GroupActivity extends AppCompatActivity {
 
-    private TextView mTabPhonebook;
+    private TextView mTabPhonebook, txt_search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +28,7 @@ public class GroupActivity extends AppCompatActivity {
 
     private void mapping() {
         mTabPhonebook = findViewById(R.id.actPhoneBook_tabPhoneBook);
+        txt_search = findViewById(R.id.txt_listgroup_search);
     }
 
     public void init(){
@@ -60,5 +61,12 @@ public class GroupActivity extends AppCompatActivity {
                 overridePendingTransition(0,0);
             }
         });
+        txt_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), SearchUser.class));
+            }
+        });
+
     }
 }

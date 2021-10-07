@@ -70,23 +70,13 @@
 
                     <TextView
                         android:id="@+id/input_personal_search"
-                        android:layout_width="wrap_content"
+                        android:layout_width="296dp"
                         android:layout_height="30dp"
                         android:layout_margin="10dp"
                         android:layout_weight="10"
-                        android:background="#FFFFFF"
                         android:text="Tìm kiếm bạn bè"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="20dp" />
-
-                    <ImageView
-                        android:id="@+id/btn_personal_addfriend"
-                        android:layout_width="40dp"
-                        android:layout_height="30dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_weight="1"
-                        app:srcCompat="@drawable/add_user_"
-                        app:tint="@color/white" />
 
                     <ImageView
                         android:id="@+id/input_personal_creategroundfriends"
