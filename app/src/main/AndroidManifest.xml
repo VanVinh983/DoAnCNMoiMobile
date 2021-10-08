@@ -18,6 +18,9 @@
             android:name=".activities.ConfirmPassword"
             android:exported="true" />
         <activity
+            android:name=".activities.Home"
+            android:exported="true" />
+        <activity
             android:name=".activities.SearchUser"
             android:exported="true" />
         <activity
