@@ -24,6 +24,9 @@ public interface DataService {
     @GET("users/{id}")
     Call<UserDTO> getUserById(@Path("id") String id);
 
+    @GET("users/searchPhone/{phone}")
+    Call<UserDTO> getUserByPhone(@Path("phone") String phone);
+
     @PUT("contacts/{id}")
     Call<PUT> updateContact(@Path("id") String id, @Body Contact contact);
 

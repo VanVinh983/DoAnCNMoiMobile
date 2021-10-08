@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.chatappcongnghemoi">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
@@ -34,7 +36,7 @@
             android:name=".activities.GroupActivity"
             android:exported="true" />
         <activity
-            android:name=".activities.PhoneBookActivity"
+            android:name=".activities.UserOfPhonebookActivity"
             android:exported="true" />
         <activity
             android:name=".activities.FriendRequestActivity"
@@ -42,7 +44,7 @@
         <activity
             android:name=".activities.Personal"
             android:exported="true" />
-        <activity android:name=".activities.Home">
+        <activity android:name=".activities.PhoneBookActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

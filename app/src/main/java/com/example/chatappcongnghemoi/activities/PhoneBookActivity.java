@@ -63,6 +63,13 @@ public class PhoneBookActivity extends AppCompatActivity {
             }
         });
 
+        lineLoadPhoneBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(PhoneBookActivity.this, UserOfPhonebookActivity.class));
+            }
+        });
+
     }
 
     private void mapping() {
