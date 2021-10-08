@@ -257,9 +257,11 @@ public class User implements Parcelable {
         dest.writeString(this.role);
         if (this.updatedAt != null)
             dest.writeLong(this.updatedAt);
-        if (this.updatedAt != null)
+        if (this.deletedAt != null)
             dest.writeLong(this.deletedAt);
+        if(this.createdAt != null)
         dest.writeLong(this.createdAt);
+        if(this.v != null)
         dest.writeInt(this.v);
     }
 }

@@ -27,6 +27,9 @@ public interface DataService {
     @PUT("contacts/{id}")
     Call<PUT> updateContact(@Path("id") String id, @Body Contact contact);
 
+    @POST("contacts")
+    Call<POST> postContact(@Body Contact contact);
+
     @DELETE("contacts/{id}")
     Call<DELETE> deteleContactById(@Path("id") String id);
 
@@ -35,5 +38,8 @@ public interface DataService {
 
     @GET("users/searchPhone/{phone}")
     Call<UserDTO> getUserByPhone(@Path("phone") String phone);
+
+    @GET("contacts/search/{userid}/{contactid}")
+    Call<ContactDTO> checkContact(@Path("userid") String userid, @Path("contactid") String contactid);
 
 }
