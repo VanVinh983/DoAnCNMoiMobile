@@ -23,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.activities.PersonalOfOthers;
 import com.example.chatappcongnghemoi.models.Contact;
 import com.example.chatappcongnghemoi.models.ContactDTO;
 import com.example.chatappcongnghemoi.models.User;
@@ -95,6 +96,15 @@ public class FirendRequestRecyclerAdapter extends RecyclerView.Adapter<FirendReq
                 Contact contact = contacts.get(0);
                 contact.setStatus(true);
                 putApi(contact.getId(), contact);
+            }
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, PersonalOfOthers.class);
+                intent.putExtra("user",user);
+                context.startActivity(intent);
             }
         });
     }

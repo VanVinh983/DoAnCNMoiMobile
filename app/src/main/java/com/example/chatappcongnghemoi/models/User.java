@@ -1,9 +1,14 @@
 package com.example.chatappcongnghemoi.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Parcelable {
 
     @SerializedName("local")
     @Expose
@@ -44,13 +49,11 @@ public class User {
 
     /**
      * No args constructor for use in serialization
-     *
      */
     public User() {
     }
 
     /**
-     *
      * @param birthday
      * @param createdAt
      * @param deletedAt
@@ -79,6 +82,49 @@ public class User {
         this.createdAt = createdAt;
         this.v = v;
     }
+
+    protected User(Parcel in) {
+        local = in.readParcelable(Local.class.getClassLoader());
+        id = in.readString();
+        userName = in.readString();
+        gender = in.readString();
+        birthday = in.readString();
+        address = in.readString();
+        avatar = in.readString();
+        role = in.readString();
+        if (in.readByte() == 0) {
+            updatedAt = null;
+        } else {
+            updatedAt = in.readLong();
+        }
+        if (in.readByte() == 0) {
+            deletedAt = null;
+        } else {
+            deletedAt = in.readLong();
+        }
+        if (in.readByte() == 0) {
+            createdAt = null;
+        } else {
+            createdAt = in.readLong();
+        }
+        if (in.readByte() == 0) {
+            v = null;
+        } else {
+            v = in.readInt();
+        }
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public Local getLocal() {
         return local;
@@ -192,5 +238,28 @@ public class User {
                 ", createdAt=" + createdAt +
                 ", v=" + v +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.local, flags);
+        dest.writeString(this.id);
+        dest.writeString(this.userName);
+        dest.writeString(this.gender);
+        dest.writeString(this.birthday);
+        dest.writeString(this.address);
+        dest.writeString(this.avatar);
+        dest.writeString(this.role);
+        if (this.updatedAt != null)
+            dest.writeLong(this.updatedAt);
+        if (this.updatedAt != null)
+            dest.writeLong(this.deletedAt);
+        dest.writeLong(this.createdAt);
+        dest.writeInt(this.v);
     }
 }
