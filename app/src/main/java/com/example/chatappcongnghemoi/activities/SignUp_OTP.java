@@ -14,6 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.models.Local;
+import com.example.chatappcongnghemoi.models.User;
+import com.example.chatappcongnghemoi.models.UserDTO;
+import com.example.chatappcongnghemoi.retrofit.ApiService;
+import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
@@ -29,13 +34,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class SignUp_OTP extends AppCompatActivity {
     ImageView imgBack;
     Button btnConfirm;
     EditText txtOTP;
     TextView tvResendOTP;
     FirebaseAuth auth;
-
+    DataService dataService;
     String phone,phone_number,mverificationId,username;
     PhoneAuthProvider.ForceResendingToken resendingToken;
     public static final  String TAG = SignUp_SDT.class.getName();
@@ -94,6 +103,7 @@ public class SignUp_OTP extends AppCompatActivity {
                             FirebaseUser user = task.getResult().getUser();
 
                             // Update UI
+                            createUser();
                             goToPassword(user.getPhoneNumber());
 
                         } else {
@@ -107,10 +117,30 @@ public class SignUp_OTP extends AppCompatActivity {
                     }
                 });
     }
+    private void createUser(){
+        dataService = ApiService.getService();
+        Local local = new Local(phone,"123456");
+        User user = new User(local,username);
+        Call<UserDTO> callback = dataService.createUser(user);
+        callback.enqueue(new Callback<UserDTO>() {
+            @Override
+            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                if(response.isSuccessful())
+                    Toast.makeText(SignUp_OTP.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(SignUp_OTP.this, "Đăng ký không thành công", Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onFailure(Call<UserDTO> call, Throwable t) {
+
+            }
+        });
+    }
     private void goToPassword(String phoneNumber) {
         // them user vao database set password = 123456 chuyển sang activity confirm password để đổi password
         Intent intent = new Intent(SignUp_OTP.this,ConfirmPassword.class);
+        intent.putExtra("phone",phone);
         startActivity(intent);
         finish();
     }

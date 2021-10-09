@@ -13,6 +13,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.models.User;
+import com.example.chatappcongnghemoi.models.UserDTO;
+import com.example.chatappcongnghemoi.retrofit.ApiService;
+import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
@@ -28,12 +32,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class SignUp_SDT extends AppCompatActivity {
 
     Button btnNext;
     EditText txtSDT;
     FirebaseAuth auth;
     ImageView imgBackSignUpSDT;
+    DataService dataService;
     public static final  String TAG = SignUp_SDT.class.getName();
     String username,phone;
     @Override
@@ -58,14 +67,25 @@ public class SignUp_SDT extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String sdt = txtSDT.getText().toString().trim();
-                //Lấy danh sách sđt nếu đã tồn tại thì chuyển sang activity thông bào tồn tại
-//                if(sdt.matches("^0[0-9]{8,10}")) {
-//                    String sdtOTP = "+84"+sdt.substring(1);
-                    sendOTP("+84"+sdt.substring(1));
-//                Toast.makeText(SignUp_SDT.this, "+84"+sdt.substring(1), Toast.LENGTH_SHORT).show();
-                //             }
-//                else
-//                    Toast.makeText(SignUp_SDT.this, "Số điện thoại không hợp lệ", Toast.LENGTH_SHORT).show();
+//                dataService = ApiService.getService();
+//                Call<UserDTO> callback = dataService.getUserByPhone(sdt);
+//                callback.enqueue(new Callback<UserDTO>() {
+//                    @Override
+//                    public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+//                        if(response.isSuccessful()){
+//                            User user = response.body().getUser();
+//                            if(user == null){
+                                sendOTP("+84"+sdt.substring(1));
+//                            }else{
+//                                Toast.makeText(SignUp_SDT.this, "Fail", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<UserDTO> call, Throwable t) {
+//                    }
+//                });
             }
         });
     }

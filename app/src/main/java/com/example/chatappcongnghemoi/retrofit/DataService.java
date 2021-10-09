@@ -42,4 +42,7 @@ public interface DataService {
     @GET("contacts/search/{userid}/{contactid}")
     Call<ContactDTO> checkContact(@Path("userid") String userid, @Path("contactid") String contactid);
 
+    @POST("users/")
+    Call<UserDTO> createUser(@Body User user);
+
 }

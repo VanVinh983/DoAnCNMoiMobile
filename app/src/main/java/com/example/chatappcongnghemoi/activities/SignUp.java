@@ -11,12 +11,22 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.models.Local;
+import com.example.chatappcongnghemoi.models.User;
+import com.example.chatappcongnghemoi.models.UserDTO;
+import com.example.chatappcongnghemoi.retrofit.ApiService;
+import com.example.chatappcongnghemoi.retrofit.DataService;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SignUp extends AppCompatActivity {
 
     EditText txtUsername;
     Button btnNext,btnLogin;
     ImageView btnBack;
+    private DataService dataService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

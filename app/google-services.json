@@ -1,99 +1,33 @@
 {
   "project_info": {
-    "project_number": "387003373319",
-    "project_id": "phanvanthong-aa846",
-    "storage_bucket": "phanvanthong-aa846.appspot.com"
+    "project_number": "747159189106",
+    "project_id": "phanvanthong-c596e",
+    "storage_bucket": "phanvanthong-c596e.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:387003373319:android:bbbd11fd9261e081c997a2",
+        "mobilesdk_app_id": "1:747159189106:android:c48d63f3e3048be22434eb",
         "android_client_info": {
           "package_name": "com.example.chatappcongnghemoi"
         }
       },
       "oauth_client": [
         {
-          "client_id": "387003373319-qh44qk8qc0i81218cm4lbh53ak9bksof.apps.googleusercontent.com",
+          "client_id": "747159189106-5pnvf9l5t69n10nfmidc9jp51r9q8ac8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDYWZY669Ki0yvHqggqRLsn00W3saYYH-o"
+          "current_key": "AIzaSyBZ7uQV03krfkY9--bY0Qz1wCXjxX2XpUY"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "387003373319-qh44qk8qc0i81218cm4lbh53ak9bksof.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:387003373319:android:52018b6887e99d8fc997a2",
-        "android_client_info": {
-          "package_name": "com.example.phanvanthong_firebase"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "387003373319-qh44qk8qc0i81218cm4lbh53ak9bksof.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDYWZY669Ki0yvHqggqRLsn00W3saYYH-o"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "387003373319-qh44qk8qc0i81218cm4lbh53ak9bksof.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:387003373319:android:f12f2d43205eb044c997a2",
-        "android_client_info": {
-          "package_name": "com.example.sendotp"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "387003373319-o4f4iuqp7pg3619te10ujrkgphk4cngs.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.sendotp",
-            "certificate_hash": "8acba81545dcd4a47e3b386134deff201a5f2130"
-          }
-        },
-        {
-          "client_id": "387003373319-qh44qk8qc0i81218cm4lbh53ak9bksof.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDYWZY669Ki0yvHqggqRLsn00W3saYYH-o"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "387003373319-qh44qk8qc0i81218cm4lbh53ak9bksof.apps.googleusercontent.com",
+              "client_id": "747159189106-5pnvf9l5t69n10nfmidc9jp51r9q8ac8.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

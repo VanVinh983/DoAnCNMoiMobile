@@ -83,6 +83,11 @@ public class User implements Parcelable {
         this.v = v;
     }
 
+    public User(Local local, String userName) {
+        this.local = local;
+        this.userName = userName;
+    }
+
     protected User(Parcel in) {
         local = in.readParcelable(Local.class.getClassLoader());
         id = in.readString();
