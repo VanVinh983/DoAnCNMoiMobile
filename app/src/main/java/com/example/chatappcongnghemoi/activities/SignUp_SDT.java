@@ -67,25 +67,25 @@ public class SignUp_SDT extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String sdt = txtSDT.getText().toString().trim();
-//                dataService = ApiService.getService();
-//                Call<UserDTO> callback = dataService.getUserByPhone(sdt);
-//                callback.enqueue(new Callback<UserDTO>() {
-//                    @Override
-//                    public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
-//                        if(response.isSuccessful()){
-//                            User user = response.body().getUser();
-//                            if(user == null){
+                dataService = ApiService.getService();
+                Call<UserDTO> callback = dataService.getUserByPhone(sdt);
+                callback.enqueue(new Callback<UserDTO>() {
+                    @Override
+                    public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                        if(response.isSuccessful()){
+                            User user = response.body().getUser();
+                            if(user == null){
                                 sendOTP("+84"+sdt.substring(1));
-//                            }else{
-//                                Toast.makeText(SignUp_SDT.this, "Fail", Toast.LENGTH_SHORT).show();
-//                            }
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<UserDTO> call, Throwable t) {
-//                    }
-//                });
+                            }else{
+                                Toast.makeText(SignUp_SDT.this, "Số điện thoại đã đăng ký tài khoản", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserDTO> call, Throwable t) {
+                    }
+                });
             }
         });
     }
