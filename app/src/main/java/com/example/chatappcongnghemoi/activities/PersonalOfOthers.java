@@ -84,7 +84,8 @@ public class PersonalOfOthers extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                finish();
+                startActivity(new Intent(PersonalOfOthers.this, PhoneBookActivity.class));
             }
         });
 
@@ -96,20 +97,20 @@ public class PersonalOfOthers extends AppCompatActivity {
         contact.setReceiverId(user.getId());
         contact.setStatus(false);
 
-        Call<POST> callback = dataService.postContact(contact);
-        callback.enqueue(new Callback<POST>() {
+        Call<ContactDTO> callback = dataService.postContact(contact);
+        callback.enqueue(new Callback<ContactDTO>() {
             @Override
-            public void onResponse(Call<POST> call, Response<POST> response) {
-
+            public void onResponse(Call<ContactDTO> call, Response<ContactDTO> response) {
+                Toast.makeText(PersonalOfOthers.this, "Gửi lời mời kết bạn thành công", Toast.LENGTH_SHORT).show();
+                restartActivity(PersonalOfOthers.this);
             }
 
             @Override
-            public void onFailure(Call<POST> call, Throwable t) {
-
+            public void onFailure(Call<ContactDTO> call, Throwable t) {
+                t.printStackTrace();
             }
         });
-        Toast.makeText(PersonalOfOthers.this, "Gửi lời mời kết bạn thành công", Toast.LENGTH_SHORT).show();
-        restartActivity(PersonalOfOthers.this);
+
     }
 
     private void deleteContact() {
@@ -134,20 +135,19 @@ public class PersonalOfOthers extends AppCompatActivity {
 
     private void deleteApi(String id) {
         DataService dataService = ApiService.getService();
-        Call<DELETE> callback = dataService.deteleContactById(id);
-        callback.enqueue(new Callback<DELETE>() {
+        Call<String> callback = dataService.deteleContactById(id);
+        callback.enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<DELETE> call, Response<DELETE> response) {
-
+            public void onResponse(Call<String> call, Response<String> response) {
+                Toast.makeText(PersonalOfOthers.this, "Xóa bạn bè thành công", Toast.LENGTH_SHORT).show();
+                restartActivity(PersonalOfOthers.this);
             }
 
             @Override
-            public void onFailure(Call<DELETE> call, Throwable t) {
+            public void onFailure(Call<String> call, Throwable t) {
                 t.printStackTrace();
             }
         });
-        Toast.makeText(PersonalOfOthers.this, "Xóa bạn bè thành công", Toast.LENGTH_SHORT).show();
-        restartActivity(PersonalOfOthers.this);
     }
 
 

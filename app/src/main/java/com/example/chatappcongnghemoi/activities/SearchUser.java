@@ -59,6 +59,7 @@ public class SearchUser extends AppCompatActivity {
                             searchUserAdapter = new SearchUserAdapter(list, SearchUser.this);
                             recyclerView.setAdapter(searchUserAdapter);
                             recyclerView.setLayoutManager(new LinearLayoutManager(SearchUser.this));
+                            handler.removeCallbacks(this);
                         }
                     }
                 },500);

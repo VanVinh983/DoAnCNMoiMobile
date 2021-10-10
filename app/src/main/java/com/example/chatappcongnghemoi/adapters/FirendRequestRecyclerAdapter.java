@@ -130,39 +130,37 @@ public class FirendRequestRecyclerAdapter extends RecyclerView.Adapter<FirendReq
 
     private void putApi(String id, Contact contact) {
         DataService dataService = ApiService.getService();
-        Call<PUT> callback = dataService.updateContact(id, contact);
-        callback.enqueue(new Callback<PUT>() {
+        Call<String> callback = dataService.updateContact(id, contact);
+        callback.enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<PUT> call, retrofit2.Response<PUT> response) {
+            public void onResponse(Call<String> call, Response<String> response) {
+                Toast.makeText(context, "Thêm bạn thành công", Toast.LENGTH_SHORT).show();
+                restartActivity((Activity) context);
             }
 
             @Override
-            public void onFailure(Call<PUT> call, Throwable t) {
+            public void onFailure(Call<String> call, Throwable t) {
                 t.printStackTrace();
             }
         });
-
-        Toast.makeText(context, "Thêm bạn thành công", Toast.LENGTH_SHORT).show();
-        restartActivity((Activity) context);
-
     }
 
     private void deleteApi(String id) {
         DataService dataService = ApiService.getService();
-        Call<DELETE> callback = dataService.deteleContactById(id);
-        callback.enqueue(new Callback<DELETE>() {
+        Call<String> callback = dataService.deteleContactById(id);
+        callback.enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<DELETE> call, Response<DELETE> response) {
+            public void onResponse(Call<String> call, Response<String> response) {
+
+                Toast.makeText(context, "Xóa yêu cầu kết bạn thành công", Toast.LENGTH_SHORT).show();
+                restartActivity((Activity) context);
             }
 
             @Override
-            public void onFailure(Call<DELETE> call, Throwable t) {
-                t.printStackTrace();
+            public void onFailure(Call<String> call, Throwable t) {
+
             }
         });
-
-        Toast.makeText(context, "Xóa yêu cầu kết bạn thành công", Toast.LENGTH_SHORT).show();
-        restartActivity((Activity) context);
     }
 
     public void restartActivity(Activity act) {

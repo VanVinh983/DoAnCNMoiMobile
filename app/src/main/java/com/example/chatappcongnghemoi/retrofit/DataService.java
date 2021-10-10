@@ -25,13 +25,13 @@ public interface DataService {
     Call<UserDTO> getUserById(@Path("id") String id);
 
     @PUT("contacts/{id}")
-    Call<PUT> updateContact(@Path("id") String id, @Body Contact contact);
+    Call<String> updateContact(@Path("id") String id, @Body Contact contact);
 
     @POST("contacts")
-    Call<POST> postContact(@Body Contact contact);
+    Call<ContactDTO> postContact(@Body Contact contact);
 
     @DELETE("contacts/{id}")
-    Call<DELETE> deteleContactById(@Path("id") String id);
+    Call<String> deteleContactById(@Path("id") String id);
 
     @PUT("users/{id}")
     Call<UserDTO> updateUser(@Path("id") String id, @Body User user);

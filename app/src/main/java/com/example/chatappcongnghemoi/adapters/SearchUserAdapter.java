@@ -1,6 +1,7 @@
 package com.example.chatappcongnghemoi.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.activities.PersonalOfOthers;
 import com.example.chatappcongnghemoi.models.User;
 
 import java.util.List;
@@ -41,6 +43,15 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.Vi
         User user = users.get(position);
         Glide.with(context).load(user.getAvatar()).into(holder.image_avatar);
         holder.txt_name.setText(user.getUserName());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, PersonalOfOthers.class);
+                intent.putExtra("user", user);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
