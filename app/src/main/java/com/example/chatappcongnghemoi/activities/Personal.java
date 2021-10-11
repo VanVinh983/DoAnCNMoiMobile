@@ -7,10 +7,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +35,11 @@ import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Calendar;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -46,13 +54,13 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
     private TextView txt_introduce, txt_personal_primary, txt_search_user;
     private DataService dataService;
     private User user = null;
-
+    private int RESULT_LOAD_IMAGE = 1024;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal);
         getSupportActionBar().hide();
-
+        new AmplifyInitialize(Personal.this).amplifyInitialize();
         //initialize variable
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         input_name = findViewById(R.id.input_personal_name);
@@ -223,18 +231,48 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                  Personal.this.startActivity(intent);
              }
          });
+
+         Button btn_choose_image_form_device = dialog.findViewById(R.id.btn_dialog_avatar_choose_device);
+         btn_choose_image_form_device.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 Intent i = new Intent(
+                         Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                  Personal.this.startActivityForResult(i, RESULT_LOAD_IMAGE);
+                  dialog.dismiss();
+             }
+         });
+
          dialog.show();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1){
-            if (resultCode == RESULT_OK){
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
                 String result = data.getStringExtra("result");
-                if (!result.equals("")){
+                if (!result.equals("")) {
                     txt_introduce.setText(result);
                 }
+            }
+        }
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null){
+            Uri selectedImage = data.getData();
+            File file1 = new File(getPath(selectedImage));
+            try {
+                InputStream exampleInputStream = getContentResolver().openInputStream(selectedImage);
+                com.amplifyframework.core.Amplify.Storage.uploadInputStream(
+                        user.getId()+file1.getName(),
+                        exampleInputStream,
+                        result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
+                        storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
+                );
+                String url = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/"+user.getId()+file1.getName();
+                updateImage(url);
+                Glide.with(Personal.this).load(url).into(imageView_Avatar);
+            }  catch ( FileNotFoundException error) {
+                Log.e("MyAmplifyApp", "Could not find file to open for input stream.", error);
             }
         }
     }
@@ -271,5 +309,32 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                 System.err.println("Fail Put User "+ t.getMessage().toString());
            }
        });
+    }
+
+    private void updateImage(String url){
+        user.setAvatar(url);
+        Call<UserDTO> putCall = dataService.updateUser(user.getId(), user);
+        putCall.enqueue(new Callback<UserDTO>() {
+            @Override
+            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                Toast.makeText(Personal.this, "Đã cập nhật AVATAR mới!", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call<UserDTO> call, Throwable t) {
+                System.err.println("Fail Put User "+ t.getMessage().toString());
+            }
+        });
+    }
+    private String getPath(Uri uri)
+    {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if (cursor == null) return null;
+        int column_index =             cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String s=cursor.getString(column_index);
+        cursor.close();
+        return s;
     }
 }
