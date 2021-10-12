@@ -1,0 +1,73 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-appdidong-dev-152130-authRole",
+      "UnauthRoleArn": "arn:aws:iam::716906208899:role/amplify-appdidong-dev-152130-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::716906208899:role/amplify-appdidong-dev-152130-authRole",
+      "Region": "ap-southeast-1",
+      "DeploymentBucketName": "amplify-appdidong-dev-152130-deployment",
+      "UnauthRoleName": "amplify-appdidong-dev-152130-unauthRole",
+      "StackName": "amplify-appdidong-dev-152130",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:716906208899:stack/amplify-appdidong-dev-152130/3ef2b210-2a6c-11ec-bbb4-0ab38c969442",
+      "AmplifyAppId": "d93rd61cpg56a"
+    }
+  },
+  "auth": {
+    "appdidonge65b5abb": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false,
+      "frontendAuthConfig": {
+        "loginMechanisms": [
+          "PREFERRED_USERNAME"
+        ],
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": []
+        },
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-appdidong-dev-152130-deployment/amplify-cfn-templates/auth/appdidonge65b5abb-cloudformation-template.yml",
+        "logicalId": "authappdidonge65b5abb"
+      },
+      "lastPushTimeStamp": "2021-10-11T08:27:56.052Z",
+      "output": {
+        "UserPoolId": "ap-southeast-1_TsPLYbzot",
+        "AppClientIDWeb": "7ufb67g4am7btos6m851m9mvrl",
+        "AppClientID": "47gp0sjekrt3jbqaq6cm39c5m0",
+        "IdentityPoolId": "ap-southeast-1:9dbed029-f6b4-4544-b7a8-15d3336f0184",
+        "UserPoolArn": "arn:aws:cognito-idp:ap-southeast-1:716906208899:userpool/ap-southeast-1_TsPLYbzot",
+        "IdentityPoolName": "appdidonge65b5abb_identitypool_e65b5abb__dev",
+        "UserPoolName": "appdidonge65b5abb_userpool_e65b5abb"
+      },
+      "lastPushDirHash": "hGWc4w/cQ6RsixeOgr1urCt6OG4="
+    }
+  },
+  "storage": {
+    "S3friendlyName": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-appdidong-dev-152130-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
+        "logicalId": "storageS3friendlyName"
+      },
+      "lastPushTimeStamp": "2021-10-11T08:27:56.052Z",
+      "output": {
+        "BucketName": "stores3appchatmobile152130-dev",
+        "Region": "ap-southeast-1"
+      },
+      "lastPushDirHash": "r2neusJeLINW4JvoW19YQR4JNxY="
+    }
+  }
+}
