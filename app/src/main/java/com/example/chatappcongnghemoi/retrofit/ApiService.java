@@ -2,7 +2,7 @@ package com.example.chatappcongnghemoi.retrofit;
 
 public class ApiService {
     private static final String  BASE_URL_LIEM = "http://192.168.56.1:5000/";
-    private static final String  BASE_URL_VINH = "http://192.168.1.7:4000/";
+    private static final String  BASE_URL_VINH = "http://192.168.1.4:4000/";
     private static final String BASE_URL_THONG = "http://192.168.1.7:4000/";
 
     public static DataService getService(){
