@@ -187,38 +187,38 @@
                         tools:ignore="TouchTargetSizeCheck" />
                 </TableRow>
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+<!--                <TableRow-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent">-->
 
-                    <TextView
-                        android:id="@+id/personal_friend_textView19"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal|left"
-                        android:padding="10dp"
-                        android:text="Email"
-                        android:textColor="#000000"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/personal_friend_textView19"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:gravity="center_horizontal|left"-->
+<!--                        android:padding="10dp"-->
+<!--                        android:text="Email"-->
+<!--                        android:textColor="#000000"-->
+<!--                        android:textSize="20sp"-->
+<!--                        android:textStyle="bold" />-->
 
-                    <EditText
-                        android:id="@+id/input_personal_friend_email"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="#007C5656"
-                        android:ems="10"
-                        android:gravity="center_horizontal|left"
-                        android:hint="email"
-                        android:inputType="textMultiLine"
-                        android:padding="10dp"
-                        android:textColor="#494848"
-                        android:textSize="20sp"
-                        tools:ignore="TouchTargetSizeCheck" />
+<!--                    <EditText-->
+<!--                        android:id="@+id/input_personal_friend_email"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:background="#007C5656"-->
+<!--                        android:ems="10"-->
+<!--                        android:gravity="center_horizontal|left"-->
+<!--                        android:hint="email"-->
+<!--                        android:inputType="textMultiLine"-->
+<!--                        android:padding="10dp"-->
+<!--                        android:textColor="#494848"-->
+<!--                        android:textSize="20sp"-->
+<!--                        tools:ignore="TouchTargetSizeCheck" />-->
 
-                </TableRow>
+<!--                </TableRow>-->
 
                 <TableRow
                     android:layout_width="match_parent"

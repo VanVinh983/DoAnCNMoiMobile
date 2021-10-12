@@ -28,6 +28,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -41,6 +42,7 @@ public class PhoneBookActivity extends AppCompatActivity {
     private TextView mTabGroup, txt_search_user;
     private ArrayList<String> friendIdList; //Id Friend User
     private ArrayList<User> friendList;
+    private ArrayList<User> onlineFriendList;
     private ContactRecyclerAdapter contactRecyclerAdapter;
     private OnlineContactRecyclerAdapter onlineContactRecyclerAdapter;
     private LinearLayout lineFriendRequest;
@@ -67,6 +69,21 @@ public class PhoneBookActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(PhoneBookActivity.this, UserOfPhonebookActivity.class));
+            }
+        });
+
+        mTxtThongBao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mTxtThongBao.getText().toString().equals("Xem thêm...")){
+                    onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, onlineFriendList);
+                    mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
+                    mTxtThongBao.setText("Thu gọn");
+                }else if(mTxtThongBao.getText().toString().equals("Thu gọn")){
+                    onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, new ArrayList<>(onlineFriendList.subList(0,3)));
+                    mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
+                    mTxtThongBao.setText("Xem thêm...");
+                }
             }
         });
 
@@ -148,8 +165,8 @@ public class PhoneBookActivity extends AppCompatActivity {
             public void onResponse(Call<ContactList> call, retrofit2.Response<ContactList> response) {
                 ArrayList<Contact> contacts = response.body().getContacts();
                 friendIdList = new ArrayList<>();
-                for (int i = 0; i < contacts.size(); i++){
-                Contact contact = contacts.get(i);
+                for (int i = 0; i < contacts.size(); i++) {
+                    Contact contact = contacts.get(i);
                     if (contact.getSenderId().equals(DataLoggedIn.userIdLoggedIn) && contact.getStatus()) {
                         friendIdList.add(contact.getReceiverId());
                     } else if (contact.getReceiverId().equals(DataLoggedIn.userIdLoggedIn) && contact.getStatus()) {
@@ -212,16 +229,25 @@ public class PhoneBookActivity extends AppCompatActivity {
     }
 
     public void getOnlineFriendList() {
-        if (friendList.size() > 3) {
-            onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, new ArrayList<User>(friendList.subList(0, 3)));
-            mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
-            mTxtThongBao.setText("Xem thêm...");
-        } else if (friendList.size() <= 3 && friendList.size() > 0) {
-            onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, friendList);
-            mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
-        } else {
-            mTxtThongBao.setText("Không có bạn bè đang online");
+        onlineFriendList = new ArrayList<>();
+        if (friendList != null && friendList.size() > 0) {
+            friendList.forEach(user -> {
+                if (user.isOnline())
+                    onlineFriendList.add(user);
+            });
+
+            if (onlineFriendList.size() > 3) {
+                onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, new ArrayList<>(onlineFriendList.subList(0,3)));
+                mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
+                mTxtThongBao.setText("Xem thêm...");
+            } else if (onlineFriendList.size() <= 3 && onlineFriendList.size() > 0) {
+                onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, onlineFriendList);
+                mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
+            } else {
+                mTxtThongBao.setText("Không có bạn bè đang online");
+            }
         }
+
     }
 
 }

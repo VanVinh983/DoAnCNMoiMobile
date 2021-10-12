@@ -47,28 +47,26 @@ public class User implements Parcelable {
     @Expose
     private Integer v;
 
+    @SerializedName("isOnline")
+    @Expose
+    private boolean isOnline;
+
+    @SerializedName("description")
+    @Expose
+    private String description;
+
+    @SerializedName("background")
+    @Expose
+    private String background;
+
+
     /**
      * No args constructor for use in serialization
      */
     public User() {
     }
 
-    /**
-     * @param birthday
-     * @param createdAt
-     * @param deletedAt
-     * @param address
-     * @param role
-     * @param gender
-     * @param v
-     * @param id
-     * @param avatar
-     * @param userName
-     * @param local
-     * @param updatedAt
-     */
-    public User(Local local, String id, String userName, String gender, String birthday, String address, String avatar, String role, Long updatedAt, Long deletedAt, Long createdAt, Integer v) {
-        super();
+    public User(Local local, String id, String userName, String gender, String birthday, String address, String avatar, String role, Long updatedAt, Long deletedAt, Long createdAt, Integer v, boolean isOnline, String description, String background) {
         this.local = local;
         this.id = id;
         this.userName = userName;
@@ -81,6 +79,33 @@ public class User implements Parcelable {
         this.deletedAt = deletedAt;
         this.createdAt = createdAt;
         this.v = v;
+        this.isOnline = isOnline;
+        this.description = description;
+        this.background = background;
+    }
+
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
+    }
+
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public void setOnline(boolean online) {
+        isOnline = online;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public User(Local local, String userName) {
@@ -97,6 +122,8 @@ public class User implements Parcelable {
         address = in.readString();
         avatar = in.readString();
         role = in.readString();
+        description = in.readString();
+        background = in.readString();
         if (in.readByte() == 0) {
             updatedAt = null;
         } else {

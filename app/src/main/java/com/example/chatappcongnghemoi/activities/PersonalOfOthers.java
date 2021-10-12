@@ -31,7 +31,7 @@ import retrofit2.http.POST;
 public class PersonalOfOthers extends AppCompatActivity {
 
     private CircleImageView imgAvatar;
-    private TextView txtMainUserName, txtUserName, txtEmail, txtBirth, txtGender, txtPhone, txtAddress;
+    private TextView txtMainUserName, txtUserName, txtBirth, txtGender, txtPhone, txtAddress;
     private Button btnBack, btnAddFriend;
 
     private User user;
@@ -46,7 +46,6 @@ public class PersonalOfOthers extends AppCompatActivity {
         imgAvatar = findViewById(R.id.personal_friend_image_personal_avatar);
         txtMainUserName = findViewById(R.id.txt_personal_friend_name_primary);
         txtUserName = findViewById(R.id.input_personal_friend_name);
-        txtEmail = findViewById(R.id.input_personal_friend_email);
         txtBirth = findViewById(R.id.input_personal_friend_yearOfBirth);
         txtGender = findViewById(R.id.input_personal_friend_gender);
         txtPhone = findViewById(R.id.input_personal_friend_numberphone);
