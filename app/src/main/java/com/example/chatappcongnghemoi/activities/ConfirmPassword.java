@@ -57,8 +57,12 @@ public class ConfirmPassword extends AppCompatActivity {
                                     callbackUpdatePassword.enqueue(new Callback<UserDTO>() {
                                         @Override
                                         public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
-                                            if(response.isSuccessful())
+                                            if(response.isSuccessful()) {
                                                 Toast.makeText(ConfirmPassword.this, "Cập nhật mật khẩu thành công", Toast.LENGTH_SHORT).show();
+                                                Intent intent_Login = new Intent(ConfirmPassword.this,Login.class);
+                                                startActivity(intent_Login);
+                                                finish();
+                                            }
                                         }
 
                                         @Override
@@ -82,5 +86,4 @@ public class ConfirmPassword extends AppCompatActivity {
             }
         });
     }
-
 }

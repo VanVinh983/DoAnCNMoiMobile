@@ -8,13 +8,17 @@
         <entry key="..\:/Code/Mobile/DoAnCNMoiMobile/app/src/main/res/drawable/ic_video_call.xml" value="0.1935185185185185" />
         <entry key="..\:/Code/Mobile/DoAnCNMoiMobile/app/src/main/res/layout/activity_phonebook.xml" value="0.2" />
         <entry key="..\:/Code/Mobile/DoAnCNMoiMobile/app/src/main/res/layout/item_contact.xml" value="0.25" />
+        <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/drawable/ic_video_call.xml" value="0.2703125" />
+        <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/drawable/user.xml" value="0.2703125" />
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/layout/activity_confirm_password.xml" value="0.25416666666666665" />
+        <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/layout/activity_home.xml" value="0.4" />
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/layout/activity_login.xml" value="0.264" />
-        <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/layout/activity_personal.xml" value="0.17300724637681159" />
+        <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/layout/activity_personal.xml" value="0.264" />
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/layout/activity_sign_up.xml" value="0.264" />
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/layout/activity_sign_up_otp.xml" value="0.264" />
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/layout/activity_sign_up_sdt.xml" value="0.25416666666666665" />
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/layout/activity_update_infomation_of_user.xml" value="0.25416666666666665" />
+        <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/layout/dialog_logout.xml" value="0.4" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/drawable/background_underline.xml" value="0.20260416666666667" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/drawable/bg_button.xml" value="0.20260416666666667" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/drawable/ic_close.xml" value="0.20260416666666667" />

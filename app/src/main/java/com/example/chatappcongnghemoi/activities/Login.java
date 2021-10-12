@@ -3,6 +3,7 @@ package com.example.chatappcongnghemoi.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
+import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 
 import retrofit2.Call;
@@ -27,6 +29,7 @@ public class Login extends AppCompatActivity {
     TextView tvForgetPassword;
     EditText txtSDT,txtPassword;
     DataService dataService;
+    public static  final String SHARED_PREFERENCES= "saveID";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +41,7 @@ public class Login extends AppCompatActivity {
         tvForgetPassword = findViewById(R.id.tvForgetPassword);
         txtSDT = findViewById(R.id.txtSDT_Login);
         txtPassword = findViewById(R.id.txtPassword_Login);
+        autoLogin();
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +80,11 @@ public class Login extends AppCompatActivity {
                                         Toast.makeText(Login.this, "Vui lòng kiểm tra lại số điện thoại", Toast.LENGTH_SHORT).show();
                                     else{
                                         if(password.equals(user.getLocal().getPassword())){
-                                            Toast.makeText(Login.this, "Ok", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(Login.this,Home.class);
+                                            user.setOnline(true);
+                                            saveID(user.getId());
+                                            startActivity(intent);
+                                            finish();
                                         }else
                                             Toast.makeText(Login.this, "Mật khẩu không hợp lệ", Toast.LENGTH_SHORT).show();
                                     }
@@ -93,5 +101,22 @@ public class Login extends AppCompatActivity {
             }
         });
 
+    }
+    public void saveID(String id){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES,MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("userId",id);
+        editor.apply();
+    }
+    public void autoLogin(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES,MODE_PRIVATE);
+        DataLoggedIn.userIdLoggedIn = sharedPreferences.getString("userId","");
+        if(DataLoggedIn.userIdLoggedIn.equals(""))
+            return;
+        else{
+            Intent intent = new Intent(Login.this,Home.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }
