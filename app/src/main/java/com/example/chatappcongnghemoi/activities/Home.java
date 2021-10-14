@@ -96,7 +96,7 @@ public class Home extends AppCompatActivity {
                     public void onClick(View v) {
                         saveIDLogout();
                         dialog.dismiss();
-                        Intent intent = new Intent(Home.this,Login.class);
+                        Intent intent = new Intent(Home.this,StartApp.class);
                         startActivity(intent);
                         finish();
                     }

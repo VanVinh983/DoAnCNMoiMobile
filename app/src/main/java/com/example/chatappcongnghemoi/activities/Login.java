@@ -42,6 +42,14 @@ public class Login extends AppCompatActivity {
         txtSDT = findViewById(R.id.txtSDT_Login);
         txtPassword = findViewById(R.id.txtPassword_Login);
         autoLogin();
+        tvForgetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Login.this,ForgetPassword.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

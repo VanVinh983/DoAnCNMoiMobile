@@ -5,7 +5,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -16,11 +16,17 @@
         android:theme="@style/Theme.ChatAppCongNgheMoi"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activities.ForgetPassword_OTP"
+            android:exported="true" />
+        <activity
+            android:name=".activities.ForgetPassword"
+            android:exported="true" />
+        <activity
             android:name=".activities.ConfirmPassword"
             android:exported="true" />
         <activity
             android:name=".activities.Login"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -54,15 +60,12 @@
         <activity
             android:name=".activities.MainActivity"
             android:exported="true" />
-        <activity android:name=".activities.Home">
-
-        </activity>
+        <activity android:name=".activities.Home" />
         <activity android:name=".activities.SignUp" />
         <activity android:name=".activities.SignUp_SDT" />
         <activity android:name=".activities.PhoneBookActivity" />
-        <activity android:name=".activities.StartApp" />
-<!--        <activity android:name=".activities.Login" />-->
-        <activity android:name=".activities.Personal"/>
+        <activity android:name=".activities.StartApp" /> <!-- <activity android:name=".activities.Login" /> -->
+        <activity android:name=".activities.Personal" />
 
         <meta-data
             android:name="preloaded_fonts"
