@@ -40,6 +40,7 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecycler
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         User user = users.get(position);
+        if(user.getAvatar()!=null)
         Picasso.get().load(user.getAvatar()).into(holder.avatar);
         holder.txtName.setText(user.getUserName());
 

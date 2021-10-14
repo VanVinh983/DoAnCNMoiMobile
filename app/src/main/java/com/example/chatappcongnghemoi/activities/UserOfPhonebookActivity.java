@@ -70,12 +70,12 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(flag){
+                if (flag) {
                     adapter = new ContactRecyclerAdapter(UserOfPhonebookActivity.this, userList);
                     recyclerView.setLayoutManager(new LinearLayoutManager(UserOfPhonebookActivity.this));
                     recyclerView.setAdapter(adapter);
                     handler.removeCallbacks(this);
-                }else{
+                } else {
                     handler.postDelayed(this, 500);
                 }
             }
@@ -99,7 +99,8 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
                         User user = response.body().getUser();
-                        userList.add(user);
+                        if (user != null)
+                            userList.add(user);
                     }
 
                     @Override
