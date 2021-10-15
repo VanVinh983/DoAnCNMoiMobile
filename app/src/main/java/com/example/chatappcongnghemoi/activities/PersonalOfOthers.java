@@ -92,7 +92,7 @@ public class PersonalOfOthers extends AppCompatActivity {
 
     private void postContact() {
         Contact contact = new Contact();
-        contact.setSenderId(DataLoggedIn.userIdLoggedIn);
+        contact.setSenderId(new DataLoggedIn(this).getUserIdLoggedIn());
         contact.setReceiverId(user.getId());
         contact.setStatus(false);
 
@@ -151,7 +151,7 @@ public class PersonalOfOthers extends AppCompatActivity {
 
 
     private void checkFriend() {
-        Call<ContactDTO> callback = dataService.checkContact(DataLoggedIn.userIdLoggedIn, user.getId());
+        Call<ContactDTO> callback = dataService.checkContact(new DataLoggedIn(this).getUserIdLoggedIn(), user.getId());
         callback.enqueue(new Callback<ContactDTO>() {
             @Override
             public void onResponse(Call<ContactDTO> call, Response<ContactDTO> response) {

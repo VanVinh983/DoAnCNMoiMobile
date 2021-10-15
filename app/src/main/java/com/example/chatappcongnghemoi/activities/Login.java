@@ -118,8 +118,8 @@ public class Login extends AppCompatActivity {
     }
     public void autoLogin(){
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES,MODE_PRIVATE);
-        DataLoggedIn.userIdLoggedIn = sharedPreferences.getString("userId","");
-        if(DataLoggedIn.userIdLoggedIn.equals(""))
+        String id = sharedPreferences.getString("userId","");
+        if(id.equals(""))
             return;
         else{
             Intent intent = new Intent(Login.this,Home.class);

@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -52,6 +54,13 @@ public class Home extends AppCompatActivity {
                 return false;
             }
         });
+
+//        SharedPreferences sharedPreferences = getSharedPreferences("saveID", MODE_PRIVATE);
+//        String id = sharedPreferences.getString("userId","");
+//        if (!id.equals("")){
+//            Log.d("tag","Preferences is: "+ id);
+//            Log.d("tag", "ID: "+ new DataLoggedIn(this).getUserIdLoggedIn());
+//        }
 
 //         ContactService contactService = new ContactService(this, "614ddf15fe79c83cac2a7423");
 //        UserService userService = new UserService(this, "614ddf15fe79c83cac2a7423");

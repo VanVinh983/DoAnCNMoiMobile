@@ -167,9 +167,9 @@ public class PhoneBookActivity extends AppCompatActivity {
                 friendIdList = new ArrayList<>();
                 for (int i = 0; i < contacts.size(); i++) {
                     Contact contact = contacts.get(i);
-                    if (contact.getSenderId().equals(DataLoggedIn.userIdLoggedIn) && contact.getStatus()) {
+                    if (contact.getSenderId().equals(new DataLoggedIn(PhoneBookActivity.this).getUserIdLoggedIn()) && contact.getStatus()) {
                         friendIdList.add(contact.getReceiverId());
-                    } else if (contact.getReceiverId().equals(DataLoggedIn.userIdLoggedIn) && contact.getStatus()) {
+                    } else if (contact.getReceiverId().equals(new DataLoggedIn(PhoneBookActivity.this).getUserIdLoggedIn()) && contact.getStatus()) {
                         friendIdList.add(contact.getSenderId());
                     }
                 }

@@ -145,7 +145,7 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                 startActivityForResult(intent, 1);
             }
         });
-        getUserById(DataLoggedIn.userIdLoggedIn);
+        getUserById(new DataLoggedIn(this).getUserIdLoggedIn());
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override

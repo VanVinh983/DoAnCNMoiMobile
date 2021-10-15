@@ -90,7 +90,7 @@ public class FriendRequestActivity extends AppCompatActivity {
                 contactList = new ArrayList<>();
                 for (int i = 0; i < contacts.size(); i++){
                     Contact contact = contacts.get(i);
-                    if (contact.getReceiverId().equals(DataLoggedIn.userIdLoggedIn) && !contact.getStatus()) {
+                    if (contact.getReceiverId().equals(new DataLoggedIn(FriendRequestActivity.this).getUserIdLoggedIn()) && !contact.getStatus()) {
                         contactList.add(contact);
                     }
                 }
