@@ -34,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -119,7 +120,9 @@ public class SignUp_OTP extends AppCompatActivity {
     }
     private void createUser(){
         dataService = ApiService.getService();
-        Local local = new Local(phone,"123456");
+        Local local = new Local();
+        local.setPhone(phone);
+        local.setPassword(BCrypt.withDefaults().hashToString(10,"123456".toCharArray()));
         User user = new User(local,username);
         Call<UserDTO> callback = dataService.createUser(user);
         callback.enqueue(new Callback<UserDTO>() {

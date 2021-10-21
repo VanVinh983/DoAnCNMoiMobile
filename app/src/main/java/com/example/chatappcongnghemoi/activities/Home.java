@@ -17,15 +17,25 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.models.User;
+import com.example.chatappcongnghemoi.models.UserDTO;
+import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
+import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class Home extends AppCompatActivity {
     ImageView btnLogout;
+    DataService dataService;
     public static  final String SHARED_PREFERENCES= "saveID";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +91,7 @@ public class Home extends AppCompatActivity {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dataService = ApiService.getService();
                 final Dialog dialog =new Dialog(Home.this);
                 dialog.setContentView(R.layout.dialog_logout);
                 Window window = dialog.getWindow();
@@ -103,11 +114,27 @@ public class Home extends AppCompatActivity {
                 tvLogout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        saveIDLogout();
-                        dialog.dismiss();
-                        Intent intent = new Intent(Home.this,StartApp.class);
-                        startActivity(intent);
-                        finish();
+                        Call<UserDTO> callback = dataService.getUserById(new DataLoggedIn(Home.this).getUserIdLoggedIn());
+                        callback.enqueue(new Callback<UserDTO>() {
+                            @Override
+                            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                                if(response.isSuccessful()){
+                                    dialog.dismiss();
+                                    User user = response.body().getUser();
+                                    Toast.makeText(Home.this, ""+user, Toast.LENGTH_SHORT).show();
+                                    user.setOnline(false);
+                                    saveIDLogout();
+                                    Intent intent = new Intent(Home.this,StartApp.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<UserDTO> call, Throwable t) {
+
+                            }
+                        });
                     }
                 });
                 dialog.show();
