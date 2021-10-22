@@ -58,6 +58,7 @@ dependencies {
 
     implementation 'com.amplifyframework:aws-storage-s3:1.28.1'
     implementation 'com.amplifyframework:aws-auth-cognito:1.28.1'
-    implementation 'at.favre.lib:bcrypt:0.9.0'
+    implementation 'org.mindrot:jbcrypt:0.4'
+
 
 }

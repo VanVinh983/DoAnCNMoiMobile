@@ -19,7 +19,8 @@ import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
+import org.mindrot.jbcrypt.BCrypt;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -88,11 +89,10 @@ public class Login extends AppCompatActivity {
                                     if(user == null)
                                         Toast.makeText(Login.this, "Vui lòng kiểm tra lại số điện thoại", Toast.LENGTH_SHORT).show();
                                     else{
-                                        BCrypt.Result result = BCrypt.verifyer().verify(password.toCharArray(),user.getLocal().getPassword());
-                                        if(result.verified){
+                                        boolean result = BCrypt.checkpw(password,user.getLocal().getPassword());
+                                        if(result){
                                             Intent intent = new Intent(Login.this,Home.class);
                                             user.setOnline(true);
-                                            Toast.makeText(Login.this, ""+user.isOnline(), Toast.LENGTH_SHORT).show();
                                             saveID(user.getId());
                                             startActivity(intent);
                                             finish();

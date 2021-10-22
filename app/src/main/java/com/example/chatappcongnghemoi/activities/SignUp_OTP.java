@@ -31,10 +31,10 @@ import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 
 import org.jetbrains.annotations.NotNull;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.concurrent.TimeUnit;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,7 +46,7 @@ public class SignUp_OTP extends AppCompatActivity {
     TextView tvResendOTP;
     FirebaseAuth auth;
     DataService dataService;
-    String phone,phone_number,mverificationId,username;
+    String phone,phone_number,mVerificationId,username;
     PhoneAuthProvider.ForceResendingToken resendingToken;
     public static final  String TAG = SignUp_SDT.class.getName();
     @Override
@@ -62,7 +62,7 @@ public class SignUp_OTP extends AppCompatActivity {
         Intent intent = getIntent();
         phone = intent.getStringExtra("phone");
         phone_number = intent.getStringExtra("phone_number");
-        mverificationId = intent.getStringExtra("verificationId");
+        mVerificationId = intent.getStringExtra("verificationId");
         username = intent.getStringExtra("username");
         Toast.makeText(SignUp_OTP.this, phone, Toast.LENGTH_SHORT).show();
         imgBack.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +89,7 @@ public class SignUp_OTP extends AppCompatActivity {
     }
 
     private void confirmOTP(String otp) {
-        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mverificationId, otp);
+        PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, otp);
         signInWithPhoneAuthCredential(credential);
     }
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
@@ -122,7 +122,7 @@ public class SignUp_OTP extends AppCompatActivity {
         dataService = ApiService.getService();
         Local local = new Local();
         local.setPhone(phone);
-        local.setPassword(BCrypt.withDefaults().hashToString(10,"123456".toCharArray()));
+        local.setPassword(BCrypt.hashpw("123456",BCrypt.gensalt(10)));
         User user = new User(local,username);
         Call<UserDTO> callback = dataService.createUser(user);
         callback.enqueue(new Callback<UserDTO>() {
@@ -168,7 +168,7 @@ public class SignUp_OTP extends AppCompatActivity {
                             @Override
                             public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                                 super.onCodeSent(verificationId, forceResendingToken);
-                                mverificationId=verificationId;
+                                mVerificationId=verificationId;
                                 resendingToken = forceResendingToken;
                             }
                         })          // OnVerificationStateChangedCallbacks

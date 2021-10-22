@@ -16,7 +16,8 @@ import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
+import org.mindrot.jbcrypt.BCrypt;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,7 +53,7 @@ public class ConfirmPassword extends AppCompatActivity {
                                 if(response.isSuccessful()){
                                     User user = response.body().getUser();
                                     Local local = user.getLocal();
-                                    local.setPassword(BCrypt.withDefaults().hashToString(10,password.toCharArray()));
+                                    local.setPassword(BCrypt.hashpw(password,BCrypt.gensalt(10)));
                                     user.setLocal(local);
                                     Call<UserDTO> callbackUpdatePassword = dataService.updateUser(user.getId(),user);
                                     callbackUpdatePassword.enqueue(new Callback<UserDTO>() {
