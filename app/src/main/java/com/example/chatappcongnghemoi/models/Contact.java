@@ -124,4 +124,17 @@ public class Contact {
         this.v = v;
     }
 
+    @Override
+    public String toString() {
+        return "Contact{" +
+                "id='" + id + '\'' +
+                ", senderId='" + senderId + '\'' +
+                ", receiverId='" + receiverId + '\'' +
+                ", status=" + status +
+                ", updatedAt=" + updatedAt +
+                ", deletedAt=" + deletedAt +
+                ", createdAt=" + createdAt +
+                ", v=" + v +
+                '}';
+    }
 }

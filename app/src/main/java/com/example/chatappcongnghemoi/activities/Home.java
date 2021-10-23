@@ -24,6 +24,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.adapters.UserHomeAdapter;
+import com.example.chatappcongnghemoi.models.Contact;
+import com.example.chatappcongnghemoi.models.ContactDTO;
+import com.example.chatappcongnghemoi.models.ContactList;
+import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
@@ -43,8 +47,9 @@ public class Home extends AppCompatActivity {
     private DataService dataService;
     private RecyclerView recyclerView;
     private List<User> listConversation = new ArrayList<User>();
+    private List<String> listIdFiend = new ArrayList<>();
     private UserHomeAdapter userHomeAdapter;
-    private User userCurrent = null;
+    private String userCurrentId;
     public static  final String SHARED_PREFERENCES= "saveID";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,21 +81,20 @@ public class Home extends AppCompatActivity {
             }
         });
         System.out.println("id la: "+new DataLoggedIn(this).getUserIdLoggedIn());
-
-        //get user current
-        getUserById(new DataLoggedIn(this).getUserIdLoggedIn());
+        userCurrentId = new DataLoggedIn(this).getUserIdLoggedIn();
+        addUserByIdIntoUsers();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (userCurrent != null){
-                    System.out.println(userCurrent);
+                if (listIdFiend.size()==0){
+                    handler.postDelayed(this,1000);
                 }else {
-                    handler.postDelayed(this, 500);
+                    System.out.println("list id:"+listIdFiend);
+                    handler.removeCallbacks(this);
                 }
             }
-        },500);
-
+        },1000);
 //        SharedPreferences sharedPreferences = getSharedPreferences("saveID", MODE_PRIVATE);
 //        String id = sharedPreferences.getString("userId","");
 //        if (!id.equals("")){
@@ -176,36 +180,28 @@ public class Home extends AppCompatActivity {
         editor.apply();
     }
 
-    private void addUserByIdIntoUsers(String id){
-
-        Call<UserDTO> dtoCall = dataService.getUserById(id);
-        dtoCall.enqueue(new Callback<UserDTO>() {
+    private void addUserByIdIntoUsers(){
+        Call<List<Contact>> dtoCall = dataService.searchContactsByUserId(userCurrentId);
+        dtoCall.enqueue(new Callback<List<Contact>>() {
             @Override
-            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
-                listConversation.add(response.body().getUser());
+            public synchronized void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
+                List<Contact> contactList = response.body();
+                for (int i = 0; i < contactList.size(); i++) {
+                    if ( contactList.get(i).getStatus()==true){
+                        if (!contactList.get(i).getSenderId().equals(userCurrentId)){
+                            listIdFiend.add(contactList.get(i).getSenderId());
+                        }else
+                        if (!contactList.get(i).getReceiverId().equals(userCurrentId)){
+                            listIdFiend.add(contactList.get(i).getReceiverId());
+                        }
+                    }
+                }
             }
             @Override
-            public void onFailure(Call<UserDTO> call, Throwable t) {
-                Toast.makeText(Home.this, "Fail get User By Id", Toast.LENGTH_SHORT).show();
-                System.err.println("Fail get User By Id"+t.toString());
-            }
-        });
-    }
-
-    private void getUserById(String id) {
-        Call<UserDTO> dtoCall = dataService.getUserById(id);
-        dtoCall.enqueue(new Callback<UserDTO>() {
-            @Override
-            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
-                userCurrent = response.body().getUser();
-            }
-
-            @Override
-            public void onFailure(Call<UserDTO> call, Throwable t) {
-                Toast.makeText(Home.this, "Fail get User By Id", Toast.LENGTH_SHORT).show();
-                System.err.println("Fail get User By Id" + t.toString());
+            public void onFailure(Call<List<Contact>> call, Throwable t) {
+                Toast.makeText(Home.this, "Fail get contact list By user Id", Toast.LENGTH_SHORT).show();
+                System.err.println("Fail get contact list By user Id" + t.toString());
             }
         });
-    }
-
+    };
 }
