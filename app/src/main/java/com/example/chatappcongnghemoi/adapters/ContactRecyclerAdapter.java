@@ -40,15 +40,23 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecycler
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         User user = users.get(position);
-        if(user.getAvatar()!=null)
-        Picasso.get().load(user.getAvatar()).into(holder.avatar);
-        holder.txtName.setText(user.getUserName());
+        try {
+            if (user.getAvatar() != null)
+                Picasso.get().load(user.getAvatar()).into(holder.avatar);
+        } catch (NullPointerException e) {
+            holder.avatar.setImageResource(R.drawable.avatar);
+        }
+        try {
+            holder.txtName.setText(user.getUserName());
+        } catch (NullPointerException e) {
+            holder.txtName.setText("User Name");
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, PersonalOfOthers.class);
-                intent.putExtra("user",user);
+                intent.putExtra("user", user);
                 context.startActivity(intent);
             }
         });
@@ -62,6 +70,7 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecycler
     public class ViewHolder extends RecyclerView.ViewHolder {
         CircleImageView avatar, btnCall, btnVideoCall;
         TextView txtName;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             avatar = itemView.findViewById(R.id.itmContact_avatar);

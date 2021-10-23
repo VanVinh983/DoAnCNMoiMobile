@@ -75,12 +75,12 @@ public class PhoneBookActivity extends AppCompatActivity {
         mTxtThongBao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mTxtThongBao.getText().toString().equals("Xem thêm...")){
+                if (mTxtThongBao.getText().toString().equals("Xem thêm...")) {
                     onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, onlineFriendList);
                     mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
                     mTxtThongBao.setText("Thu gọn");
-                }else if(mTxtThongBao.getText().toString().equals("Thu gọn")){
-                    onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, new ArrayList<>(onlineFriendList.subList(0,3)));
+                } else if (mTxtThongBao.getText().toString().equals("Thu gọn")) {
+                    onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, new ArrayList<>(onlineFriendList.subList(0, 3)));
                     mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
                     mTxtThongBao.setText("Xem thêm...");
                 }
@@ -196,7 +196,11 @@ public class PhoneBookActivity extends AppCompatActivity {
                         friendList.sort(new Comparator<User>() {
                             @Override
                             public int compare(User o1, User o2) {
-                                return o1.getUserName().compareToIgnoreCase(o2.getUserName());
+                                try {
+                                    return o1.getUserName().compareToIgnoreCase(o2.getUserName());
+                                } catch (NullPointerException e) {
+                                    return 0;
+                                }
                             }
                         });
 
@@ -232,12 +236,15 @@ public class PhoneBookActivity extends AppCompatActivity {
         onlineFriendList = new ArrayList<>();
         if (friendList != null && friendList.size() > 0) {
             friendList.forEach(user -> {
-                if (user.isOnline())
-                    onlineFriendList.add(user);
+                try {
+                    if (user.isOnline())
+                        onlineFriendList.add(user);
+                } catch (NullPointerException e) {
+                }
             });
 
             if (onlineFriendList.size() > 3) {
-                onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, new ArrayList<>(onlineFriendList.subList(0,3)));
+                onlineContactRecyclerAdapter = new OnlineContactRecyclerAdapter(PhoneBookActivity.this, new ArrayList<>(onlineFriendList.subList(0, 3)));
                 mRecyclerOnlineContact.setAdapter(onlineContactRecyclerAdapter);
                 mTxtThongBao.setText("Xem thêm...");
             } else if (onlineFriendList.size() <= 3 && onlineFriendList.size() > 0) {

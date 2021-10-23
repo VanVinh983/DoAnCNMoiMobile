@@ -21,6 +21,8 @@ import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.squareup.picasso.Picasso;
 
+import java.util.Objects;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,6 +44,8 @@ public class PersonalOfOthers extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_of_others);
+        Objects.requireNonNull(getSupportActionBar()).hide();
+
 
         imgAvatar = findViewById(R.id.personal_friend_image_personal_avatar);
         txtMainUserName = findViewById(R.id.txt_personal_friend_name_primary);

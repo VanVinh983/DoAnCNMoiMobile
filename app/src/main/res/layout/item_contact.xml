@@ -18,7 +18,8 @@
     <TextView
         android:id="@+id/itmContact_txtName"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:gravity="left|center"
         android:layout_weight="7"
         android:text="Nguyễn Văn A"
