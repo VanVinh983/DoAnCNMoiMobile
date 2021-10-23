@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
@@ -30,11 +31,13 @@ public class StartApp extends AppCompatActivity {
     RecyclerView recyclerView;
     List<StartItem> list = new ArrayList<>();
     Button btnDangKy, btnDangNhap;
+    public static  final String SHARED_PREFERENCES= "saveID";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_app);
         getSupportActionBar().hide();
+        autoLogin();
         list.add(new StartItem("Nơi cùng nhau trao đổi, liên lạc với người khác",R.drawable._028004));
         list.add(new StartItem("Nơi giúp bạn tìm kiếm tri kỷ của đời mình",R.drawable._49058));
         list.add(new StartItem("Trao đổi hình ảnh chất lượng cao với người khác thật nhanh và dễ dàng",R.drawable.collection_tour));
@@ -90,6 +93,17 @@ public class StartApp extends AppCompatActivity {
             dots[i].setTextSize(18);
             linearLayout.addView(dots[i]);
 
+        }
+    }
+    public void autoLogin(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES,MODE_PRIVATE);
+        String id = sharedPreferences.getString("userId","");
+        if(id.equals(""))
+            return;
+        else{
+            Intent intent = new Intent(StartApp.this,Home.class);
+            startActivity(intent);
+            finish();
         }
     }
 

@@ -153,7 +153,6 @@ public class SignUp_OTP extends AppCompatActivity {
                         .setPhoneNumber(sdt)       // Phone number to verify
                         .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
                         .setActivity(this)                 // Activity (for callback binding)
-                        .setForceResendingToken(resendingToken)
                         .setCallbacks(new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                             @Override
                             public void onVerificationCompleted(@NotNull PhoneAuthCredential phoneAuthCredential) {
@@ -168,11 +167,19 @@ public class SignUp_OTP extends AppCompatActivity {
                             @Override
                             public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                                 super.onCodeSent(verificationId, forceResendingToken);
-                                mVerificationId=verificationId;
-                                resendingToken = forceResendingToken;
+                                goToSignUpOTP(sdt,verificationId);
                             }
                         })          // OnVerificationStateChangedCallbacks
                         .build();
         PhoneAuthProvider.verifyPhoneNumber(options);
+    }
+    private void goToSignUpOTP(String phoneNumber,String verificationId){
+        Intent intent_OPT = new Intent(SignUp_OTP.this,SignUp_OTP.class);
+        intent_OPT.putExtra("phone_number",phoneNumber);
+        intent_OPT.putExtra("verificationId",verificationId);
+        intent_OPT.putExtra("username",username);
+        intent_OPT.putExtra("phone",phone);
+        startActivity(intent_OPT);
+        finish();
     }
 }

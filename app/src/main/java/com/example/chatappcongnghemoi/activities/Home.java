@@ -146,7 +146,6 @@ public class Home extends AppCompatActivity {
                                 if(response.isSuccessful()){
                                     dialog.dismiss();
                                     User user = response.body().getUser();
-                                    Toast.makeText(Home.this, ""+user, Toast.LENGTH_SHORT).show();
                                     user.setOnline(false);
                                     saveIDLogout();
                                     Intent intent = new Intent(Home.this,StartApp.class);

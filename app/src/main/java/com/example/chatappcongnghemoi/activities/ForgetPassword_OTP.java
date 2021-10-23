@@ -70,7 +70,7 @@ public class ForgetPassword_OTP extends AppCompatActivity {
         tvResendOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                sendOTPAgain(phone_number);
             }
         });
     }
@@ -90,7 +90,7 @@ public class ForgetPassword_OTP extends AppCompatActivity {
                             FirebaseUser user = task.getResult().getUser();
 
                             // Update UI
-                            goToPassword(user.getPhoneNumber());
+                            goToChangePassword(user.getPhoneNumber());
 
                         } else {
                             // Sign in failed, display a message and update the UI
@@ -103,9 +103,9 @@ public class ForgetPassword_OTP extends AppCompatActivity {
                     }
                 });
     }
-    private void goToPassword(String phoneNumber) {
+    private void goToChangePassword(String phoneNumber) {
         // them user vao database set password = 123456 chuyển sang activity confirm password để đổi password
-        Intent intent = new Intent(ForgetPassword_OTP.this,ConfirmPassword.class);
+        Intent intent = new Intent(ForgetPassword_OTP.this,ChangePassword.class);
         intent.putExtra("phone",phone);
         startActivity(intent);
         finish();
@@ -130,7 +130,7 @@ public class ForgetPassword_OTP extends AppCompatActivity {
                             @Override
                             public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                                 super.onCodeSent(verificationId, forceResendingToken);
-                                goToForgetPasswordOTP(phone_number,verificationId);
+                                goToForgetPasswordOTP(sdt,verificationId);
                             }
                         })          // OnVerificationStateChangedCallbacks
                         .build();
