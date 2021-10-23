@@ -49,6 +49,7 @@ dependencies {
 
     implementation 'com.squareup.retrofit2:retrofit:2.1.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
+    implementation 'com.google.code.gson:gson:2.8.8'
 
     // Amplify core dependency
     implementation 'com.amplifyframework:core:1.28.1'
@@ -60,5 +61,9 @@ dependencies {
     implementation 'com.amplifyframework:aws-auth-cognito:1.28.1'
     implementation 'org.mindrot:jbcrypt:0.4'
 
+
+    implementation ('io.socket:socket.io-client:2.0.0') {
+        exclude group: 'org.json', module: 'json'
+    }
 
 }

@@ -70,7 +70,7 @@
 
                     <TextView
                         android:id="@+id/input_personal_search"
-                        android:layout_width="296dp"
+                        android:layout_width="match_parent"
                         android:layout_height="30dp"
                         android:layout_margin="10dp"
                         android:layout_weight="10"
@@ -87,6 +87,20 @@
                         android:layout_weight="1"
                         app:srcCompat="@drawable/add_group"
                         app:tint="@color/white" />
+
+                    <ImageButton
+                        android:id="@+id/btn_personal_logout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#00FFFFFF"
+                        android:minWidth="48dp"
+                        android:minHeight="48dp"
+                        android:scaleType="center"
+                        app:srcCompat="@drawable/ic_baseline_power_settings_new_24"
+                        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -121,7 +135,7 @@
                 android:inputType="textMultiLine"
                 android:minHeight="48dp"
                 android:padding="10dp"
-                android:textColor="#8E8E8E"
+                android:textColor="#000000"
                 android:textColorHint="#13A0DF"
                 android:textSize="20sp"
                 android:textStyle="normal|italic" />
@@ -161,39 +175,6 @@
                         android:textColor="#494848"
                         android:textSize="20sp"
                         tools:ignore="TouchTargetSizeCheck" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/textView19"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center_horizontal|left"
-                        android:padding="10dp"
-                        android:text="Email"
-                        android:textColor="#000000"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <EditText
-                        android:id="@+id/input_personal_email"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="#007C5656"
-                        android:ems="10"
-                        android:gravity="center_horizontal|left"
-                        android:hint="email"
-                        android:inputType="textMultiLine"
-                        android:padding="10dp"
-                        android:textColor="#494848"
-                        android:textSize="20sp"
-                        tools:ignore="TouchTargetSizeCheck" />
-
                 </TableRow>
 
                 <TableRow

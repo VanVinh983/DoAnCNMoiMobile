@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -47,7 +48,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Personal extends AppCompatActivity implements View.OnClickListener {
-    private EditText input_name, input_email, input_gender, input_yearOfBirth, input_numberPhone, input_address;
+    private EditText input_name, input_gender, input_yearOfBirth, input_numberPhone, input_address;
     private BottomNavigationView bottomNavigationView;
     private Button btn_update_info;
     private CircleImageView imageView_Avatar;
@@ -55,6 +56,7 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
     private DataService dataService;
     private User user = null;
     private int RESULT_LOAD_IMAGE = 1024;
+    private static  final String SHARED_PREFERENCES= "saveID";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +67,6 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         input_name = findViewById(R.id.input_personal_name);
         input_address = findViewById(R.id.input_personal_address);
-        input_email = findViewById(R.id.input_personal_email);
         input_numberPhone = findViewById(R.id.input_personal_numberphone);
         input_gender = findViewById(R.id.input_personal_gender);
         input_yearOfBirth = findViewById(R.id.input_personal_yearOfBirth);
@@ -81,7 +82,6 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
 
         input_gender.setEnabled(false);
         input_name.setEnabled(false);
-        input_email.setEnabled(false);
         input_address.setEnabled(false);
         input_numberPhone.setEnabled(false);
         input_yearOfBirth.setEnabled(false);
@@ -170,6 +170,49 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                 Personal.this.startActivity(new Intent(Personal.this, SearchUser.class));
             }
         });
+        // onclick logout
+        findViewById(R.id.btn_personal_logout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Dialog dialog =new Dialog(Personal.this);
+                dialog.setContentView(R.layout.dialog_logout);
+                Window window = dialog.getWindow();
+                if(window == null)
+                    return;
+                WindowManager.LayoutParams layoutParams = window.getAttributes();
+                window.setLayout(layoutParams.MATCH_PARENT,layoutParams.WRAP_CONTENT);
+                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                layoutParams.gravity = Gravity.CENTER;
+                window.setAttributes(layoutParams);
+                dialog.setCancelable(true);
+                TextView tvCancel = dialog.findViewById(R.id.tvCancel);
+                TextView tvLogout = dialog.findViewById(R.id.tvLogout_Dialog);
+                tvCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                tvLogout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        saveIDLogout();
+                        dialog.dismiss();
+                        Intent intent = new Intent(Personal.this,StartApp.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+                dialog.show();
+            }
+        });
+    }
+
+    public void saveIDLogout(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES,MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("userId","");
+        editor.apply();
     }
 
     @Override
@@ -181,7 +224,6 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                     //set edit text can input letter
                     input_gender.setEnabled(true);
                     input_name.setEnabled(true);
-                    input_email.setEnabled(true);
                     input_address.setEnabled(true);
                     input_numberPhone.setEnabled(true);
                     input_yearOfBirth.setEnabled(true);
@@ -189,7 +231,6 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                     btn_update_info.setText("Cập nhật thông tin");
                     input_gender.setEnabled(false);
                     input_name.setEnabled(false);
-                    input_email.setEnabled(false);
                     input_address.setEnabled(false);
                     input_numberPhone.setEnabled(false);
                     input_yearOfBirth.setEnabled(false);
@@ -253,7 +294,19 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
             if (resultCode == RESULT_OK) {
                 String result = data.getStringExtra("result");
                 if (!result.equals("")) {
-                    txt_introduce.setText(result);
+                    user.setDescription(result);
+                    Call<UserDTO> putCall = dataService.updateUser(user.getId(), user);
+                    putCall.enqueue(new Callback<UserDTO>() {
+                        @Override
+                        public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                            Toast.makeText(Personal.this, "Cập Nhật Giới Thiệu Thành Công !", Toast.LENGTH_LONG).show();
+                            txt_introduce.setText(user.getDescription().toString());
+                        }
+                        @Override
+                        public void onFailure(Call<UserDTO> call, Throwable t) {
+                            System.err.println("Fail update description"+ t.getMessage().toString());
+                        }
+                    });
                 }
             }
         }

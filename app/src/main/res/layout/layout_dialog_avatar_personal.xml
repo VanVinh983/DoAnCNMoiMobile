@@ -54,7 +54,7 @@
             android:textStyle="bold" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/btn_take_a_new_photo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="#FFFFFF"
@@ -83,19 +83,5 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/button7"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#FFFFFF"
-            android:drawableLeft="@drawable/ic_outline_collections_24"
-            android:drawableTint="#2196F3"
-            android:gravity="left|center_vertical"
-            android:padding="5dp"
-            android:text="Chọn ảnh đại diện có sẵn"
-            android:textAllCaps="false"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>

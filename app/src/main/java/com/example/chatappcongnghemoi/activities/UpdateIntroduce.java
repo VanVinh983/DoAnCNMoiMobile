@@ -39,5 +39,11 @@ public class UpdateIntroduce extends AppCompatActivity {
                 finish();
             }
         });
+        findViewById(R.id.btn_introduce_callback).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 }
