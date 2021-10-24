@@ -1,7 +1,7 @@
 package com.example.chatappcongnghemoi.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
-import com.example.chatappcongnghemoi.activities.Home;
+import com.example.chatappcongnghemoi.activities.ChatBox;
 import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
@@ -22,7 +22,6 @@ import com.example.chatappcongnghemoi.retrofit.DataService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.LogRecord;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -87,6 +86,14 @@ public class UserHomeAdapter extends RecyclerView.Adapter<UserHomeAdapter.ViewHo
                 }
             }
         },500);
+        holder.itemview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ChatBox.class);
+                intent.putExtra("friendId", user.getId());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -97,11 +104,14 @@ public class UserHomeAdapter extends RecyclerView.Adapter<UserHomeAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
         private CircleImageView image_avatar;
         private TextView txt_username, txt_last_message;
+        private View itemview;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             image_avatar = itemView.findViewById(R.id.image_avatart_home_item);
             txt_username = itemView.findViewById(R.id.txt_home_item_user_name);
             txt_last_message = itemView.findViewById(R.id.txt_home_item_first_message);
+            itemview = itemView;
+
         }
     }
 }
