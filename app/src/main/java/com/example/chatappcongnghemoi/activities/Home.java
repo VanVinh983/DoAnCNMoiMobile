@@ -37,6 +37,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -87,14 +88,13 @@ public class Home extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (listIdFiend.size()==0){
-                    handler.postDelayed(this,1000);
-                }else {
+                if (listIdFiend.size()!=0){
                     System.out.println("list id:"+listIdFiend);
+                    getMessageBySenderIdAndRevicerId();
                     handler.removeCallbacks(this);
                 }
             }
-        },1000);
+        },2000);
 //        SharedPreferences sharedPreferences = getSharedPreferences("saveID", MODE_PRIVATE);
 //        String id = sharedPreferences.getString("userId","");
 //        if (!id.equals("")){
@@ -168,10 +168,6 @@ public class Home extends AppCompatActivity {
                 dialog.show();
             }
         });
-        //initialize recyclerview
-        userHomeAdapter = new UserHomeAdapter(listConversation, this);
-        recyclerView.setAdapter(userHomeAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
     public void saveIDLogout(){
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES,MODE_PRIVATE);
@@ -204,4 +200,93 @@ public class Home extends AppCompatActivity {
             }
         });
     };
+    private void getMessageBySenderIdAndRevicerId(){
+        List<String> stringList = new ArrayList<>();
+        for (String id: listIdFiend) {
+            List<Message> messages = new ArrayList<>();
+            Call<List<Message>> call = dataService.getMessageBySIdAndRId(userCurrentId, id);
+            call.enqueue(new Callback<List<Message>>() {
+                @Override
+                public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+                    for (Message m: response.body()) {
+                        messages.add(m);
+                    }
+                }
+                @Override
+                public void onFailure(Call<List<Message>> call, Throwable t) {
+                    Toast.makeText(Home.this, "Fail get message list By user Id", Toast.LENGTH_SHORT).show();
+                    System.err.println("Fail get message list By user Id" + t.toString());
+                }
+            });
+            Call<List<Message>> call2 = dataService.getMessageBySIdAndRId(id, userCurrentId);
+            call2.enqueue(new Callback<List<Message>>() {
+                @Override
+                public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+                    for (Message m: response.body()) {
+                        messages.add(m);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Message>> call, Throwable t) {
+                    Toast.makeText(Home.this, "Fail get message at call 2 list By user Id", Toast.LENGTH_SHORT).show();
+                    System.err.println("Fail get message at call2 list By user Id" + t.toString());
+                }
+            });
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(messages.size()!=0){
+                        System.out.println("message: "+messages.toString());
+                        stringList.add(id);
+                        handler.removeCallbacks(this);
+                    }
+                }
+            },1000);
+        }
+        Handler handler1 = new Handler();
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                List<String> stringListwithout = stringList.stream().distinct().collect(Collectors.toList());
+                System.out.println("string list: "+stringListwithout.toString());
+                getConversationByUserId(stringList);
+                handler1.removeCallbacks(this);
+            }
+        },2000);
+    }
+
+    private void getConversationByUserId(List<String> stringList){
+        for (String id: stringList) {
+            Call<UserDTO> call = dataService.getUserById(id);
+            call.enqueue(new Callback<UserDTO>() {
+                @Override
+                public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                    User user = response.body().getUser();
+                    listConversation.add(user);
+                }
+                @Override
+                public void onFailure(Call<UserDTO> call, Throwable t) {
+                    Toast.makeText(Home.this, "Fail get user By user Id", Toast.LENGTH_SHORT).show();
+                    System.err.println("Fail get user By user Id" + t.toString());
+                }
+            });
+        }
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (listConversation.size()==stringList.size()){
+                    System.out.println("conversation have: "+listConversation.toString());
+                    handler.removeCallbacks(this);
+                    userHomeAdapter = new UserHomeAdapter(listConversation, Home.this);
+                    recyclerView.setAdapter(userHomeAdapter);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(Home.this));
+                }else {
+                    handler.postDelayed(this,500);
+                }
+            }
+        },2000);
+    }
 }
