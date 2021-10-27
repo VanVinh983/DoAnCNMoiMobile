@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -124,8 +125,14 @@ public class ChatBox extends AppCompatActivity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (messages.size()!=response.body().size()){
-                            System.out.println(messages.toString());
+                        if (messages.size()==response.body().size()){
+                            messageAdapter = new MessageAdapter(messages, ChatBox.this,userCurrent, friendCurrent);
+                            recyclerViewMessage.setAdapter(messageAdapter);
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBox.this, LinearLayoutManager.VERTICAL, false);
+                            linearLayoutManager.setStackFromEnd(true);
+                            recyclerViewMessage.setLayoutManager(linearLayoutManager);
+                            recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount()-1);
+                            handler.removeCallbacks(this);
                         }else {
                             handler.postDelayed(this,1000);
                         }

@@ -58,12 +58,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             @Override
             public void run() {
                 if (message != null){
-                    holder.txt_content.setText(message.getText().toString());
-                    if (message_type == RIGHT){
-                        Glide.with(context).load(userCurrent.getAvatar()).into(holder.avatar);
+                    if (message.getText()==null){
+                        holder.txt_content.setText(message.getFileName().toString());
                     }else {
-                        Glide.with(context).load(friend.getAvatar()).into(holder.avatar);
+                        holder.txt_content.setText(message.getText().toString());
                     }
+                    Glide.with(context).load(friend.getAvatar()).into(holder.avatar);
                     handler.removeCallbacks(this);
                 }else {
                     handler.postDelayed(this,1000);

@@ -11,7 +11,7 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/image_message_avatar"
-        android:layout_width="60dp"
+        android:layout_width="0.5dp"
         android:layout_height="60dp"
         android:src="@drawable/avatar"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -22,16 +22,16 @@
         android:id="@+id/txt_content_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
-        android:background="@drawable/bacground_left_message"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/background__right_message"
         android:inputType="textMultiLine"
         android:minHeight="48dp"
         android:padding="10dp"
-        android:text="TextView"
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/image_message_avatar"
         app:layout_constraintTop_toTopOf="@+id/image_message_avatar"
-        app:layout_constraintVertical_bias="0.352" />
+        app:layout_constraintVertical_bias="0.058"
+        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 </androidx.constraintlayout.widget.ConstraintLayout>
