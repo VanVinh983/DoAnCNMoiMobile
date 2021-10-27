@@ -1,7 +1,6 @@
 package com.example.chatappcongnghemoi.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.activities.AddGroupChat;
-import com.example.chatappcongnghemoi.activities.PersonalOfOthers;
 import com.example.chatappcongnghemoi.models.User;
 import com.squareup.picasso.Picasso;
 
@@ -21,25 +19,24 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class FriendsRecyclerAdapterAddGroup extends RecyclerView.Adapter<FriendsRecyclerAdapterAddGroup.ViewHolder>{
+public class PhoneBookRecyclerAdapterAddGroup extends RecyclerView.Adapter<PhoneBookRecyclerAdapterAddGroup.ViewHolder>{
     private Context context;
     private ArrayList<User> users;
 
-    public FriendsRecyclerAdapterAddGroup(Context context, ArrayList<User> users) {
+    public PhoneBookRecyclerAdapterAddGroup(Context context, ArrayList<User> users) {
         this.context = context;
         this.users = users;
     }
 
     @NonNull
     @Override
-    public FriendsRecyclerAdapterAddGroup.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PhoneBookRecyclerAdapterAddGroup.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_friend_add_group, parent, false);
-        return new FriendsRecyclerAdapterAddGroup.ViewHolder(view);
-
+        return new PhoneBookRecyclerAdapterAddGroup.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FriendsRecyclerAdapterAddGroup.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PhoneBookRecyclerAdapterAddGroup.ViewHolder holder, int position) {
         User user = users.get(position);
         try {
             if (user.getAvatar() != null)
@@ -53,7 +50,7 @@ public class FriendsRecyclerAdapterAddGroup extends RecyclerView.Adapter<Friends
             holder.txtName.setText("User Name");
         }
         holder.imgChosen.setVisibility(View.INVISIBLE);
-        for(int i = 0 ; i< AddGroupChat.listFriendsClickAdd.size() ; i++){
+        for(int i = 0; i< AddGroupChat.listFriendsClickAdd.size() ; i++){
             if(AddGroupChat.listFriendsClickAdd.get(i).getId().equals(user.getId()))
                 holder.imgChosen.setVisibility(View.VISIBLE);
             else holder.imgChosen.setVisibility(View.INVISIBLE);

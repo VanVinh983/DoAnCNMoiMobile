@@ -1,21 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imgFriend_ListFriend_AddGroup"
-        android:layout_width="50dp"
-        android:layout_height="50dp"/>
-    <TextView
-        android:id="@+id/tvUserName_ListFriend_AddGroup"
+    android:orientation="vertical">
+    <View
+        android:layout_marginTop="3dp"
+        android:background="#000"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Nguyen Van A"
-        android:textSize="28dp"
-        android:layout_marginTop="7dp"
-        android:textColor="#000"
-        android:paddingHorizontal="20dp"
-        />
+        android:layout_height="2dp">
+    </View>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgFriend_ListFriend_AddGroup"
+            android:layout_width="30dp"
+            android:layout_height="30dp"/>
+        <TextView
+            android:id="@+id/tvUserName_ListFriend_AddGroup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Nguyen Van A"
+            android:textSize="20dp"
+            android:layout_weight="1"
+            android:textColor="#000"
+            android:paddingHorizontal="20dp"
+            />
 
+        <ImageView
+            android:id="@+id/choseFriend"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="20dp"
+            app:srcCompat="@drawable/choose_icon_svg" />
+    </LinearLayout>
+    <View
+        android:background="#000"
+        android:layout_width="match_parent"
+        android:layout_height="2dp">
+    </View>
 </LinearLayout>

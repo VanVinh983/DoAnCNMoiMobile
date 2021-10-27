@@ -51,9 +51,9 @@ public class MainActivity extends AppCompatActivity {
     private void createUser(){
         dataService = ApiService.getService();
         Local local = new Local();
-        local.setPhone("123456789");
+        local.setPhone("0147258369");
         local.setPassword(BCrypt.hashpw("123456",BCrypt.gensalt(10)));
-        User user = new User(local,"Nguyen Van A");
+        User user = new User(local,"Nguyen Van D");
         Call<UserDTO> callback = dataService.createUser(user);
         callback.enqueue(new Callback<UserDTO>() {
             @Override

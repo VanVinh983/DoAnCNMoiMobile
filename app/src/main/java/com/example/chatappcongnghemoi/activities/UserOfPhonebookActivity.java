@@ -2,6 +2,7 @@ package com.example.chatappcongnghemoi.activities;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -44,8 +46,8 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
     private ArrayList<User> userList;
     private ContactRecyclerAdapter adapter;
 
-    private boolean flag = false;
 
+    private boolean flag = false;
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,7 +82,6 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
                 }
             }
         }, 500);
-
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
