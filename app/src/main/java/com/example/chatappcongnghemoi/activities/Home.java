@@ -51,6 +51,7 @@ public class Home extends AppCompatActivity {
     private List<String> listIdFiend = new ArrayList<>();
     private UserHomeAdapter userHomeAdapter;
     private String userCurrentId;
+    private ImageView btnAddGroup;
     public static  final String SHARED_PREFERENCES= "saveID";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,13 @@ public class Home extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         getSupportActionBar().hide();
         btnLogout = findViewById(R.id.btnLogout);
+        btnAddGroup = findViewById(R.id.input_personal_creategroundfriends);
+        btnAddGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Home.this,AddGroupChat.class));
+            }
+        });
         //initialize
         dataService = ApiService.getService();
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnavigationview_home);

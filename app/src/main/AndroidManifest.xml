@@ -16,11 +16,14 @@
         android:theme="@style/Theme.ChatAppCongNgheMoi"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activities.AddGroupChat"
+            android:exported="true" />
+        <activity
             android:name=".activities.ChangePassword"
             android:exported="true" />
         <activity
             android:name=".activities.ChatBox"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".activities.ForgetPassword_OTP"
             android:exported="true" />
@@ -32,7 +35,7 @@
             android:exported="true" />
         <activity
             android:name=".activities.Login"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".activities.SearchUser"
             android:exported="true" />
