@@ -1,6 +1,8 @@
 package com.example.chatappcongnghemoi.retrofit;
 
 
+import com.example.chatappcongnghemoi.models.ChatGroup;
+import com.example.chatappcongnghemoi.models.ChatGroupDTO;
 import com.example.chatappcongnghemoi.models.Contact;
 import com.example.chatappcongnghemoi.models.ContactDTO;
 import com.example.chatappcongnghemoi.models.ContactList;
@@ -8,6 +10,7 @@ import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -53,4 +56,8 @@ public interface DataService {
 
     @GET("contacts/searchContact/{userid}")
     Call<List<Contact>> searchContactsByUserId(@Path("userid") String id);
+
+    @POST("chatGroups")
+    Call<ChatGroupDTO> createChatGroup(@Body ChatGroup chatGroup);
+
 }
