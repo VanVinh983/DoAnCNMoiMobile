@@ -69,7 +69,7 @@ public class ChatBox extends AppCompatActivity {
                     handler.postDelayed(this,500);
                 }
             }
-        },1000);
+        },500);
     }
     private void mapping(){
         txt_username = findViewById(R.id.txt_chatbox_username);
@@ -134,10 +134,10 @@ public class ChatBox extends AppCompatActivity {
                             recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount()-1);
                             handler.removeCallbacks(this);
                         }else {
-                            handler.postDelayed(this,1000);
+                            handler.postDelayed(this,500);
                         }
                     }
-                },1000);
+                },500);
             }
 
             @Override

@@ -52,24 +52,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
         Message message = messages.get(position);
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (message != null){
-                    if (message.getText()==null){
-                        holder.txt_content.setText(message.getFileName().toString());
-                    }else {
-                        holder.txt_content.setText(message.getText().toString());
-                    }
-                    Glide.with(context).load(friend.getAvatar()).into(holder.avatar);
-                    handler.removeCallbacks(this);
-                }else {
-                    handler.postDelayed(this,1000);
-                }
+        if (message != null) {
+            if (message.getText() == null) {
+                holder.txt_content.setText(message.getFileName().toString());
+            } else {
+                holder.txt_content.setText(message.getText().toString());
             }
-        },1000);
+            Glide.with(context).load(friend.getAvatar()).into(holder.avatar);
+        }
     }
 
     @Override

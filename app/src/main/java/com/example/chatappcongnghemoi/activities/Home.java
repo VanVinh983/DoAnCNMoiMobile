@@ -102,7 +102,7 @@ public class Home extends AppCompatActivity {
                     handler.removeCallbacks(this);
                 }
             }
-        },1000);
+        },500);
 //        SharedPreferences sharedPreferences = getSharedPreferences("saveID", MODE_PRIVATE);
 //        String id = sharedPreferences.getString("userId","");
 //        if (!id.equals("")){
@@ -251,7 +251,7 @@ public class Home extends AppCompatActivity {
                         handler.removeCallbacks(this);
                     }
                 }
-            },1000);
+            },500);
         }
         Handler handler1 = new Handler();
         handler1.postDelayed(new Runnable() {
@@ -262,7 +262,7 @@ public class Home extends AppCompatActivity {
                 getConversationByUserId(stringList);
                 handler1.removeCallbacks(this);
             }
-        },1000);
+        },500);
     }
 
     private void getConversationByUserId(List<String> stringList){
@@ -295,6 +295,6 @@ public class Home extends AppCompatActivity {
                     handler.postDelayed(this,500);
                 }
             }
-        },1000);
+        },500);
     }
 }
