@@ -15,12 +15,15 @@ import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.adapters.ContactRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.FriendsRecyclerAdapterAddGroup;
 import com.example.chatappcongnghemoi.adapters.ImageFriendsWhenClickAddGroupRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.PhoneBookRecyclerAdapterAddGroup;
+import com.example.chatappcongnghemoi.models.ChatGroup;
+import com.example.chatappcongnghemoi.models.ChatGroupDTO;
 import com.example.chatappcongnghemoi.models.Contact;
 import com.example.chatappcongnghemoi.models.ContactList;
 import com.example.chatappcongnghemoi.models.User;
@@ -37,6 +40,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AddGroupChat extends AppCompatActivity {
+    TextView txtGroupName;
     public static final int REQUEST_READ_CONTACTS = 79;
     RecyclerView recyclerViewFriends,recyclerViewPhoneBook;
     public static RecyclerView recyclerViewImage;
@@ -67,6 +71,7 @@ public class AddGroupChat extends AppCompatActivity {
                 listFriendsClickAdd.removeAll(listFriendsClickAdd);
             }
         });
+        txtGroupName = findViewById(R.id.txtGroupName);
         recyclerViewFriends.setLayoutManager(new LinearLayoutManager(this));
         btnAddGroup = findViewById(R.id.btnAddGroup);
         getFriendIdList();
@@ -109,6 +114,63 @@ public class AddGroupChat extends AppCompatActivity {
                 }
             }
         }, 500);
+        btnAddGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String groupName = txtGroupName.getText().toString();
+                if(!groupName.matches("^[a-zA-Z0-9][a-zA-Z0-9\\s]{2,40}$")){
+                    Toast.makeText(AddGroupChat.this, "Tên nhóm không được chứa kí tự đặc biệt, có từ 2-40 kí tự", Toast.LENGTH_SHORT).show();
+                }else{
+                    if(listFriendsClickAdd.size() < 2){
+                        Toast.makeText(AddGroupChat.this, "Nhóm phải có ít nhất 3 thành viên", Toast.LENGTH_SHORT).show();
+                    }else{
+                        addGroup(listFriendsClickAdd,groupName);
+                    }
+                }
+            }
+        });
+    }
+    public void addGroup(ArrayList<User> list,String groupName){
+//        list  = new ArrayList<>();
+        Call<UserDTO> callUser = dataService.getUserById(new DataLoggedIn(this).getUserIdLoggedIn());
+        callUser.enqueue(new Callback<UserDTO>() {
+            @Override
+            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                if(response.isSuccessful()){
+                    User user = response.body().getUser();
+                    list.add(user);
+                    ArrayList<String> listUserID = new ArrayList<>();
+                    list.forEach((u -> {
+                        listUserID.add(u.getId());
+                    }));
+//                    ChatGroup chatGroup = new ChatGroup(groupName,user.getId(),Long.parseLong(list.size()+""),listUserID);
+                    ChatGroup chatGroup = new ChatGroup(groupName,user.getId(),Long.parseLong(list.size()+""),list);
+                    Call<ChatGroupDTO> callGroup = dataService.createChatGroup(chatGroup);
+                    callGroup.enqueue(new Callback<ChatGroupDTO>() {
+                        @Override
+                        public void onResponse(Call<ChatGroupDTO> call, Response<ChatGroupDTO> response) {
+                            if(response.isSuccessful()){
+                                Toast.makeText(AddGroupChat.this, "OK", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(AddGroupChat.this, ""+response.errorBody(), Toast.LENGTH_SHORT).show();
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<ChatGroupDTO> call, Throwable t) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserDTO> call, Throwable t) {
+
+            }
+        });
     }
     public void getFriendIdList() {
         Call<ContactList> callback = dataService.getContactList();

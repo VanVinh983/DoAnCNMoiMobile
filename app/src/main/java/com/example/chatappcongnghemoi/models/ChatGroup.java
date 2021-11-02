@@ -18,12 +18,16 @@ public class ChatGroup implements Parcelable {
     @Expose
     private String name;
 
-    @SerializedName("updatedAt")
+    @SerializedName("userId")
     @Expose
     private String userId;
+
+    @SerializedName("userAmount")
+    @Expose
+    private Long userAmount;
     @SerializedName("members")
     @Expose
-    private ArrayList<String> members;
+    private ArrayList<User> members;
     @SerializedName("messageAmount")
     @Expose
     private Long messageAmount;
@@ -33,20 +37,20 @@ public class ChatGroup implements Parcelable {
 
     @SerializedName("updatedAt")
     @Expose
-    private Object updatedAt;
+    private Long updatedAt;
 
     @SerializedName("deletedAt")
     @Expose
-    private Object deletedAt;
+    private Long deletedAt;
 
     @SerializedName("__v")
     @Expose
     private Integer v;
 
-    public ChatGroup(String id, String name, String userId, ArrayList<String> members, Long messageAmount, Long createdAt, Object updatedAt, Object deletedAt, Integer v) {
-        this.id = id;
+    public ChatGroup(String name, String userId, Long userAmount, ArrayList<User> members, Long messageAmount, Long createdAt, Long updatedAt, Long deletedAt, Integer v) {
         this.name = name;
         this.userId = userId;
+        this.userAmount = userAmount;
         this.members = members;
         this.messageAmount = messageAmount;
         this.createdAt = createdAt;
@@ -55,11 +59,10 @@ public class ChatGroup implements Parcelable {
         this.v = v;
     }
 
-    public ChatGroup(String name, String userId, ArrayList<String> members, Long messageAmount) {
+    public ChatGroup(String name, String userId, Long userAmount) {
         this.name = name;
         this.userId = userId;
-        this.members = members;
-        this.messageAmount = messageAmount;
+        this.userAmount = userAmount;
     }
 
     public ChatGroup() {
@@ -89,11 +92,11 @@ public class ChatGroup implements Parcelable {
         this.userId = userId;
     }
 
-    public ArrayList<String> getMembers() {
+    public ArrayList<User> getMembers() {
         return members;
     }
 
-    public void setMembers(ArrayList<String> members) {
+    public void setMembers(ArrayList<User> members) {
         this.members = members;
     }
 
@@ -113,19 +116,19 @@ public class ChatGroup implements Parcelable {
         this.createdAt = createdAt;
     }
 
-    public Object getUpdatedAt() {
+    public Long getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Object updatedAt) {
+    public void setUpdatedAt(Long updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-    public Object getDeletedAt() {
+    public Long getDeletedAt() {
         return deletedAt;
     }
 
-    public void setDeletedAt(Object deletedAt) {
+    public void setDeletedAt(Long deletedAt) {
         this.deletedAt = deletedAt;
     }
 
@@ -141,22 +144,22 @@ public class ChatGroup implements Parcelable {
         return CREATOR;
     }
 
+    public Long getUserAmount() {
+        return userAmount;
+    }
+
+    public void setUserAmount(Long userAmount) {
+        this.userAmount = userAmount;
+    }
+
     protected ChatGroup(Parcel in) {
     }
 
-    @Override
-    public String toString() {
-        return "ChatGroup{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", userId='" + userId + '\'' +
-                ", members=" + members +
-                ", messageAmount=" + messageAmount +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", deletedAt=" + deletedAt +
-                ", v=" + v +
-                '}';
+    public ChatGroup(String name, String userId, Long userAmount, ArrayList<User> members) {
+        this.name = name;
+        this.userId = userId;
+        this.userAmount = userAmount;
+        this.members = members;
     }
 
     public static final Creator<ChatGroup> CREATOR = new Creator<ChatGroup>() {
@@ -178,5 +181,21 @@ public class ChatGroup implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+    }
+
+    @Override
+    public String toString() {
+        return "ChatGroup{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", userId='" + userId + '\'' +
+                ", userAmount=" + userAmount +
+                ", members=" + members +
+                ", messageAmount=" + messageAmount +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", deletedAt=" + deletedAt +
+                ", v=" + v +
+                '}';
     }
 }

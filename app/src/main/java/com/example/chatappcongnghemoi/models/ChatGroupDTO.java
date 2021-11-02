@@ -9,6 +9,7 @@ public class ChatGroupDTO {
     private  ChatGroup chatGroup;
 
     public ChatGroupDTO(ChatGroup chatGroup) {
+        super();
         this.chatGroup = chatGroup;
     }
 
