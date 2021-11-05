@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -48,6 +49,7 @@ public class PhoneBookActivity extends AppCompatActivity {
     private LinearLayout lineFriendRequest;
     private LinearLayout lineLoadPhoneBook;
     private DataService dataService;
+    private ImageView btnAddGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +88,12 @@ public class PhoneBookActivity extends AppCompatActivity {
                 }
             }
         });
-
+        btnAddGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(PhoneBookActivity.this,AddGroupChat.class));
+            }
+        });
     }
 
     private void mapping() {
@@ -97,6 +104,7 @@ public class PhoneBookActivity extends AppCompatActivity {
         lineFriendRequest = findViewById(R.id.actPhoneBook_friendReq);
         lineLoadPhoneBook = findViewById(R.id.actPhonebook_loadPhonebook);
         txt_search_user = findViewById(R.id.txt_phonebook_search_user);
+        btnAddGroup = findViewById(R.id.input_personal_creategroundfriends);
     }
 
     public void init() {

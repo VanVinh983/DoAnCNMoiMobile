@@ -7,6 +7,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ChatGroup implements Parcelable {
 
@@ -25,9 +26,14 @@ public class ChatGroup implements Parcelable {
     @SerializedName("userAmount")
     @Expose
     private Long userAmount;
+//    @SerializedName("members")
+//    @Expose
+//    private ArrayList<User> members;
+
     @SerializedName("members")
     @Expose
-    private ArrayList<User> members;
+    private ArrayList<Map<String,String>> members;
+
     @SerializedName("messageAmount")
     @Expose
     private Long messageAmount;
@@ -47,7 +53,7 @@ public class ChatGroup implements Parcelable {
     @Expose
     private Integer v;
 
-    public ChatGroup(String name, String userId, Long userAmount, ArrayList<User> members, Long messageAmount, Long createdAt, Long updatedAt, Long deletedAt, Integer v) {
+    public ChatGroup(String name, String userId, Long userAmount, ArrayList<Map<String,String>> members, Long messageAmount, Long createdAt, Long updatedAt, Long deletedAt, Integer v) {
         this.name = name;
         this.userId = userId;
         this.userAmount = userAmount;
@@ -92,11 +98,11 @@ public class ChatGroup implements Parcelable {
         this.userId = userId;
     }
 
-    public ArrayList<User> getMembers() {
+    public ArrayList<Map<String,String>> getMembers() {
         return members;
     }
 
-    public void setMembers(ArrayList<User> members) {
+    public void setMembers(ArrayList<Map<String,String>> members) {
         this.members = members;
     }
 
@@ -155,7 +161,7 @@ public class ChatGroup implements Parcelable {
     protected ChatGroup(Parcel in) {
     }
 
-    public ChatGroup(String name, String userId, Long userAmount, ArrayList<User> members) {
+    public ChatGroup(String name, String userId, Long userAmount, ArrayList<Map<String,String>> members) {
         this.name = name;
         this.userId = userId;
         this.userAmount = userAmount;

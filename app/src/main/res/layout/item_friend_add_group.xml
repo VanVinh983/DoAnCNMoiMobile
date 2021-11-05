@@ -8,9 +8,10 @@
         android:layout_marginTop="3dp"
         android:background="#000"
         android:layout_width="match_parent"
-        android:layout_height="2dp">
+        android:layout_height="1dp">
     </View>
     <LinearLayout
+        android:paddingVertical="3dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <de.hdodenhof.circleimageview.CircleImageView
@@ -39,6 +40,6 @@
     <View
         android:background="#000"
         android:layout_width="match_parent"
-        android:layout_height="2dp">
+        android:layout_height="1dp">
     </View>
 </LinearLayout>

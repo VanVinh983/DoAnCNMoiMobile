@@ -34,6 +34,8 @@ import com.example.chatappcongnghemoi.retrofit.DataService;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -139,20 +141,24 @@ public class AddGroupChat extends AppCompatActivity {
                 if(response.isSuccessful()){
                     User user = response.body().getUser();
                     list.add(user);
-                    ArrayList<String> listUserID = new ArrayList<>();
+                    Map<String,String> mapUserId = new HashMap<>();
+                    ArrayList<Map<String,String>> members = new ArrayList<>();
                     list.forEach((u -> {
-                        listUserID.add(u.getId());
+                        mapUserId.put("userId",u.getId());
+                        members.add(mapUserId);
                     }));
-//                    ChatGroup chatGroup = new ChatGroup(groupName,user.getId(),Long.parseLong(list.size()+""),listUserID);
-                    ChatGroup chatGroup = new ChatGroup(groupName,user.getId(),Long.parseLong(list.size()+""),list);
+
+                    ChatGroup chatGroup = new ChatGroup(groupName,user.getId(),Long.parseLong(list.size()+""),members);
                     Call<ChatGroupDTO> callGroup = dataService.createChatGroup(chatGroup);
                     callGroup.enqueue(new Callback<ChatGroupDTO>() {
                         @Override
                         public void onResponse(Call<ChatGroupDTO> call, Response<ChatGroupDTO> response) {
                             if(response.isSuccessful()){
-                                Toast.makeText(AddGroupChat.this, "OK", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddGroupChat.this, "Tạo nhóm thành công", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(AddGroupChat.this,Home.class));
+                                finish();
                             }else{
-                                Toast.makeText(AddGroupChat.this, ""+response.errorBody(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AddGroupChat.this, "Tạo nhóm không thành công", Toast.LENGTH_SHORT).show();
 
                             }
 
