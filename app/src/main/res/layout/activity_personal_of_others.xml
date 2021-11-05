@@ -126,7 +126,7 @@
                 android:paddingBottom="10dp">
 
                 <Button
-                    android:id="@+id/button8"
+                    android:id="@+id/btn_addnewmessage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"

@@ -68,6 +68,7 @@
             android:id="@+id/image_chatbox_avatart"
             android:layout_width="50dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:src="@drawable/avatar" />
 
         <EditText
@@ -87,7 +88,7 @@
 
         <ImageButton
             android:id="@+id/btn_chatbox_send_message"
-            android:layout_width="5dp"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:backgroundTint="#00FFFFFF"

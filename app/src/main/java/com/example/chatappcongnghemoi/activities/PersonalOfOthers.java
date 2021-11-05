@@ -34,7 +34,7 @@ public class PersonalOfOthers extends AppCompatActivity {
 
     private CircleImageView imgAvatar;
     private TextView txtMainUserName, txtUserName, txtBirth, txtGender, txtPhone, txtAddress;
-    private Button btnBack, btnAddFriend;
+    private Button btnBack, btnAddFriend, btnAddNewMessage;
 
     private User user;
     private DataService dataService;
@@ -56,6 +56,7 @@ public class PersonalOfOthers extends AppCompatActivity {
         txtAddress = findViewById(R.id.input_personal_friend_address);
         btnBack = findViewById(R.id.button13);
         btnAddFriend = findViewById(R.id.button9);
+        btnAddNewMessage = findViewById(R.id.btn_addnewmessage);
 
         dataService = ApiService.getService();
 
@@ -92,6 +93,14 @@ public class PersonalOfOthers extends AppCompatActivity {
             }
         });
 
+        btnAddNewMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(PersonalOfOthers.this, ChatBox.class);
+                intent1.putExtra("friendId", user.getId());
+                PersonalOfOthers.this.startActivity(intent1);
+            }
+        });
     }
 
     private void postContact() {

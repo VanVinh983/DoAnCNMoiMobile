@@ -131,7 +131,9 @@ public class ChatBox extends AppCompatActivity {
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBox.this, LinearLayoutManager.VERTICAL, false);
                             linearLayoutManager.setStackFromEnd(true);
                             recyclerViewMessage.setLayoutManager(linearLayoutManager);
-                            recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount()-1);
+                            if (messageAdapter.getItemCount()>0){
+                                recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount()-1);
+                            }
                             handler.removeCallbacks(this);
                         }else {
                             handler.postDelayed(this,500);
