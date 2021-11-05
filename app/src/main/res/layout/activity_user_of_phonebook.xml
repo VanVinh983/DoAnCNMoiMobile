@@ -5,9 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".activities.UserOfPhonebookActivity">
     <LinearLayout
-        android:background="#001FFD"
+        android:background="@color/main_color"
         android:padding="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

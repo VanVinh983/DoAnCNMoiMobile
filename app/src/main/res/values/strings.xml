@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ChatAppCongNgheMoi</string>
+    <string name="app_name">App Chat</string>
     <string name="quenmatkhau"><u>Quên mật khẩu</u></string>
     <string name="menuHome"><b>Tin nhắn</b></string>
     <string name="menuDanhBa"><b>Danh bạ</b></string>

@@ -5,9 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.AddGroupChat"
+    android:background="@color/white"
     android:orientation="vertical">
     <LinearLayout
-        android:background="#001FFD"
+        android:background="@color/main_color"
         android:layout_width="match_parent"
         android:layout_height="50dp">
         <ImageView
@@ -16,15 +17,15 @@
             android:layout_height="match_parent"
             app:srcCompat="@drawable/ic_baseline_arrow_back_24"
             app:tint="#fff" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Tạo nhóm"
-            android:textSize="25dp"
-            android:textAlignment="center"
             android:layout_marginTop="10dp"
+            android:text="Tạo nhóm"
+            android:textAlignment="center"
             android:textColor="#fff"
-            />
+            android:textSize="25dp" />
     </LinearLayout>
 
     <LinearLayout

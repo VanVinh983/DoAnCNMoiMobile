@@ -48,6 +48,7 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
 
 
     private boolean flag = false;
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -167,6 +168,7 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
                     while (pCur.moveToNext()) {
                         String phoneNo = pCur.getString(pCur.getColumnIndex(
                                 ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        phoneNo = getSpaceOnPhoneNumber(phoneNo);
                         phoneNumberList.add(phoneNo);
                     }
                     pCur.close();
@@ -177,5 +179,18 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
             cur.close();
         }
         return phoneNumberList;
+    }
+
+    public String getSpaceOnPhoneNumber(String phoneNumber) {
+        String result = "";
+        String[] phoneNumberPath = phoneNumber.split(" ");
+        if (phoneNumberPath.length > 0) {
+            for (int i = 0; i < phoneNumberPath.length; i++) {
+                result += phoneNumberPath[i];
+            }
+            return result;
+        } else {
+            return phoneNumber;
+        }
     }
 }
