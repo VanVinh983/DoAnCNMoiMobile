@@ -108,9 +108,10 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewGroup"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="7"/>
+        android:layout_weight="7" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/actGroup_bottomNavagation"

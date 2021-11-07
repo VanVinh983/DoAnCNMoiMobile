@@ -26,13 +26,13 @@ public class ChatGroup implements Parcelable {
     @SerializedName("userAmount")
     @Expose
     private Long userAmount;
-//    @SerializedName("members")
-//    @Expose
-//    private ArrayList<User> members;
-
     @SerializedName("members")
     @Expose
     private ArrayList<Map<String,String>> members;
+
+//    @SerializedName("members")
+//    @Expose
+//    private ArrayList<Map<String,String>> members;
 
     @SerializedName("messageAmount")
     @Expose

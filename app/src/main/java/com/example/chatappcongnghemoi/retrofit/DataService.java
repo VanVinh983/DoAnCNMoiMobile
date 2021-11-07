@@ -59,5 +59,6 @@ public interface DataService {
 
     @POST("chatGroups")
     Call<ChatGroupDTO> createChatGroup(@Body ChatGroup chatGroup);
-
+    @GET("chatGroups/searchUserIdToArray/{userId}")
+    Call<List<ChatGroup>> getChatGroupByUserId(@Path("userId") String id);
 }
