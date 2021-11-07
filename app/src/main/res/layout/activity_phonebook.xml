@@ -19,6 +19,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingBottom="3dp"
+                android:paddingTop="3dp"
                 android:background="@color/main_color">
 
                 <ImageView
@@ -43,7 +45,7 @@
                     android:id="@+id/btn_personal_addfriend"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginLeft="80dp"
+                    android:layout_marginLeft="60dp"
                     android:layout_marginTop="10dp"
                     app:srcCompat="@drawable/add_user_"
                     app:tint="@color/white" />
