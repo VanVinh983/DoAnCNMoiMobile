@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.adapters.UserHomeAdapter;
+import com.example.chatappcongnghemoi.models.ChatGroup;
 import com.example.chatappcongnghemoi.models.Contact;
 import com.example.chatappcongnghemoi.models.ContactDTO;
 import com.example.chatappcongnghemoi.models.ContactList;
@@ -286,11 +287,28 @@ public class Home extends AppCompatActivity {
             @Override
             public void run() {
                 if (listConversation.size()==stringList.size()){
-                    System.out.println("conversation have: "+listConversation.toString());
+                    Call<List<ChatGroup>> listCall = dataService.getChatGroupByUserId(userCurrentId);
+                    listCall.enqueue(new Callback<List<ChatGroup>>() {
+                        @Override
+                        public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
+                            for (ChatGroup chatGroup: response.body()) {
+                                User user = new User();
+                                user.setId(chatGroup.getId());
+                                user.setUserName(chatGroup.getName());
+                                user.setAvatar("https://mennatural.vn/wp-content/plugins/profilegrid-user-profiles-groups-and-communities/public/partials/images/default-group.png");
+                                listConversation.add(user);
+                            }
+                            userHomeAdapter = new UserHomeAdapter(listConversation, Home.this, userCurrentId);
+                            recyclerView.setAdapter(userHomeAdapter);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(Home.this));
+                        }
+                        @Override
+                        public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
+                            Toast.makeText(Home.this, "Fail get chat group By user Id", Toast.LENGTH_SHORT).show();
+                            System.err.println("Fail get chat group By user Id" + t.toString());
+                        }
+                    });
                     handler.removeCallbacks(this);
-                    userHomeAdapter = new UserHomeAdapter(listConversation, Home.this, userCurrentId);
-                    recyclerView.setAdapter(userHomeAdapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(Home.this));
                 }else {
                     handler.postDelayed(this,500);
                 }

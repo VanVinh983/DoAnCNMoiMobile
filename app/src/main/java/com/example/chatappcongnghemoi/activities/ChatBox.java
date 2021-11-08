@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +41,7 @@ public class ChatBox extends AppCompatActivity {
     private List<Message> messages;
     private MessageAdapter messageAdapter;
     private RecyclerView recyclerViewMessage;
+    private EditText input_message_text;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

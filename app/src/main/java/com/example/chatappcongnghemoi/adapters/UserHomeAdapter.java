@@ -61,8 +61,12 @@ public class UserHomeAdapter extends RecyclerView.Adapter<UserHomeAdapter.ViewHo
         call.enqueue(new Callback<List<Message>>() {
             @Override
             public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
-                Message message = response.body().get(response.body().size()-1);
+                Message message = new Message();
+                if (response.body().size()>0){
+                    message = response.body().get(response.body().size()-1);
+                }
                 messages.add(message);
+
             }
             @Override
             public void onFailure(Call<List<Message>> call, Throwable t) {
@@ -78,10 +82,12 @@ public class UserHomeAdapter extends RecyclerView.Adapter<UserHomeAdapter.ViewHo
                     handler.postDelayed(this,500);
                 }else {
                     Message m = messages.get(0);
-                    if (m.getSenderId().equals(userCurrentId)){
-                        holder.txt_last_message.setText("Bạn: "+m.getText());
-                    }else {
-                        holder.txt_last_message.setText( user.getUserName()+": "+m.getText());
+                    if (m.getText() != null){
+                        if (m.getSenderId().equals(userCurrentId)){
+                            holder.txt_last_message.setText("Bạn: "+m.getText());
+                        }else {
+                            holder.txt_last_message.setText( user.getUserName()+": "+m.getText());
+                        }
                     }
                 }
             }
@@ -111,7 +117,6 @@ public class UserHomeAdapter extends RecyclerView.Adapter<UserHomeAdapter.ViewHo
             txt_username = itemView.findViewById(R.id.txt_home_item_user_name);
             txt_last_message = itemView.findViewById(R.id.txt_home_item_first_message);
             itemview = itemView;
-
         }
     }
 }
