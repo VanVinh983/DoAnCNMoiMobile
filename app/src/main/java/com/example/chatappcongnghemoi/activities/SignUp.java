@@ -56,7 +56,7 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String username = txtUsername.getText().toString().trim();
-                if(username.matches("^[a-zA-Z][a-zA-Z\\s]{2,40}$")) {
+                if(username.matches("^[\\u0041-\\u00ff\\u0100-\\u013c\\u01cd-\\u01ce\\s]{2,40}$")) {
                     Intent intent = new Intent(SignUp.this,SignUp_SDT.class);
                     intent.putExtra("username",username);
                     startActivity(intent);

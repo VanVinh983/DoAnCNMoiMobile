@@ -121,7 +121,7 @@ public class AddGroupChat extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String groupName = txtGroupName.getText().toString();
-                if(!groupName.matches("^[a-zA-Z0-9][a-zA-Z0-9\\s]{2,40}$")){
+                if(!groupName.matches("^[0-9\\u0041-\\u00ff\\u0100-\\u013c\\u01cd-\\u01ce\\s]{2,40}$")){
                     Toast.makeText(AddGroupChat.this, "Tên nhóm không được chứa kí tự đặc biệt, có từ 2-40 kí tự", Toast.LENGTH_SHORT).show();
                 }else{
                     if(listFriendsClickAdd.size() < 2){

@@ -94,6 +94,7 @@ public class Login extends AppCompatActivity {
                                             Intent intent = new Intent(Login.this,Home.class);
                                             user.setOnline(true);
                                             saveID(user.getId());
+                                            Toast.makeText(Login.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                                             startActivity(intent);
                                             finish();
                                         }else
