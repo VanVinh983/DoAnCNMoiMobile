@@ -133,4 +133,20 @@ public class Message {
         this.v = v;
     }
 
+    @Override
+    public String toString() {
+        return "Message{" +
+                "id='" + id + '\'' +
+                ", senderId='" + senderId + '\'' +
+                ", receiverId='" + receiverId + '\'' +
+                ", chatType='" + chatType + '\'' +
+                ", messageType='" + messageType + '\'' +
+                ", text='" + text + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", deletedAt=" + deletedAt +
+                ", v=" + v +
+                '}';
+    }
 }

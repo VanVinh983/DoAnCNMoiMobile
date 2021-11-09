@@ -54,6 +54,9 @@ public interface DataService {
     @GET("messages/SearchBySenderIdAndReceiverId/{senderid}/{receiverid}")
     Call<List<Message>> getMessageBySIdAndRId(@Path("senderid") String senderid, @Path("receiverid") String receiverid);
 
+    @POST("messages/")
+    Call<Message> postMessage(@Body Message message);
+
     @GET("contacts/searchContact/{userid}")
     Call<List<Contact>> searchContactsByUserId(@Path("userid") String id);
 
