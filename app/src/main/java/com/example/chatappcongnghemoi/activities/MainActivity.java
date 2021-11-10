@@ -16,6 +16,7 @@ import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.example.chatappcongnghemoi.socket.ListenSocket;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(MainActivity.this,StartApp.class);
+                Intent intent = new Intent(MainActivity.this, ListenSocket.class);
                 startActivity(intent);
                 finish();
             }

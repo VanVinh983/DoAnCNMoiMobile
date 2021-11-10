@@ -66,4 +66,5 @@ dependencies {
         exclude group: 'org.json', module: 'json'
     }
 
+    implementation ('org.jitsi.react:jitsi-meet-sdk:2.9.0') { transitive = true }
 }
