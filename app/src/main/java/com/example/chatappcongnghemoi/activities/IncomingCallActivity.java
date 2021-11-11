@@ -2,17 +2,25 @@ package com.example.chatappcongnghemoi.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.models.CallingDTO;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.example.chatappcongnghemoi.socket.ListenSocket;
 import com.example.chatappcongnghemoi.socket.VideoCallSocket;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -31,6 +39,7 @@ public class IncomingCallActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_incoming_call);
+        getSupportActionBar().hide();
 
         avatar = findViewById(R.id.incoming_avatar);
         name = findViewById(R.id.incoming_name);
@@ -46,20 +55,26 @@ public class IncomingCallActivity extends AppCompatActivity {
             }
         });
 
-        if (getIntent().hasExtra("callerId")) {
-            String callerId = getIntent().getStringExtra("callerId");
-//            System.out.println("====> Caller: " + callerId);
-            setUI(callerId);
-        }
+        if (getIntent().hasExtra("callingDTO")) {
+            CallingDTO callingDTO = (CallingDTO) getIntent().getSerializableExtra("callingDTO");
+            setUI(callingDTO.getCallerId());
 
-        if(getIntent().hasExtra("message")){
             btnAccept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String message = getIntent().getStringExtra("message") + "/" + "accept";
-                    System.out.println("===> Message Status: " + message);
-                    new VideoCallSocket().sendStatusCallingSocket(message);                }
+                    callingDTO.setStatus("accept");
+                    new VideoCallSocket().sendStatusCallingSocket(new Gson().toJson(callingDTO));
+                }
             });
+
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    callingDTO.setStatus("cancel");
+                    new VideoCallSocket().sendStatusCallingSocket(new Gson().toJson(callingDTO));
+                }
+            });
+
         }
     }
 
@@ -79,5 +94,28 @@ public class IncomingCallActivity extends AppCompatActivity {
                 t.printStackTrace();
             }
         });
+
+        finishRunForeground();
+    }
+
+    /**
+     * Không cho chạy nền
+     */
+    private void finishRunForeground() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Get Current Activity is visible
+                ActivityManager am = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+                ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
+
+                if (cn.getClassName().equals(IncomingCallActivity.class.getName())) {
+                    finish();
+                }
+
+                handler.postDelayed(this, 10000);
+            }
+        }, 10000);
     }
 }

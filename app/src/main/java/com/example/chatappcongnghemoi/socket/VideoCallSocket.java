@@ -7,7 +7,7 @@ import io.socket.client.Socket;
 public class VideoCallSocket {
     private static Socket socket = MySocket.getInstance().getSocket();
 
-    // message format callerId/receiverId/type/status
+    // message format JSON CallingDTO
     public void sendStatusCallingSocket(String message) {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

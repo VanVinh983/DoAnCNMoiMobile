@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.activities.OutgoingCallActivity;
 import com.example.chatappcongnghemoi.activities.PersonalOfOthers;
+import com.example.chatappcongnghemoi.models.CallingDTO;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.socket.ListenSocket;
 import com.example.chatappcongnghemoi.socket.VideoCallSocket;
@@ -78,10 +79,11 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecycler
                 Intent intent = new Intent(context, OutgoingCallActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("Receiver", user);
-                bundle.putString("type", "video");
+                CallingDTO callingDTO = new CallingDTO();
+                callingDTO.setType("video");
+                bundle.putSerializable("callingDTO", callingDTO);
                 intent.putExtras(bundle);
-//                intent.putExtra("Receiver", user);
-//                intent.putExtra("type", "video");
+
                 ((Activity)context).finish();
                 context.startActivity(intent);
             }
@@ -92,13 +94,15 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecycler
             public void onClick(View v) {
                 Intent intent = new Intent(context, OutgoingCallActivity.class);
                 Bundle bundle = new Bundle();
+
                 bundle.putParcelable("Receiver", user);
-                bundle.putString("type", "audio");
+                CallingDTO callingDTO = new CallingDTO();
+                callingDTO.setType("audio");
+                bundle.putSerializable("callingDTO", callingDTO);
                 intent.putExtras(bundle);
-//                intent.putExtra("Receiver", user);
-//                intent.putExtra("type", "audio");
-                ((Activity)context).finish();
+
                 context.startActivity(intent);
+                ((Activity)context).finish();
             }
         });
     }

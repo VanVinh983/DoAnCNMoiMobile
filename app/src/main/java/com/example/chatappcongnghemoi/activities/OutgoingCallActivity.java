@@ -2,16 +2,22 @@ package com.example.chatappcongnghemoi.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.models.CallingDTO;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.socket.VideoCallSocket;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -36,21 +42,25 @@ public class OutgoingCallActivity extends AppCompatActivity {
         if (getIntent().getExtras() != null) {
             Bundle bundle = getIntent().getExtras();
             User receiver = bundle.getParcelable("Receiver");
-            String type = bundle.getString("type", "video");
 
             Picasso.get().load(receiver.getAvatar()).into(avatar);
             name.setText(receiver.getUserName());
+
+            CallingDTO callingDTO = (CallingDTO) bundle.getSerializable("callingDTO");
+            callingDTO.setCallerId(getUserId());
+            callingDTO.setReceiverId(receiver.getId());
+            callingDTO.setStatus("none");
+            new VideoCallSocket().sendStatusCallingSocket(new Gson().toJson(callingDTO));
+
             btnCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    finish();
-                    startActivity(new Intent(OutgoingCallActivity.this, PhoneBookActivity.class));
+                    callingDTO.setStatus("cancel");
+                    new VideoCallSocket().sendStatusCallingSocket(new Gson().toJson(callingDTO));
                 }
             });
 
-            String message = getUserId() + "/" + receiver.getId() + "/" + type;
-//            System.out.println("===>Type Call: " + type);
-            new VideoCallSocket().sendStatusCallingSocket(message);
+            finishRunForeground();
         }
     }
 
@@ -58,6 +68,27 @@ public class OutgoingCallActivity extends AppCompatActivity {
         final String SHARED_PREFERENCES = "saveID";
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE);
         return sharedPreferences.getString("userId", "");
+    }
+
+    /**
+     * Không cho chạy nền
+     */
+    private void finishRunForeground(){
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Get Current Activity is visible
+                ActivityManager am = (ActivityManager)getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+                ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
+
+                if(cn.getClassName().equals(OutgoingCallActivity.class.getName())){
+                    finish();
+                }
+
+                handler.postDelayed(this, 60000);
+            }
+        }, 10000);
     }
 
 }
