@@ -158,8 +158,7 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                     input_yearOfBirth.setText(user.getBirthday());
                     input_numberPhone.setText(user.getLocal().getPhone());
                     input_address.setText(user.getAddress());
-                    String url = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/"+user.getAvatar();
-                    Glide.with( Personal.this).load(url).into(imageView_Avatar);
+                    Glide.with( Personal.this).load(user.getAvatar()).into(imageView_Avatar);
                 }else {
                     handler.postDelayed(this, 500);
                 }

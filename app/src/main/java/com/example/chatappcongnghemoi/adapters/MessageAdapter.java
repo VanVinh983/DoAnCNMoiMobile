@@ -58,8 +58,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             } else {
                 holder.txt_content.setText(message.getText().toString());
             }
-            String url = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/"+friend.getAvatar();
-            Glide.with(context).load(url).into(holder.avatar);
+
+            Glide.with(context).load(userCurrent.getAvatar()).into(holder.avatar);
         }
     }
 

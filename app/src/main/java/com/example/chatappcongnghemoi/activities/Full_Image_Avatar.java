@@ -31,8 +31,7 @@ public class Full_Image_Avatar extends AppCompatActivity {
         });
         Intent intent = getIntent();
         String url = intent.getStringExtra("url");
-        String url_load = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/"+url;
         System.out.println("tenn anh: "+ url);
-        Glide.with(this).load(url_load).into(image_avatar);
+        Glide.with(this).load(url).into(image_avatar);
     }
 }
