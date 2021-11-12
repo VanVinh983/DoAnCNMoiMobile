@@ -2,18 +2,14 @@ package com.example.chatappcongnghemoi.activities;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -22,14 +18,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.adapters.ContactRecyclerAdapter;
+import com.example.chatappcongnghemoi.adapters.UserPhonebookAdapter;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
+import com.example.chatappcongnghemoi.models.UserPhonebook;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,11 +36,12 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
     public static final int REQUEST_READ_CONTACTS = 79;
     private DataService dataService;
 
-    private RecyclerView recyclerView;
+    private RecyclerView listViewAccount, listViewNotAccount;
     private ImageButton btnBack;
 
-    private ArrayList phoneNumberList;
+    private ArrayList<UserPhonebook> userPhonebooks;
     private ArrayList<User> userList;
+    private UserPhonebookAdapter userPhonebookAdapter;
     private ContactRecyclerAdapter adapter;
 
 
@@ -57,12 +55,13 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         btnBack = findViewById(R.id.actUserPhoneBook_btnBack);
-        recyclerView = findViewById(R.id.actUserPhoneBook_recyclerView);
+        listViewAccount = findViewById(R.id.actUserPhoneBook_recyclerView);
+        listViewNotAccount = findViewById(R.id.actUserPhoneBook_listNotAccount);
         dataService = ApiService.getService();
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS)
                 == PackageManager.PERMISSION_GRANTED) {
-            phoneNumberList = getAllContacts();
+            getAllContacts();
         } else {
             requestPermission();
         }
@@ -75,14 +74,20 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
             public void run() {
                 if (flag) {
                     adapter = new ContactRecyclerAdapter(UserOfPhonebookActivity.this, userList);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(UserOfPhonebookActivity.this));
-                    recyclerView.setAdapter(adapter);
+                    listViewAccount.setLayoutManager(new LinearLayoutManager(UserOfPhonebookActivity.this));
+                    listViewAccount.setAdapter(adapter);
+
+                    userPhonebookAdapter = new UserPhonebookAdapter(UserOfPhonebookActivity.this, userPhonebooks);
+                    listViewNotAccount.setLayoutManager(new LinearLayoutManager(UserOfPhonebookActivity.this));
+                    listViewNotAccount.setAdapter(userPhonebookAdapter);
+
                     handler.removeCallbacks(this);
                 } else {
-                    handler.postDelayed(this, 500);
+                    handler.postDelayed(this, 1000);
                 }
             }
-        }, 500);
+        }, 1000);
+
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,16 +98,21 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
     }
 
     private void getUserList() {
-        if (phoneNumberList != null) {
+        if (userPhonebooks != null) {
             userList = new ArrayList<>();
-            for (int i = 0; i < phoneNumberList.size(); i++) {
-                Call<UserDTO> callback = dataService.getUserByPhone(phoneNumberList.get(i).toString());
+
+            for (int i = 0; i < userPhonebooks.size(); i++) {
+                int position = i;
+                Call<UserDTO> callback = dataService.getUserByPhone(userPhonebooks.get(i).getPhone());
                 callback.enqueue(new Callback<UserDTO>() {
                     @Override
                     public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
                         User user = response.body().getUser();
                         if (user != null)
                             userList.add(user);
+                        else {
+                            userPhonebooks.add(new UserPhonebook(userPhonebooks.get(position).getName(), userPhonebooks.get(position).getPhone()));
+                        }
                     }
 
                     @Override
@@ -110,7 +120,8 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
                         t.printStackTrace();
                     }
                 });
-                if (i == phoneNumberList.size() - 1) {
+
+                if (i == userPhonebooks.size() - 1) {
                     flag = true;
                 }
             }
@@ -138,7 +149,7 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_READ_CONTACTS: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    phoneNumberList = getAllContacts();
+                    getAllContacts();
                 } else {
                     // permission denied,Disable the
                     // functionality that depends on this permission.
@@ -148,8 +159,9 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
         }
     }
 
-    private ArrayList getAllContacts() {
-        ArrayList<String> phoneNumberList = new ArrayList<>();
+    private void getAllContacts() {
+        userPhonebooks = new ArrayList<>();
+
         ContentResolver cr = getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
@@ -159,6 +171,7 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
                         cur.getColumnIndex(ContactsContract.Contacts._ID));
                 String name = cur.getString(cur.getColumnIndex(
                         ContactsContract.Contacts.DISPLAY_NAME));
+//                System.out.println("===> NAME: " + name);
                 if (cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
                     Cursor pCur = cr.query(
                             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -169,7 +182,8 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
                         String phoneNo = pCur.getString(pCur.getColumnIndex(
                                 ContactsContract.CommonDataKinds.Phone.NUMBER));
                         phoneNo = getSpaceOnPhoneNumber(phoneNo);
-                        phoneNumberList.add(phoneNo);
+//                        System.out.println("===> PHONE NUMBER: " + phoneNo);
+                        userPhonebooks.add(new UserPhonebook(name, phoneNo));
                     }
                     pCur.close();
                 }
@@ -178,7 +192,6 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
         if (cur != null) {
             cur.close();
         }
-        return phoneNumberList;
     }
 
     public String getSpaceOnPhoneNumber(String phoneNumber) {

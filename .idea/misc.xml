@@ -39,6 +39,7 @@
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/drawable/bg_btn_end_call_selected.xml" value="0.20260416666666667" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/drawable/bg_button.xml" value="0.20260416666666667" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/drawable/bg_outgoing_activity.xml" value="0.20260416666666667" />
+        <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/drawable/bg_underline.xml" value="0.20260416666666667" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/drawable/btn_answer_call_selector.xml" value="0.20260416666666667" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/drawable/btn_end_call_selector.xml" value="0.20260416666666667" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/drawable/btn_mic.xml" value="0.20260416666666667" />
@@ -86,16 +87,17 @@
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/activity_sign_up_sdt.xml" value="0.18645833333333334" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/activity_start_app.xml" value="0.18645833333333334" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/activity_update_introduce.xml" value="0.18645833333333334" />
-        <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/activity_user_of_phonebook.xml" value="0.18645833333333334" />
+        <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/activity_user_of_phonebook.xml" value="0.33" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/activity_video_call.xml" value="0.18645833333333334" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/dialog_logout.xml" value="0.18645833333333334" />
-        <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/item_contact.xml" value="0.18645833333333334" />
+        <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/item_contact.xml" value="0.25" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/item_friend_add_group.xml" value="0.18645833333333334" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/item_friend_request.xml" value="0.33" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/item_image_friend_click_addgroup.xml" value="0.18645833333333334" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/item_online_contact.xml" value="0.22" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/item_start.xml" value="0.18645833333333334" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/item_user_of_contact.xml" value="0.18645833333333334" />
+        <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/item_user_phonebook.xml" value="0.25" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/layout_chatbox_left.xml" value="0.18645833333333334" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/layout_chatbox_right.xml" value="0.18645833333333334" />
         <entry key="..\:/Project/Cong Nghe Moi/DoAnCNMoiMobile/app/src/main/res/layout/layout_dialog_avatar_personal.xml" value="0.18645833333333334" />

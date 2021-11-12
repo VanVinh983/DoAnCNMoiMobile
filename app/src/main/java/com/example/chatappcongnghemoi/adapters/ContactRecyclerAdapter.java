@@ -1,5 +1,6 @@
 package com.example.chatappcongnghemoi.adapters;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.activities.OutgoingCallActivity;
 import com.example.chatappcongnghemoi.activities.PersonalOfOthers;
+import com.example.chatappcongnghemoi.activities.UserOfPhonebookActivity;
 import com.example.chatappcongnghemoi.models.CallingDTO;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.socket.ListenSocket;
@@ -48,6 +50,7 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecycler
 
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         User user = users.get(position);
@@ -58,7 +61,10 @@ public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecycler
             holder.avatar.setImageResource(R.drawable.avatar);
         }
         try {
-            holder.txtName.setText(user.getUserName());
+            if(context.getClass() == UserOfPhonebookActivity.class) // Nếu bên danh bạ hiển thị thêm sđt
+                holder.txtName.setText(user.getUserName() + "\n" + user.getLocal().getPhone());
+            else
+                holder.txtName.setText(user.getUserName());
         } catch (NullPointerException e) {
             holder.txtName.setText("User Name");
         }
