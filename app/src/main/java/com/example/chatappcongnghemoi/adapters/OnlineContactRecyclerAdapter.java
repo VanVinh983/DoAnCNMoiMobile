@@ -1,7 +1,9 @@
 package com.example.chatappcongnghemoi.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.activities.OutgoingCallActivity;
 import com.example.chatappcongnghemoi.activities.PersonalOfOthers;
+import com.example.chatappcongnghemoi.models.CallingDTO;
 import com.example.chatappcongnghemoi.models.User;
 import com.squareup.picasso.Picasso;
 
@@ -50,6 +54,39 @@ public class OnlineContactRecyclerAdapter extends RecyclerView.Adapter<OnlineCon
                 Intent intent = new Intent(context, PersonalOfOthers.class);
                 intent.putExtra("user",user);
                 context.startActivity(intent);
+            }
+        });
+
+        holder.btnVideoCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, OutgoingCallActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("Receiver", user);
+                CallingDTO callingDTO = new CallingDTO();
+                callingDTO.setType("video");
+                bundle.putSerializable("callingDTO", callingDTO);
+                intent.putExtras(bundle);
+
+                context.startActivity(intent);
+                ((Activity)context).finish();
+            }
+        });
+
+        holder.btnCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, OutgoingCallActivity.class);
+                Bundle bundle = new Bundle();
+
+                bundle.putParcelable("Receiver", user);
+                CallingDTO callingDTO = new CallingDTO();
+                callingDTO.setType("audio");
+                bundle.putSerializable("callingDTO", callingDTO);
+                intent.putExtras(bundle);
+
+                context.startActivity(intent);
+                ((Activity)context).finish();
             }
         });
     }
