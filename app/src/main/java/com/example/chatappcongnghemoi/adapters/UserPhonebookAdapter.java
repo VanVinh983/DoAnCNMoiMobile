@@ -33,8 +33,12 @@ public class UserPhonebookAdapter extends RecyclerView.Adapter<UserPhonebookAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         UserPhonebook userPhonebook = list.get(position);
-        holder.txtName.setText(userPhonebook.getName());
-        holder.txtPhone.setText(userPhonebook.getPhone());
+        try {
+            System.out.println("====> USER PHONEBOOK: " + userPhonebook.toString());
+            holder.txtName.setText(userPhonebook.getName());
+            holder.txtPhone.setText(userPhonebook.getPhone());
+        }catch (NullPointerException ignored){
+        }
     }
 
     @Override
@@ -44,10 +48,11 @@ public class UserPhonebookAdapter extends RecyclerView.Adapter<UserPhonebookAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView txtName, txtPhone;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtName = itemView.findViewById(R.id.itmUserPhonebook_txtName);
-            txtName = itemView.findViewById(R.id.itmUserPhonebook_txtPhone);
+            txtPhone = itemView.findViewById(R.id.itmUserPhonebook_txtPhone);
         }
     }
 }

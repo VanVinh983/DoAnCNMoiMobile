@@ -41,11 +41,10 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
 
     private ArrayList<UserPhonebook> userPhonebooks;
     private ArrayList<User> userList;
+
     private UserPhonebookAdapter userPhonebookAdapter;
     private ContactRecyclerAdapter adapter;
 
-
-    private boolean flag = false;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -61,18 +60,30 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS)
                 == PackageManager.PERMISSION_GRANTED) {
-            getAllContacts();
+            userPhonebooks = getAllContacts();
         } else {
             requestPermission();
         }
 
         getUserList();
 
+        initUI();
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+    }
+
+    private void initUI() {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (flag) {
+                if (getUserList()) {
                     adapter = new ContactRecyclerAdapter(UserOfPhonebookActivity.this, userList);
                     listViewAccount.setLayoutManager(new LinearLayoutManager(UserOfPhonebookActivity.this));
                     listViewAccount.setAdapter(adapter);
@@ -87,46 +98,40 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
                 }
             }
         }, 1000);
-
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
     }
 
-    private void getUserList() {
-        if (userPhonebooks != null) {
-            userList = new ArrayList<>();
+    private boolean getUserList() {
+        userList = new ArrayList<>();
+        for (int i = 0; i < userPhonebooks.size(); i++) {
+            int position = i;
+            Call<UserDTO> callback = dataService.getUserByPhone(userPhonebooks.get(i).getPhone());
+            callback.enqueue(new Callback<UserDTO>() {
+                @Override
+                public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                    User user = response.body().getUser();
+                    if (user != null) {
+                        userList.add(user);
+                        try {
+                            userPhonebooks.remove(userPhonebooks.get(position));
+                        } catch (IndexOutOfBoundsException ignored) {
 
-            for (int i = 0; i < userPhonebooks.size(); i++) {
-                int position = i;
-                Call<UserDTO> callback = dataService.getUserByPhone(userPhonebooks.get(i).getPhone());
-                callback.enqueue(new Callback<UserDTO>() {
-                    @Override
-                    public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
-                        User user = response.body().getUser();
-                        if (user != null)
-                            userList.add(user);
-                        else {
-                            userPhonebooks.add(new UserPhonebook(userPhonebooks.get(position).getName(), userPhonebooks.get(position).getPhone()));
                         }
                     }
-
-                    @Override
-                    public void onFailure(Call<UserDTO> call, Throwable t) {
-                        t.printStackTrace();
-                    }
-                });
-
-                if (i == userPhonebooks.size() - 1) {
-                    flag = true;
                 }
+
+                @Override
+                public void onFailure(Call<UserDTO> call, Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+
+            if (i == userPhonebooks.size() - 1) {
+                return true;
             }
         }
+        return false;
     }
+
 
     private void requestPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_CONTACTS)) {
@@ -159,8 +164,8 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
         }
     }
 
-    private void getAllContacts() {
-        userPhonebooks = new ArrayList<>();
+    private ArrayList<UserPhonebook> getAllContacts() {
+        ArrayList<UserPhonebook> list = new ArrayList<>();
 
         ContentResolver cr = getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
@@ -169,9 +174,9 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
             while (cur.moveToNext()) {
                 String id = cur.getString(
                         cur.getColumnIndex(ContactsContract.Contacts._ID));
+                String phoneNo = "";
                 String name = cur.getString(cur.getColumnIndex(
                         ContactsContract.Contacts.DISPLAY_NAME));
-//                System.out.println("===> NAME: " + name);
                 if (cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
                     Cursor pCur = cr.query(
                             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -179,19 +184,19 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
                             ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
                             new String[]{id}, null);
                     while (pCur.moveToNext()) {
-                        String phoneNo = pCur.getString(pCur.getColumnIndex(
+                        phoneNo = pCur.getString(pCur.getColumnIndex(
                                 ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        phoneNo = getSpaceOnPhoneNumber(phoneNo);
-//                        System.out.println("===> PHONE NUMBER: " + phoneNo);
-                        userPhonebooks.add(new UserPhonebook(name, phoneNo));
                     }
                     pCur.close();
                 }
+                phoneNo = getSpaceOnPhoneNumber(phoneNo);
+                list.add(new UserPhonebook(name, phoneNo));
             }
         }
-        if (cur != null) {
-            cur.close();
-        }
+//        if (cur != null) {
+//            cur.close();
+//        }
+        return list;
     }
 
     public String getSpaceOnPhoneNumber(String phoneNumber) {

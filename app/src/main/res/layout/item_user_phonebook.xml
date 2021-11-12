@@ -5,15 +5,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:background="@drawable/background_underline"
-    android:backgroundTint="@color/white"
     android:weightSum="10"
-    android:layout_marginBottom="6dp">
+    android:layout_margin="10dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/avatar_phonebook"
         android:layout_gravity="center"
+        android:layout_margin="5dp"
         android:layout_weight="1"/>
 
     <LinearLayout
