@@ -31,6 +31,7 @@ public class Full_Image_Avatar extends AppCompatActivity {
         });
         Intent intent = getIntent();
         String url = intent.getStringExtra("url");
+        System.out.println("tenn anh: "+ url);
         Glide.with(this).load(url).into(image_avatar);
     }
 }

@@ -10,7 +10,7 @@ import io.socket.client.Socket;
 
 public class MySocket {
     private static MySocket instance = null;
-    private static final String URL_SERVER = "http://192.168.1.10:8080";
+    private static final String URL_SERVER = "http://192.168.1.23:4002";
     private Socket socket;
     public static MySocket getInstance() {
         if (instance == null) {

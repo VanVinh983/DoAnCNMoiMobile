@@ -58,7 +58,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             } else {
                 holder.txt_content.setText(message.getText().toString());
             }
-            Glide.with(context).load(friend.getAvatar()).into(holder.avatar);
+
+            Glide.with(context).load(userCurrent.getAvatar()).into(holder.avatar);
         }
     }
 

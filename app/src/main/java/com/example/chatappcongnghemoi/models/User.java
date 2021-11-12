@@ -207,7 +207,8 @@ public class User implements Parcelable {
     }
 
     public String getAvatar() {
-        return avatar;
+        String preUrl = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/";
+        return preUrl + avatar;
     }
 
     public void setAvatar(String avatar) {
