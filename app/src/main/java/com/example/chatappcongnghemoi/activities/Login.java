@@ -93,6 +93,7 @@ public class Login extends AppCompatActivity {
                                         if(result){
                                             Intent intent = new Intent(Login.this,Home.class);
                                             user.setOnline(true);
+                                            updateOnline(user.getId(),user);
                                             saveID(user.getId());
                                             Toast.makeText(Login.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                                             startActivity(intent);
@@ -130,5 +131,19 @@ public class Login extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+    public void updateOnline(String id,User user){
+        Call<UserDTO> call = dataService.updateUser(id,user);
+        call.enqueue(new Callback<UserDTO>() {
+            @Override
+            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<UserDTO> call, Throwable t) {
+
+            }
+        });
     }
 }

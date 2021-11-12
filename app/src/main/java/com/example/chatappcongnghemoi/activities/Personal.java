@@ -198,6 +198,7 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                     public void onClick(View v) {
                         saveIDLogout();
                         dialog.dismiss();
+                        updateOffline();
                         Intent intent = new Intent(Personal.this,StartApp.class);
                         startActivity(intent);
                         finish();
@@ -389,5 +390,20 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
         String s=cursor.getString(column_index);
         cursor.close();
         return s;
+    }
+    public void updateOffline(){
+        user.setOnline(false);
+        Call<UserDTO> call = dataService.updateUser(user.getId(),user);
+        call.enqueue(new Callback<UserDTO>() {
+            @Override
+            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<UserDTO> call, Throwable t) {
+
+            }
+        });
     }
 }
