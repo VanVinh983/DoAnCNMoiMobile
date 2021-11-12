@@ -53,7 +53,8 @@ public class UserHomeAdapter extends RecyclerView.Adapter<UserHomeAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull UserHomeAdapter.ViewHolder holder, int position) {
         User user = users.get(position);
-        Glide.with(context).load(user.getAvatar()).into(holder.image_avatar);
+        String url = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/"+user.getAvatar();
+        Glide.with(context).load(url).into(holder.image_avatar);
         holder.txt_username.setText(user.getUserName());
 
         List<Message> messages = new ArrayList<>();

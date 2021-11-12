@@ -41,6 +41,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -157,7 +158,8 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                     input_yearOfBirth.setText(user.getBirthday());
                     input_numberPhone.setText(user.getLocal().getPhone());
                     input_address.setText(user.getAddress());
-                    Glide.with( Personal.this).load(user.getAvatar()).into(imageView_Avatar);
+                    String url = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/"+user.getAvatar();
+                    Glide.with( Personal.this).load(url).into(imageView_Avatar);
                 }else {
                     handler.postDelayed(this, 500);
                 }
@@ -313,16 +315,17 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null){
             Uri selectedImage = data.getData();
             File file1 = new File(getPath(selectedImage));
+            UUID uuid = UUID.randomUUID();
             try {
                 InputStream exampleInputStream = getContentResolver().openInputStream(selectedImage);
                 com.amplifyframework.core.Amplify.Storage.uploadInputStream(
-                        user.getId()+file1.getName(),
+                        uuid+"."+file1.getName(),
                         exampleInputStream,
                         result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
                         storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
                 );
-                String url = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/"+user.getId()+file1.getName();
-                updateImage(url);
+                String url = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/"+uuid+"."+file1.getName();
+                updateImage(uuid+"."+file1.getName());
                 Glide.with(Personal.this).load(url).into(imageView_Avatar);
             }  catch ( FileNotFoundException error) {
                 Log.e("MyAmplifyApp", "Could not find file to open for input stream.", error);
