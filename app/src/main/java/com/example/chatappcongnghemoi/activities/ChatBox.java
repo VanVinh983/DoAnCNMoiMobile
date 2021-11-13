@@ -34,7 +34,6 @@ import retrofit2.Response;
 
 public class ChatBox extends AppCompatActivity {
     private TextView txt_username;
-    private CircleImageView avatar_user;
     private DataService dataService;
     private User userCurrent=null;
     private User friendCurrent=null;
@@ -109,7 +108,6 @@ public class ChatBox extends AppCompatActivity {
     }
     private void mapping(){
         txt_username = findViewById(R.id.txt_chatbox_username);
-        avatar_user = findViewById(R.id.image_chatbox_avatart);
         recyclerViewMessage = findViewById(R.id.recylerview_message);
         input_message_text = findViewById(R.id.input_chatbox_message);
     }
@@ -122,7 +120,6 @@ public class ChatBox extends AppCompatActivity {
             @Override
             public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
                 userCurrent = response.body().getUser();
-                Glide.with(ChatBox.this).load(userCurrent.getAvatar()).into(avatar_user);
             }
 
             @Override

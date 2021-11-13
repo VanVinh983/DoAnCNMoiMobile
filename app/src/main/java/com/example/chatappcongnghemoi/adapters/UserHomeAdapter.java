@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.activities.ChatBox;
+import com.example.chatappcongnghemoi.models.ChatGroup;
 import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
@@ -30,14 +31,16 @@ import retrofit2.Response;
 
 public class UserHomeAdapter extends RecyclerView.Adapter<UserHomeAdapter.ViewHolder> {
     private List<User> users;
+    private List<ChatGroup> chatGroups;
     private Context context;
     private String userCurrentId;
     private DataService dataService;
 
-    public UserHomeAdapter(List<User> users, Context context, String userCurrentId) {
+    public UserHomeAdapter(List<User> users, Context context, String userCurrentId, List<ChatGroup> chatGroups) {
         this.users = users;
         this.context = context;
         this.userCurrentId = userCurrentId;
+        this.chatGroups = chatGroups;
         dataService = ApiService.getService();
     }
 
@@ -95,11 +98,30 @@ public class UserHomeAdapter extends RecyclerView.Adapter<UserHomeAdapter.ViewHo
         holder.itemview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, ChatBox.class);
-                intent.putExtra("friendId", user.getId());
-                context.startActivity(intent);
+                if (checkChatGroup(user.getId())==true){
+                    // dat intent cua chat group o day
+                    Intent intent = new Intent(context, ChatBox.class);
+                    intent.putExtra("friendId", user.getId());
+                    context.startActivity(intent);
+                    System.out.println("is chat group!");
+                }else {
+                    Intent intent = new Intent(context, ChatBox.class);
+                    intent.putExtra("friendId", user.getId());
+                    context.startActivity(intent);
+                }
             }
         });
+    }
+
+    private boolean checkChatGroup(String id){
+        boolean rs = false;
+        for (ChatGroup c: chatGroups) {
+            if (id.equals(c.getId())==true){
+                rs =true;
+                break;
+            }
+        }
+        return rs;
     }
 
     @Override

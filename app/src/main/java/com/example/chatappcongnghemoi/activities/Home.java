@@ -291,6 +291,7 @@ public class Home extends AppCompatActivity {
                     listCall.enqueue(new Callback<List<ChatGroup>>() {
                         @Override
                         public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
+                            List<ChatGroup> chatGroups = response.body();
                             for (ChatGroup chatGroup: response.body()) {
                                 User user = new User();
                                 user.setId(chatGroup.getId());
@@ -298,7 +299,7 @@ public class Home extends AppCompatActivity {
                                 user.setAvatar("https://mennatural.vn/wp-content/plugins/profilegrid-user-profiles-groups-and-communities/public/partials/images/default-group.png");
                                 listConversation.add(user);
                             }
-                            userHomeAdapter = new UserHomeAdapter(listConversation, Home.this, userCurrentId);
+                            userHomeAdapter = new UserHomeAdapter(listConversation, Home.this, userCurrentId, chatGroups);
                             recyclerView.setAdapter(userHomeAdapter);
                             recyclerView.setLayoutManager(new LinearLayoutManager(Home.this));
                         }
