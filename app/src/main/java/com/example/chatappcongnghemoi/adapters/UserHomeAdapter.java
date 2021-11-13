@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.activities.ChatBox;
+import com.example.chatappcongnghemoi.activities.ChatBoxGroup;
 import com.example.chatappcongnghemoi.models.ChatGroup;
 import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
@@ -100,8 +101,8 @@ public class UserHomeAdapter extends RecyclerView.Adapter<UserHomeAdapter.ViewHo
             public void onClick(View view) {
                 if (checkChatGroup(user.getId())==true){
                     // dat intent cua chat group o day
-                    Intent intent = new Intent(context, ChatBox.class);
-                    intent.putExtra("friendId", user.getId());
+                    Intent intent = new Intent(context, ChatBoxGroup.class);
+                    intent.putExtra("groupId", user.getId());
                     context.startActivity(intent);
                     System.out.println("is chat group!");
                 }else {

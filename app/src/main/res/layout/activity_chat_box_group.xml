@@ -85,12 +85,12 @@
         <EditText
             android:id="@+id/txtMessageText"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
             android:backgroundTint="#FFFFFF"
             android:hint="Tin nhắn ..."
-            android:inputType="textImeMultiLine"
+            android:inputType="textMultiLine|text"
             android:textSize="18sp"></EditText>
 
         <ImageView

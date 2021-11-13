@@ -1,9 +1,11 @@
 package com.example.chatappcongnghemoi.adapters;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +16,10 @@ import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
 
+import android.text.format.DateFormat;
+import android.text.format.DateUtils.*;
+
+import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -22,8 +28,8 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
     private List<Message> messages;
     private Context context;
     private User userCurrent;
-    private User sender;
     private List<User> members;
+    User sender = null;
     private static final int LEFT = 0;
     private static final int RIGHT = 1;
 
@@ -52,8 +58,9 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
     public void onBindViewHolder(@NonNull ChatBoxGroupRecyclerAdapter.ViewHolder holder, int position) {
         Message message = messages.get(position);
         members.forEach((user) ->{
-            if(user.getId() == message.getSenderId()) {
-                 sender = user;
+            if(user.getId().equals(message.getSenderId())) {
+                Glide.with(context).load(user.getAvatar()).into(holder.avatar);
+                holder.txt_username.setText(user.getUserName().toString());
             }
         });
         if (message != null) {
@@ -62,7 +69,13 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
             } else {
                 holder.txt_content.setText(message.getText().toString());
             }
-            Glide.with(context).load(sender.getAvatar()).into(holder.avatar);
+            if(new Date().getTime() - message.getCreatedAt() < 86400000){
+                holder.txt_timeSend.setText(DateUtils.getRelativeTimeSpanString(message.getCreatedAt()));
+            }
+            else{
+                String date = DateFormat.getDateFormat(context).format(message.getCreatedAt());
+                holder.txt_timeSend.setText(date);
+            }
         }
     }
 
@@ -72,12 +85,15 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView txt_content;
+        private TextView txt_content,txt_username,txt_timeSend;
         private CircleImageView avatar;
+        private ImageView btnOptions;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txt_content = itemView.findViewById(R.id.txt_content_message);
             avatar = itemView.findViewById(R.id.image_message_avatar);
+            txt_username = itemView.findViewById(R.id.tvUsernameChatBoxLeft);
+            txt_timeSend = itemView.findViewById(R.id.tvTimeSendLeft);
         }
     }
     @Override

@@ -64,4 +64,10 @@ public interface DataService {
     Call<ChatGroupDTO> createChatGroup(@Body ChatGroup chatGroup);
     @GET("chatGroups/searchUserIdToArray/{userId}")
     Call<List<ChatGroup>> getChatGroupByUserId(@Path("userId") String id);
+
+    @GET("chatGroups/{chatgroupid}")
+    Call<ChatGroup> getGroupById(@Path("chatgroupid") String id);
+
+    @GET("messages/SearchByReceiverId/{id}")
+    Call<List<Message>> getMessagesGroupByGroupId(@Path("id") String id);
 }
