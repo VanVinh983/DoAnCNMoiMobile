@@ -24,4 +24,12 @@ public class UserPhonebook {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    @Override
+    public String toString() {
+        return "UserPhonebook{" +
+                "name='" + getName() + '\'' +
+                ", phone='" + getPhone() + '\'' +
+                '}';
+    }
 }

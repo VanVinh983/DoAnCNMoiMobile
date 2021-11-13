@@ -10,7 +10,8 @@ import io.socket.client.Socket;
 
 public class MySocket {
     private static MySocket instance = null;
-    private static final String URL_SERVER = "http://192.168.1.23:4002";
+//    private static final String URL_SERVER = "http://192.168.1.23:4002";
+    private static final String URL_SERVER = "http://192.168.1.10:4002";
     private Socket socket;
     public static MySocket getInstance() {
         if (instance == null) {
@@ -39,19 +40,7 @@ public class MySocket {
 
     // reconnect socket until connected
     private void connect() {
-        socket.connect();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.d("tag", "Socket connected: " + socket.connected());
-                if (socket.connected())
-                    handler.removeCallbacks(this);
-                else {
-                    socket.connect();
-                    handler.postDelayed(this, 1000);
-                }
-            }
-        }, 1000);
+        if(!socket.connected()) socket.connect();
+
     }
 }

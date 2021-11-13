@@ -68,7 +68,7 @@ public class ListenSocket extends AppCompatActivity {
                 System.out.println("Listen socket still running: " + socket.connected());
                 handler.postDelayed(this, 10000);
             }
-        }, 10000);
+        }, 1000);
     }
 
     public Emitter.Listener onNewReceiverCall = new Emitter.Listener() {
