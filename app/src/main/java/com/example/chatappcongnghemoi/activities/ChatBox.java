@@ -16,12 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.adapters.MessageAdapter;
+import com.example.chatappcongnghemoi.models.ChatGroup;
 import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.example.chatappcongnghemoi.socket.MessageSocket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +103,19 @@ public class ChatBox extends AppCompatActivity {
                     public void onFailure(Call<Message> call, Throwable t) {
                         Toast.makeText(ChatBox.this, "fail post message", Toast.LENGTH_LONG).show();
                         System.err.println("fail post message"+t.getMessage());
+                    }
+                });
+                Call<List<ChatGroup>> listCall = dataService.getChatGroupByUserId(userCurrent.getId());
+                listCall.enqueue(new Callback<List<ChatGroup>>() {
+                    @Override
+                    public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
+                        MessageSocket socket = new MessageSocket(response.body());
+                        socket.sendMessage(userCurrent, message);
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
+                        System.err.println("fail get list group by user"+t.getMessage());
                     }
                 });
             }
