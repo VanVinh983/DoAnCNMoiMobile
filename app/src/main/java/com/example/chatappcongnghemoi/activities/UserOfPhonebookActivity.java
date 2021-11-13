@@ -45,6 +45,8 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
     private UserPhonebookAdapter userPhonebookAdapter;
     private ContactRecyclerAdapter adapter;
 
+    private boolean flag = false;
+
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -83,10 +85,12 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (getUserList()) {
+                if (flag) {
                     adapter = new ContactRecyclerAdapter(UserOfPhonebookActivity.this, userList);
                     listViewAccount.setLayoutManager(new LinearLayoutManager(UserOfPhonebookActivity.this));
                     listViewAccount.setAdapter(adapter);
+
+                    System.out.println("====> USER: " + userList.size());
 
                     userPhonebookAdapter = new UserPhonebookAdapter(UserOfPhonebookActivity.this, userPhonebooks);
                     listViewNotAccount.setLayoutManager(new LinearLayoutManager(UserOfPhonebookActivity.this));
@@ -94,13 +98,13 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
 
                     handler.removeCallbacks(this);
                 } else {
-                    handler.postDelayed(this, 1000);
+                    handler.postDelayed(this, 2000);
                 }
             }
-        }, 1000);
+        }, 2000);
     }
 
-    private boolean getUserList() {
+    private void getUserList() {
         userList = new ArrayList<>();
         for (int i = 0; i < userPhonebooks.size(); i++) {
             int position = i;
@@ -126,10 +130,9 @@ public class UserOfPhonebookActivity extends AppCompatActivity {
             });
 
             if (i == userPhonebooks.size() - 1) {
-                return true;
+                flag = true;
             }
         }
-        return false;
     }
 
 
