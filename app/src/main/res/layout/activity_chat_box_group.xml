@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="3 thành viên"
-                android:textColor="#000000"
+                android:textColor="#fff"
                 android:textSize="18sp" />
         </LinearLayout>
 
@@ -50,6 +50,7 @@
             android:layout_height="40dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
+            app:tint = "#fff"
             app:srcCompat="@drawable/list" />
     </LinearLayout>
 

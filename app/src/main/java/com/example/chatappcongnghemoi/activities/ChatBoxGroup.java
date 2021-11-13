@@ -1,10 +1,12 @@
 package com.example.chatappcongnghemoi.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -23,6 +25,11 @@ import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,15 +54,40 @@ public class ChatBoxGroup extends AppCompatActivity {
     List<String> listId;
     List<User> members;
     User userCurrent = null;
+    DatabaseReference database;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_box_group);
         getSupportActionBar().hide();
         dataService = ApiService.getService();
+        database = FirebaseDatabase.getInstance().getReference("background");
         mapping();
         Intent intent = getIntent();
         groupId = intent.getStringExtra("groupId");
+        database.child(groupId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()){
+                    if(task.getResult().getValue().toString().equals("blue")){
+                        recyclerView.setBackgroundResource(R.drawable.background_chat_blue);
+                        Toast.makeText(ChatBoxGroup.this, ""+task.getResult().getValue().toString(), Toast.LENGTH_SHORT).show();
+                    }
+                    else if (task.getResult().getValue().toString().equals("yellow")){
+                        recyclerView.setBackgroundResource(R.drawable.background_chat_yellow);
+                        Toast.makeText(ChatBoxGroup.this, ""+task.getResult().getValue().toString(), Toast.LENGTH_SHORT).show();
+                    }
+                    else if (task.getResult().getValue().toString().equals("green")){
+                        recyclerView.setBackgroundResource(R.drawable.background_chat_green);
+                        Toast.makeText(ChatBoxGroup.this, ""+task.getResult().getValue().toString(), Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        recyclerView.setBackgroundColor(Color.parseColor("#e9eff0"));
+                        Toast.makeText(ChatBoxGroup.this, ""+task.getResult().getValue().toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
         Call<ChatGroup> groupDTOCall = dataService.getGroupById(groupId);
         groupDTOCall.enqueue(new Callback<ChatGroup>() {
             @Override
@@ -116,6 +148,14 @@ public class ChatBoxGroup extends AppCompatActivity {
                 });
             }
         });
+        btnMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentMenu = new Intent(ChatBoxGroup.this,InfoGroupChat.class);
+                intentMenu.putExtra("groupId",groupId);
+                startActivity(intentMenu);
+            }
+        });
     }
     private void mapping(){
         txtMessage = findViewById(R.id.txtMessageText);
@@ -124,6 +164,23 @@ public class ChatBoxGroup extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBackChatBoxGroup);
         recyclerView = findViewById(R.id.recyclerviewChatBoxGroup);
         btnSend = findViewById(R.id.imgSendMessageChatBoxGroup);
+        btnMenu = findViewById(R.id.imgMenuChatBoxGroup);
+//        database.child(groupId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DataSnapshot> task) {
+//                if(task.isSuccessful()){
+//                    Toast.makeText(ChatBoxGroup.this, ""+task.getResult().getValue().toString(), Toast.LENGTH_SHORT).show();
+//                    if(task.getResult().getValue().toString().equals("blue"))
+//                        recyclerView.setBackgroundResource(R.drawable.background_chat_blue);
+//                    else if (task.getResult().getValue().toString().equals("yellow"))
+//                        recyclerView.setBackgroundResource(R.drawable.background_chat_yellow);
+//                    else if (task.getResult().getValue().toString().equals("green"))
+//                        recyclerView.setBackgroundResource(R.drawable.background_chat_green);
+//                    else
+//                        recyclerView.setBackgroundColor(Color.parseColor("#e9eff0"));
+//                }
+//            }
+//        });
     }
     public void getMessages(List<String> listId){
         members = new ArrayList<>();
@@ -150,8 +207,13 @@ public class ChatBoxGroup extends AppCompatActivity {
                                     public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
                                         userCurrent = response.body().getUser();
                                         adapter = new ChatBoxGroupRecyclerAdapter(messages,ChatBoxGroup.this,userCurrent,members);
-                                        recyclerView.setLayoutManager(new LinearLayoutManager(ChatBoxGroup.this));
                                         recyclerView.setAdapter(adapter);
+                                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBoxGroup.this, LinearLayoutManager.VERTICAL, false);
+                                        linearLayoutManager.setStackFromEnd(true);
+                                        recyclerView.setLayoutManager(linearLayoutManager);
+                                        if (adapter.getItemCount()>0){
+                                            recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
+                                        }
                                     }
 
                                     @Override

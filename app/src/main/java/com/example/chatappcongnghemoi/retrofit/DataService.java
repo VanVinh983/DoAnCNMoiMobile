@@ -70,4 +70,7 @@ public interface DataService {
 
     @GET("messages/SearchByReceiverId/{id}")
     Call<List<Message>> getMessagesGroupByGroupId(@Path("id") String id);
+
+    @PUT("chatGroups/{id}")
+    Call<ChatGroup> updateGroup(@Path("id") String id,@Body ChatGroup chatGroup);
 }

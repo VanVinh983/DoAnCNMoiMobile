@@ -16,6 +16,9 @@
         android:theme="@style/Theme.ChatAppCongNgheMoi"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activities.InfoGroupChat"
+            android:exported="true" />
+        <activity
             android:name=".activities.ChatBoxGroup"
             android:exported="true" />
         <activity
