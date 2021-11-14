@@ -37,10 +37,4 @@
             android:text=""/>
     </LinearLayout>
 
-    <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:layout_marginLeft="10dp"
-        app:srcCompat="@drawable/option" />
 </LinearLayout>

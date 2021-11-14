@@ -32,6 +32,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
     User sender = null;
     private static final int LEFT = 0;
     private static final int RIGHT = 1;
+    private static final int CENTER = 2;
 
     public ChatBoxGroupRecyclerAdapter(List<Message> messages, Context context, User userCurrent, List<User> members) {
         this.messages = messages;
@@ -49,6 +50,8 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
             view = inflater.inflate(R.layout.layout_chatbox_left,parent,false);
         }else if (viewType==RIGHT){
             view = inflater.inflate(R.layout.layout_chatbox_right,parent,false);
+        }else if (viewType==CENTER){
+            view = inflater.inflate(R.layout.layout_chatbox_center,parent,false);
         }
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
@@ -98,10 +101,14 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
     }
     @Override
     public int getItemViewType(int position) {
-        if (messages.get(position).getSenderId().equals(userCurrent.getId())){
-            return RIGHT;
+        if(messages.get(position).getMessageType().equals("note")){
+            return  CENTER;
         }else {
-            return LEFT;
+            if (messages.get(position).getSenderId().equals(userCurrent.getId())) {
+                return RIGHT;
+            } else {
+                return LEFT;
+            }
         }
     }
 }

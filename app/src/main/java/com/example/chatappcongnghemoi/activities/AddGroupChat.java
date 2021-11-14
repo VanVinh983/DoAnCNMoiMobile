@@ -162,6 +162,26 @@ public class AddGroupChat extends AppCompatActivity {
                     Map<String,String> mapUserId18 = new HashMap<>();
                     Map<String,String> mapUserId19 = new HashMap<>();
                     Map<String,String> mapUserId20 = new HashMap<>();
+                    Map<String,String> mapUserId21 = new HashMap<>();
+                    Map<String,String> mapUserId22 = new HashMap<>();
+                    Map<String,String> mapUserId23 = new HashMap<>();
+                    Map<String,String> mapUserId24 = new HashMap<>();
+                    Map<String,String> mapUserId25 = new HashMap<>();
+                    Map<String,String> mapUserId26 = new HashMap<>();
+                    Map<String,String> mapUserId27 = new HashMap<>();
+                    Map<String,String> mapUserId28 = new HashMap<>();
+                    Map<String,String> mapUserId29 = new HashMap<>();
+                    Map<String,String> mapUserId30 = new HashMap<>();
+                    Map<String,String> mapUserId31 = new HashMap<>();
+                    Map<String,String> mapUserId32 = new HashMap<>();
+                    Map<String,String> mapUserId33 = new HashMap<>();
+                    Map<String,String> mapUserId34 = new HashMap<>();
+                    Map<String,String> mapUserId35 = new HashMap<>();
+                    Map<String,String> mapUserId36 = new HashMap<>();
+                    Map<String,String> mapUserId37 = new HashMap<>();
+                    Map<String,String> mapUserId38 = new HashMap<>();
+                    Map<String,String> mapUserId39 = new HashMap<>();
+
                     ArrayList<Map<String,String>> members = new ArrayList<>();
                     for(int i = 0 ; i < list.size() ;i++){
                         if( i== 0){
@@ -227,6 +247,64 @@ public class AddGroupChat extends AppCompatActivity {
                         }else if(i == 20){
                             mapUserId20.put("userId",list.get(i).getId());
                             members.add(mapUserId20);
+                        }else if(i == 21){
+                            mapUserId21.put("userId",list.get(i).getId());
+                            members.add(mapUserId21);
+                        }else if(i == 22){
+                            mapUserId22.put("userId",list.get(i).getId());
+                            members.add(mapUserId22);
+                        }
+                        else if(i == 23){
+                            mapUserId23.put("userId",list.get(i).getId());
+                            members.add(mapUserId23);
+                        }else if(i == 24){
+                            mapUserId24.put("userId",list.get(i).getId());
+                            members.add(mapUserId24);
+                        }else if(i == 25){
+                            mapUserId25.put("userId",list.get(i).getId());
+                            members.add(mapUserId25);
+                        }else if(i == 26){
+                            mapUserId26.put("userId",list.get(i).getId());
+                            members.add(mapUserId26);
+                        }else if(i == 27){
+                            mapUserId27.put("userId",list.get(i).getId());
+                            members.add(mapUserId27);
+                        }else if(i == 28){
+                            mapUserId28.put("userId",list.get(i).getId());
+                            members.add(mapUserId28);
+                        }else if(i == 29){
+                            mapUserId29.put("userId",list.get(i).getId());
+                            members.add(mapUserId29);
+                        }else if(i == 30){
+                            mapUserId30.put("userId",list.get(i).getId());
+                            members.add(mapUserId30);
+                        }else if(i == 31){
+                            mapUserId31.put("userId",list.get(i).getId());
+                            members.add(mapUserId31);
+                        }else if(i == 32){
+                            mapUserId32.put("userId",list.get(i).getId());
+                            members.add(mapUserId32);
+                        }else if(i == 33){
+                            mapUserId33.put("userId",list.get(i).getId());
+                            members.add(mapUserId33);
+                        }else if(i == 34){
+                            mapUserId34.put("userId",list.get(i).getId());
+                            members.add(mapUserId34);
+                        }else if(i == 35){
+                            mapUserId35.put("userId",list.get(i).getId());
+                            members.add(mapUserId35);
+                        }else if(i == 36){
+                            mapUserId36.put("userId",list.get(i).getId());
+                            members.add(mapUserId36);
+                        }else if(i == 37){
+                            mapUserId37.put("userId",list.get(i).getId());
+                            members.add(mapUserId37);
+                        }else if(i == 38){
+                            mapUserId38.put("userId",list.get(i).getId());
+                            members.add(mapUserId38);
+                        }else if(i == 39){
+                            mapUserId39.put("userId",list.get(i).getId());
+                            members.add(mapUserId39);
                         }
                     };
                     ChatGroup chatGroup = new ChatGroup(groupName,user.getId(),Long.parseLong(list.size()+""),members);
