@@ -1,12 +1,18 @@
 package com.example.chatappcongnghemoi.adapters;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -64,7 +70,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 holder.txt_content.setText(message.getText().toString());
             }
 
-            Glide.with(context).load(userCurrent.getAvatar()).into(holder.avatar);
+            Glide.with(context).load(friend.getAvatar()).into(holder.avatar);
             if (message.getSenderId().equals(userCurrent.getId())){
                 holder.username.setText(userCurrent.getUserName());
             }else {
@@ -77,6 +83,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 String date = DateFormat.getDateFormat(context).format(message.getCreatedAt());
                 holder.time.setText(date);
             }
+
+            holder.view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if(!message.getSenderId().equals(userCurrent.getId())){
+                        if(!message.getMessageType().equals("note")){
+                            sendReactionForMessage(friend,message);
+                        }
+                    }
+                    return  true;
+                }
+            });
         }
     }
 
@@ -88,12 +106,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder{
         private TextView txt_content,username, time;
         private CircleImageView avatar;
+        private View view;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txt_content = itemView.findViewById(R.id.txt_content_message);
             avatar = itemView.findViewById(R.id.image_message_avatar);
             username = itemView.findViewById(R.id.tvUsernameChatBoxLeft);
             time = itemView.findViewById(R.id.tvTimeSendLeft);
+            view = itemView;
         }
     }
 
@@ -106,5 +126,33 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             message_type = LEFT;
             return LEFT;
         }
+    }
+    public void sendReactionForMessage(User sender,Message message){
+        final Dialog dialog =new Dialog(context);
+        dialog.setContentView(R.layout.dialog_reaction_of_message);
+        Window window = dialog.getWindow();
+        if(window == null)
+            return;
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        window.setLayout(layoutParams.MATCH_PARENT,layoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        layoutParams.gravity = Gravity.CENTER;
+        window.setAttributes(layoutParams);
+        dialog.setCancelable(true);
+        CircleImageView avatar = dialog.findViewById(R.id.imgAvatarReaction);
+        TextView username = dialog.findViewById(R.id.tvUsernameReaction);
+        TextView content = dialog.findViewById(R.id.tvMessageReaction);
+        TextView time = dialog.findViewById(R.id.tvTimeReaction);
+        Glide.with(context).load(sender.getAvatar()).into(avatar);
+        username.setText(sender.getUserName());
+        content.setText(message.getText());
+        if(new Date().getTime() - message.getCreatedAt() < 86400000){
+            time.setText(DateUtils.getRelativeTimeSpanString(message.getCreatedAt()));
+        }
+        else{
+            String date = DateFormat.getDateFormat(context).format(message.getCreatedAt());
+            time.setText(date);
+        }
+        dialog.show();
     }
 }
