@@ -24,11 +24,18 @@ import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.example.chatappcongnghemoi.socket.MessageSocket;
+import com.example.chatappcongnghemoi.socket.MySocket;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,6 +50,8 @@ public class ChatBox extends AppCompatActivity {
     private MessageAdapter messageAdapter;
     private RecyclerView recyclerViewMessage;
     private EditText input_message_text;
+    private MessageSocket socket;
+    private static Socket mSocket = MySocket.getInstance().getSocket();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +63,7 @@ public class ChatBox extends AppCompatActivity {
         initialize();
         getUserById();
         getFriendById(friendId);
+        mSocket.on("response-add-new-text", responeMessage);
         findViewById(R.id.btn_chatbox_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,6 +98,7 @@ public class ChatBox extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
+                        socket.sendMessage(message1);
                         messages.add(message1);
                         messageAdapter = new MessageAdapter(messages, ChatBox.this,userCurrent, friendCurrent);
                         recyclerViewMessage.setAdapter(messageAdapter);
@@ -98,28 +109,36 @@ public class ChatBox extends AppCompatActivity {
                             recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount()-1);
                         }
                     }
-
                     @Override
                     public void onFailure(Call<Message> call, Throwable t) {
                         Toast.makeText(ChatBox.this, "fail post message", Toast.LENGTH_LONG).show();
                         System.err.println("fail post message"+t.getMessage());
                     }
                 });
-                Call<List<ChatGroup>> listCall = dataService.getChatGroupByUserId(userCurrent.getId());
-                listCall.enqueue(new Callback<List<ChatGroup>>() {
-                    @Override
-                    public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
-                        MessageSocket socket = new MessageSocket(response.body());
-                        socket.sendMessage(userCurrent, message);
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
-                        System.err.println("fail get list group by user"+t.getMessage());
-                    }
-                });
             }
         });
+        Handler handler1 = new Handler();
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (userCurrent.getId()!=null){
+                    Call<List<ChatGroup>> listCall = dataService.getChatGroupByUserId(userCurrent.getId());
+                    listCall.enqueue(new Callback<List<ChatGroup>>() {
+                        @Override
+                        public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
+                            socket = new MessageSocket(response.body(), userCurrent);
+                        }
+                        @Override
+                        public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
+                            System.err.println("fail get list group by user"+t.getMessage());
+                        }
+                    });
+                    handler1.removeCallbacks(this);
+                }else {
+                    handler1.postDelayed(this, 500);
+                }
+            }
+        },500);
     }
     private void mapping(){
         txt_username = findViewById(R.id.txt_chatbox_username);
@@ -198,4 +217,42 @@ public class ChatBox extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSocket.disconnect();
+    }
+
+    private Emitter.Listener responeMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    String mess = null;
+                    String isgroup = null;
+                    try {
+                        mess = data.getString("message");
+                        isgroup = data.getString("isChatGroup");
+                        Gson gson = new Gson();
+                        Message message = gson.fromJson(mess, Message.class);
+                        messages.add(message);
+                        messageAdapter = new MessageAdapter(messages, ChatBox.this,userCurrent, friendCurrent);
+                        recyclerViewMessage.setAdapter(messageAdapter);
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBox.this, LinearLayoutManager.VERTICAL, false);
+                        linearLayoutManager.setStackFromEnd(true);
+                        recyclerViewMessage.setLayoutManager(linearLayoutManager);
+                        if (messageAdapter.getItemCount()>0){
+                            recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount()-1);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+        }
+    };
 }

@@ -22,36 +22,54 @@ import retrofit2.Call;
 public class MessageSocket {
     private static Socket socket = MySocket.getInstance().getSocket();
     private List<ChatGroup> chatGroups;
+    private User userCurrent;
 
-    public MessageSocket(List<ChatGroup> chatGroups) {
+    public MessageSocket(List<ChatGroup> chatGroups, User userCurrent) {
         this.chatGroups = chatGroups;
-    }
-
-    public void sendMessage(User userCurrent, Message message){
+        this.userCurrent = userCurrent;
         String sender = new Gson().toJson(userCurrent);
-        String mess = new Gson().toJson(message);
         JSONObject senderJson = null;
-        JSONObject messJson = null;
-        JSONObject jsonObjectGeneral = new JSONObject();
         JSONArray jsonArray = new JSONArray(chatGroups);
         try {
             senderJson = new JSONObject(sender);
             senderJson.put("chatGroupIds", jsonArray);
-            messJson = new JSONObject(mess);
-            jsonObjectGeneral.put("message", messJson);
-            jsonObjectGeneral.put("isChatGroup", "false");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         Handler handler = new Handler();
         JSONObject finalSenderJson = senderJson;
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (socket.connected()==true){
-                    System.out.println("sender json: "+ finalSenderJson.toString());
+                    System.out.println("user json: "+ finalSenderJson);
                     socket.emit("send-user", finalSenderJson);
+                }else {
+                    socket.connect();
+                    System.out.println("socket connect fail and again");
+                    handler.postDelayed(this, 500);
+                }
+            }
+        },500);
+    }
+
+    public void sendMessage(Message message){
+        String mess = new Gson().toJson(message);
+        JSONObject messJson = null;
+        JSONObject jsonObjectGeneral = new JSONObject();
+
+        try {
+            messJson = new JSONObject(mess);
+            jsonObjectGeneral.put("message", messJson);
+            jsonObjectGeneral.put("isChatGroup", "false");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (socket.connected()==true){
                     System.out.println("json object general: "+ jsonObjectGeneral);
                     socket.emit("add-new-text", jsonObjectGeneral);
                     handler.removeCallbacks(this);
