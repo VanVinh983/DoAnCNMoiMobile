@@ -94,6 +94,18 @@ public class PhoneBookActivity extends AppCompatActivity {
                 startActivity(new Intent(PhoneBookActivity.this,AddGroupChat.class));
             }
         });
+
+        /**
+         * Mỗi 5 giây cập nhật danh sách bạn bè online 1 lần
+         */
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getOnlineFriendList();
+                handler.postDelayed(this, 5000);
+            }
+        }, 2000);
     }
 
     private void mapping() {
@@ -214,8 +226,6 @@ public class PhoneBookActivity extends AppCompatActivity {
 
                         contactRecyclerAdapter = new ContactRecyclerAdapter(PhoneBookActivity.this, friendList);
                         mRecyclerContact.setAdapter(contactRecyclerAdapter);
-
-                        getOnlineFriendList();
                     } else
                         handler.postDelayed(this, 500);
                 }
