@@ -25,12 +25,17 @@ import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.example.chatappcongnghemoi.socket.MessageSocket;
 import com.example.chatappcongnghemoi.socket.MySocket;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,6 +63,7 @@ public class ChatBox extends AppCompatActivity {
         initialize();
         getUserById();
         getFriendById(friendId);
+        mSocket.on("response-add-new-text", responeMessage);
         findViewById(R.id.btn_chatbox_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,11 +94,11 @@ public class ChatBox extends AppCompatActivity {
                 message.setText(input_message_text.getText().toString());
                 Call<Message> messageCall = dataService.postMessage(message);
                 input_message_text.setText("");
-                socket.sendMessage(message);
                 messageCall.enqueue(new Callback<Message>() {
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
+                        socket.sendMessage(message1);
                         messages.add(message1);
                         messageAdapter = new MessageAdapter(messages, ChatBox.this,userCurrent, friendCurrent);
                         recyclerViewMessage.setAdapter(messageAdapter);
@@ -217,4 +223,36 @@ public class ChatBox extends AppCompatActivity {
         super.onPause();
         mSocket.disconnect();
     }
+
+    private Emitter.Listener responeMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    String mess = null;
+                    String isgroup = null;
+                    try {
+                        mess = data.getString("message");
+                        isgroup = data.getString("isChatGroup");
+                        Gson gson = new Gson();
+                        Message message = gson.fromJson(mess, Message.class);
+                        messages.add(message);
+                        messageAdapter = new MessageAdapter(messages, ChatBox.this,userCurrent, friendCurrent);
+                        recyclerViewMessage.setAdapter(messageAdapter);
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBox.this, LinearLayoutManager.VERTICAL, false);
+                        linearLayoutManager.setStackFromEnd(true);
+                        recyclerViewMessage.setLayoutManager(linearLayoutManager);
+                        if (messageAdapter.getItemCount()>0){
+                            recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount()-1);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+        }
+    };
 }
