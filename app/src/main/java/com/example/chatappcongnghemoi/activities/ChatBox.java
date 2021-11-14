@@ -24,11 +24,13 @@ import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.example.chatappcongnghemoi.socket.MessageSocket;
+import com.example.chatappcongnghemoi.socket.MySocket;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.socket.client.Socket;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,6 +45,8 @@ public class ChatBox extends AppCompatActivity {
     private MessageAdapter messageAdapter;
     private RecyclerView recyclerViewMessage;
     private EditText input_message_text;
+    private MessageSocket socket;
+    private static Socket mSocket = MySocket.getInstance().getSocket();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +88,7 @@ public class ChatBox extends AppCompatActivity {
                 message.setText(input_message_text.getText().toString());
                 Call<Message> messageCall = dataService.postMessage(message);
                 input_message_text.setText("");
+                socket.sendMessage(message);
                 messageCall.enqueue(new Callback<Message>() {
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
@@ -98,28 +103,36 @@ public class ChatBox extends AppCompatActivity {
                             recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount()-1);
                         }
                     }
-
                     @Override
                     public void onFailure(Call<Message> call, Throwable t) {
                         Toast.makeText(ChatBox.this, "fail post message", Toast.LENGTH_LONG).show();
                         System.err.println("fail post message"+t.getMessage());
                     }
                 });
-                Call<List<ChatGroup>> listCall = dataService.getChatGroupByUserId(userCurrent.getId());
-                listCall.enqueue(new Callback<List<ChatGroup>>() {
-                    @Override
-                    public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
-                        MessageSocket socket = new MessageSocket(response.body());
-                        socket.sendMessage(userCurrent, message);
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
-                        System.err.println("fail get list group by user"+t.getMessage());
-                    }
-                });
             }
         });
+        Handler handler1 = new Handler();
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (userCurrent.getId()!=null){
+                    Call<List<ChatGroup>> listCall = dataService.getChatGroupByUserId(userCurrent.getId());
+                    listCall.enqueue(new Callback<List<ChatGroup>>() {
+                        @Override
+                        public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
+                            socket = new MessageSocket(response.body(), userCurrent);
+                        }
+                        @Override
+                        public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
+                            System.err.println("fail get list group by user"+t.getMessage());
+                        }
+                    });
+                    handler1.removeCallbacks(this);
+                }else {
+                    handler1.postDelayed(this, 500);
+                }
+            }
+        },500);
     }
     private void mapping(){
         txt_username = findViewById(R.id.txt_chatbox_username);
@@ -197,5 +210,11 @@ public class ChatBox extends AppCompatActivity {
                 System.err.println("get list message fail"+t.getMessage());
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSocket.disconnect();
     }
 }
