@@ -2,6 +2,8 @@ package com.example.chatappcongnghemoi.adapters;
 
 import android.content.Context;
 import android.os.Handler;
+import android.text.format.DateFormat;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +16,13 @@ import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
+import com.example.chatappcongnghemoi.models.UserDTO;
 
+import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
     private List<Message> messages;
@@ -60,6 +65,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             }
 
             Glide.with(context).load(userCurrent.getAvatar()).into(holder.avatar);
+            if (message.getSenderId().equals(userCurrent.getId())){
+                holder.username.setText(userCurrent.getUserName());
+            }else {
+                holder.username.setText(friend.getUserName());
+            }
+            if(new Date().getTime() - message.getCreatedAt() < 86400000){
+                holder.time.setText(DateUtils.getRelativeTimeSpanString(message.getCreatedAt()));
+            }
+            else{
+                String date = DateFormat.getDateFormat(context).format(message.getCreatedAt());
+                holder.time.setText(date);
+            }
         }
     }
 
@@ -69,12 +86,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView txt_content;
+        private TextView txt_content,username, time;
         private CircleImageView avatar;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txt_content = itemView.findViewById(R.id.txt_content_message);
             avatar = itemView.findViewById(R.id.image_message_avatar);
+            username = itemView.findViewById(R.id.tvUsernameChatBoxLeft);
+            time = itemView.findViewById(R.id.tvTimeSendLeft);
         }
     }
 
