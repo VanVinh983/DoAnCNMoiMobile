@@ -61,7 +61,6 @@
         <ImageButton
             android:id="@+id/imgLikeReaction"
             android:layout_marginRight="10dp"
-            android:backgroundTint="#fff"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@drawable/like" />
@@ -71,7 +70,6 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginRight="10dp"
-            android:backgroundTint="#fff"
             android:src="@drawable/heart" />
 
         <ImageButton
@@ -79,7 +77,6 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginRight="10dp"
-            android:backgroundTint="#fff"
             android:src="@drawable/laughing" />
 
         <ImageButton
@@ -87,7 +84,6 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginRight="10dp"
-            android:backgroundTint="#fff"
             android:src="@drawable/wow" />
 
         <ImageButton
@@ -95,14 +91,12 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginRight="10dp"
-            android:backgroundTint="#fff"
             android:src="@drawable/crying" />
 
         <ImageButton
             android:id="@+id/imgAngryReaction"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:backgroundTint="#fff"
             android:src="@drawable/angry" />
     </LinearLayout>
 </LinearLayout>

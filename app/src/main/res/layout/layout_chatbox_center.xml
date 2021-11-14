@@ -52,5 +52,57 @@
                 android:textSize="15dp"
                 />
         </LinearLayout>
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgReactionOfMessage1"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginLeft="10dp"
+                android:backgroundTint="#fff"
+                />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgReactionOfMessage2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:backgroundTint="#fff"
+                />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgReactionOfMessage3"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:backgroundTint="#fff"
+                />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgReactionOfMessage4"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:backgroundTint="#fff"
+                />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgReactionOfMessage5"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:backgroundTint="#fff"
+                />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgReactionOfMessage6"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:backgroundTint="#fff"
+                />
+            <TextView
+                android:layout_marginLeft="5dp"
+                android:textStyle="bold"
+                android:id="@+id/tvQuantityReaction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#07b7f7"
+                android:textSize="14dp"
+                android:text=""/>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
