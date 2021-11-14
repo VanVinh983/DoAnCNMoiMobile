@@ -16,6 +16,7 @@
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/drawable/background_chat_red.xml" value="0.2703125" />
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/drawable/background_chat_yellow.xml" value="0.18072916666666666" />
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/drawable/background_message_center.xml" value="0.2703125" />
+        <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/drawable/background_reaction_of_message.xml" value="0.2703125" />
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/drawable/bottom_line_linear.xml" value="0.2703125" />
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/drawable/ic_video_call.xml" value="0.2703125" />
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/drawable/user.xml" value="0.2703125" />
@@ -42,6 +43,7 @@
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/layout/dialog_change_background_chat.xml" value="0.264" />
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/layout/dialog_logout.xml" value="0.4" />
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/layout/dialog_members_info_group.xml" value="0.25416666666666665" />
+        <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/layout/dialog_reaction_of_message.xml" value="0.264" />
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/layout/dialog_rename_group.xml" value="0.25416666666666665" />
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/layout/item_contact.xml" value="0.24230072463768115" />
         <entry key="..\:/DoAnCNMoiMobile/app/src/main/res/layout/item_friend_add_group.xml" value="0.264" />

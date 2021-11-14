@@ -1,10 +1,17 @@
 package com.example.chatappcongnghemoi.adapters;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.text.format.DateUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,11 +20,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.activities.Personal;
+import com.example.chatappcongnghemoi.activities.StartApp;
 import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
 
 import android.text.format.DateFormat;
 import android.text.format.DateUtils.*;
+import android.widget.Toast;
 
 import java.util.Date;
 import java.util.List;
@@ -29,6 +39,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
     private Context context;
     private User userCurrent;
     private List<User> members;
+    boolean isReceiver = true;
     User sender = null;
     private static final int LEFT = 0;
     private static final int RIGHT = 1;
@@ -64,6 +75,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
             if(user.getId().equals(message.getSenderId())) {
                 Glide.with(context).load(user.getAvatar()).into(holder.avatar);
                 holder.txt_username.setText(user.getUserName().toString());
+                sender = user;
             }
         });
         if (message != null) {
@@ -80,8 +92,46 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                 holder.txt_timeSend.setText(date);
             }
         }
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(!message.getSenderId().equals(userCurrent.getId())){
+                    if(!message.getMessageType().equals("note")){
+                        sendReactionForMessage(sender,message);
+                    }
+                }
+                return  true;
+            }
+        });
     }
-
+    public void sendReactionForMessage(User sender,Message message){
+        final Dialog dialog =new Dialog(context);
+        dialog.setContentView(R.layout.dialog_reaction_of_message);
+        Window window = dialog.getWindow();
+        if(window == null)
+            return;
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        window.setLayout(layoutParams.MATCH_PARENT,layoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        layoutParams.gravity = Gravity.CENTER;
+        window.setAttributes(layoutParams);
+        dialog.setCancelable(true);
+        CircleImageView avatar = dialog.findViewById(R.id.imgAvatarReaction);
+        TextView username = dialog.findViewById(R.id.tvUsernameReaction);
+        TextView content = dialog.findViewById(R.id.tvMessageReaction);
+        TextView time = dialog.findViewById(R.id.tvTimeReaction);
+        Glide.with(context).load(sender.getAvatar()).into(avatar);
+        username.setText(sender.getUserName());
+        content.setText(message.getText());
+        if(new Date().getTime() - message.getCreatedAt() < 86400000){
+            time.setText(DateUtils.getRelativeTimeSpanString(message.getCreatedAt()));
+        }
+        else{
+            String date = DateFormat.getDateFormat(context).format(message.getCreatedAt());
+            time.setText(date);
+        }
+        dialog.show();
+    }
     @Override
     public int getItemCount() {
         return messages.size();

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:background="@drawable/background_reaction_of_message"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:paddingVertical="10dp"
+        android:layout_height="match_parent">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgAvatarReaction"
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
+        <LinearLayout
+            android:background="@drawable/bacground_left_message"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical"
+            android:paddingVertical="5dp"
+            android:paddingHorizontal="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tvUsernameReaction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phan Văn Thông"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textSize="18dp"
+                />
+            <TextView
+                android:id="@+id/tvMessageReaction"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:text="abc"
+                android:textSize="19dp"
+                />
+            <TextView
+                android:id="@+id/tvTimeReaction"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="abc"
+                android:textColor="@color/main_color"
+                />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:gravity="center"
+        android:background="@drawable/background_reaction_of_message"
+        android:layout_marginTop="10dp"
+        android:paddingVertical="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageButton
+            android:id="@+id/imgLikeReaction"
+            android:layout_marginRight="10dp"
+            android:backgroundTint="#fff"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/like" />
+
+        <ImageButton
+            android:id="@+id/imgLoveReaction"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="10dp"
+            android:backgroundTint="#fff"
+            android:src="@drawable/heart" />
+
+        <ImageButton
+            android:id="@+id/imgHahaReaction"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="10dp"
+            android:backgroundTint="#fff"
+            android:src="@drawable/laughing" />
+
+        <ImageButton
+            android:id="@+id/imgWowReaction"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="10dp"
+            android:backgroundTint="#fff"
+            android:src="@drawable/wow" />
+
+        <ImageButton
+            android:id="@+id/imgCryReaction"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="10dp"
+            android:backgroundTint="#fff"
+            android:src="@drawable/crying" />
+
+        <ImageButton
+            android:id="@+id/imgAngryReaction"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:backgroundTint="#fff"
+            android:src="@drawable/angry" />
+    </LinearLayout>
+</LinearLayout>
