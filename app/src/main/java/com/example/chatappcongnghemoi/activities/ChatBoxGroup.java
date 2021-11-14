@@ -55,6 +55,7 @@ public class ChatBoxGroup extends AppCompatActivity {
     List<User> members;
     User userCurrent = null;
     DatabaseReference database;
+    boolean flag = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,25 +66,32 @@ public class ChatBoxGroup extends AppCompatActivity {
         mapping();
         Intent intent = getIntent();
         groupId = intent.getStringExtra("groupId");
-        database.child(groupId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+
+        database.child(groupId).child("background").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if(task.isSuccessful()){
-                    if(task.getResult().getValue().toString().equals("blue")){
-                        recyclerView.setBackgroundResource(R.drawable.background_chat_blue);
-                        Toast.makeText(ChatBoxGroup.this, ""+task.getResult().getValue().toString(), Toast.LENGTH_SHORT).show();
-                    }
-                    else if (task.getResult().getValue().toString().equals("yellow")){
-                        recyclerView.setBackgroundResource(R.drawable.background_chat_yellow);
-                        Toast.makeText(ChatBoxGroup.this, ""+task.getResult().getValue().toString(), Toast.LENGTH_SHORT).show();
-                    }
-                    else if (task.getResult().getValue().toString().equals("green")){
-                        recyclerView.setBackgroundResource(R.drawable.background_chat_green);
-                        Toast.makeText(ChatBoxGroup.this, ""+task.getResult().getValue().toString(), Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        recyclerView.setBackgroundColor(Color.parseColor("#e9eff0"));
-                        Toast.makeText(ChatBoxGroup.this, ""+task.getResult().getValue().toString(), Toast.LENGTH_SHORT).show();
+                    if(task.getResult().getValue() == null) {
+                        recyclerView.setBackgroundResource(R.drawable.background_chat_default);
+                    }else{
+                        if(task.getResult().getValue().equals("blue")){
+                            recyclerView.setBackgroundResource(R.drawable.background_chat_blue);
+                        }
+                        else if (task.getResult().getValue().equals("yellow")){
+                            recyclerView.setBackgroundResource(R.drawable.background_chat_yellow);
+                        }
+                        else if (task.getResult().getValue().equals("pink")){
+                            recyclerView.setBackgroundResource(R.drawable.background_chat_pink);
+                        }
+                        else if (task.getResult().getValue().equals("green")){
+                            recyclerView.setBackgroundResource(R.drawable.background_chat_green);
+                        }
+                        else if (task.getResult().getValue().equals("red")){
+                            recyclerView.setBackgroundResource(R.drawable.background_chat_red);
+                        }
+                        else{
+                            recyclerView.setBackgroundResource(R.drawable.background_chat_default);
+                        }
                     }
                 }
             }

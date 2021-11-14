@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -58,6 +59,7 @@ public class InfoGroupChat extends AppCompatActivity {
     User user = null;
     List<User> members ;
     DatabaseReference database;
+    String background = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,14 +135,7 @@ public class InfoGroupChat extends AppCompatActivity {
         btnChangeBackground.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                database.child(groupId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        if(task.isSuccessful()){
-                            Toast.makeText(InfoGroupChat.this, ""+task.getResult().getValue().toString(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                changeBackground();
             }
         });
     }
@@ -218,6 +213,127 @@ public class InfoGroupChat extends AppCompatActivity {
 
                 }
             });
+        });
+        dialog.show();
+    }
+    public void setBackGround(String newBackground){
+        background = newBackground;
+    }
+    public void changeBackground(){
+        final Dialog dialog =new Dialog(InfoGroupChat.this);
+        dialog.setContentView(R.layout.dialog_change_background_chat);
+        Window window = dialog.getWindow();
+        if(window == null)
+            return;
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        window.setLayout(layoutParams.MATCH_PARENT,layoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        layoutParams.gravity = Gravity.CENTER;
+        window.setAttributes(layoutParams);
+        dialog.setCancelable(true);
+        Button btnCancel = dialog.findViewById(R.id.btnCancelChangeBackgroundInfoGroup);
+        Button btnConfirm = dialog.findViewById(R.id.btnConfirmChangeBackgroundInfoGroup);
+        ImageButton imgDefault = dialog.findViewById(R.id.imgBackGroundDefaultInfoGroup);
+        ImageButton imgYellow = dialog.findViewById(R.id.imgBackGroundYellowInfoGroup);
+        ImageButton imgBlue = dialog.findViewById(R.id.imgBackGroundBlueInfoGroup);
+        ImageButton imgGreen = dialog.findViewById(R.id.imgBackGroundGreenInfoGroup);
+        ImageButton imgRed = dialog.findViewById(R.id.imgBackGroundRedInfoGroup);
+        ImageButton imgPink = dialog.findViewById(R.id.imgBackGroundPinkInfoGroup);
+        imgGreen.setBackgroundColor(Color.WHITE);
+        imgDefault.setBackgroundColor(Color.WHITE);
+        imgYellow.setBackgroundColor(Color.WHITE);
+        imgRed.setBackgroundColor(Color.WHITE);
+        imgBlue.setBackgroundColor(Color.WHITE);
+        imgPink.setBackgroundColor(Color.WHITE);
+        imgDefault.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setBackGround("default");
+                imgDefault.setBackgroundColor(Color.BLUE);
+                imgGreen.setBackgroundColor(Color.WHITE);
+                imgYellow.setBackgroundColor(Color.WHITE);
+                imgRed.setBackgroundColor(Color.WHITE);
+                imgBlue.setBackgroundColor(Color.WHITE);
+                imgPink.setBackgroundColor(Color.WHITE);
+            }
+        });
+        imgYellow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setBackGround("yellow");
+                imgYellow.setBackgroundColor(Color.BLUE);
+                imgGreen.setBackgroundColor(Color.WHITE);
+                imgDefault.setBackgroundColor(Color.WHITE);
+                imgRed.setBackgroundColor(Color.WHITE);
+                imgBlue.setBackgroundColor(Color.WHITE);
+                imgPink.setBackgroundColor(Color.WHITE);
+            }
+        });
+        imgBlue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setBackGround("blue");
+                imgBlue.setBackgroundColor(Color.BLUE);
+                imgGreen.setBackgroundColor(Color.WHITE);
+                imgYellow.setBackgroundColor(Color.WHITE);
+                imgRed.setBackgroundColor(Color.WHITE);
+                imgDefault.setBackgroundColor(Color.WHITE);
+                imgPink.setBackgroundColor(Color.WHITE);
+            }
+        });
+        imgGreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setBackGround("green");
+                imgGreen.setBackgroundColor(Color.BLUE);
+                imgDefault.setBackgroundColor(Color.WHITE);
+                imgYellow.setBackgroundColor(Color.WHITE);
+                imgRed.setBackgroundColor(Color.WHITE);
+                imgBlue.setBackgroundColor(Color.WHITE);
+                imgPink.setBackgroundColor(Color.WHITE);
+            }
+        });
+        imgPink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setBackGround("pink");
+                imgPink.setBackgroundColor(Color.BLUE);
+                imgGreen.setBackgroundColor(Color.WHITE);
+                imgYellow.setBackgroundColor(Color.WHITE);
+                imgRed.setBackgroundColor(Color.WHITE);
+                imgBlue.setBackgroundColor(Color.WHITE);
+                imgDefault.setBackgroundColor(Color.WHITE);
+            }
+        });
+        imgRed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setBackGround("red");
+                imgRed.setBackgroundColor(Color.BLUE);
+                imgGreen.setBackgroundColor(Color.WHITE);
+                imgYellow.setBackgroundColor(Color.WHITE);
+                imgDefault.setBackgroundColor(Color.WHITE);
+                imgBlue.setBackgroundColor(Color.WHITE);
+                imgPink.setBackgroundColor(Color.WHITE);
+            }
+        });
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(background == ""){
+                    Toast.makeText(InfoGroupChat.this, "Vui lòng chọn hình nền", Toast.LENGTH_SHORT).show();
+                }else{
+                    database.child(groupId).child("background").setValue(background);
+                    dialog.dismiss();
+                    Toast.makeText(InfoGroupChat.this, "Đổi hình nền chat thành công", Toast.LENGTH_SHORT).show();
+                }
+            }
         });
         dialog.show();
     }
