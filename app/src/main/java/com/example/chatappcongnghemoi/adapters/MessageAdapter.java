@@ -2,7 +2,9 @@ package com.example.chatappcongnghemoi.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.text.format.DateFormat;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.activities.Full_Image_Avatar;
+import com.example.chatappcongnghemoi.activities.Personal;
 import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
@@ -63,11 +68,30 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
         Message message = messages.get(position);
+        String url_s3 = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/";
         if (message != null) {
-            if (message.getText() == null) {
-                holder.txt_content.setText(message.getFileName().toString());
-            } else {
-                holder.txt_content.setText(message.getText().toString());
+            if (message.getMessageType().equals("image")) {
+                android.view.ViewGroup.LayoutParams layoutParams = holder.image_message.getLayoutParams();
+                layoutParams.width = 1000;
+                layoutParams.height = 1000;
+                holder.image_message.setLayoutParams(layoutParams);
+                Glide.with(context).load(url_s3+message.getFileName()).into(holder.image_message);
+                holder.txt_content.setWidth(0);
+                holder.txt_content.setHeight(0);
+                holder.image_message.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, Full_Image_Avatar.class);
+                        intent.putExtra("url", url_s3+message.getFileName());
+                        context.startActivity(intent);
+                    }
+                });
+            } else if (message.getMessageType().equals("file")){
+                holder.txt_content.setTextColor(Color.parseColor("#008ae6"));
+                holder.txt_content.setTypeface(holder.txt_content.getTypeface(), Typeface.ITALIC);
+                holder.txt_content.setText(message.getFileName());
+            }else {
+                holder.txt_content.setText(message.getText());
             }
 
             Glide.with(context).load(friend.getAvatar()).into(holder.avatar);
@@ -107,6 +131,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         private TextView txt_content,username, time;
         private CircleImageView avatar;
         private View view;
+        private ImageView image_message;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txt_content = itemView.findViewById(R.id.txt_content_message);
@@ -114,6 +139,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             username = itemView.findViewById(R.id.tvUsernameChatBoxLeft);
             time = itemView.findViewById(R.id.tvTimeSendLeft);
             view = itemView;
+            image_message = itemView.findViewById(R.id.image_message);
         }
     }
 

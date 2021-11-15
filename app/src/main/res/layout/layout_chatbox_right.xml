@@ -24,7 +24,6 @@
         android:layout_marginHorizontal="10dp"
         android:background="@drawable/background__right_message"
         android:gravity="right"
-        android:layout_marginLeft="20dp"
         android:orientation="vertical"
         android:paddingHorizontal="10dp"
         android:paddingVertical="5dp"
@@ -56,64 +55,71 @@
             app:layout_constraintVertical_bias="0.058"
             tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
+        <ImageView
+            android:id="@+id/image_message"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:srcCompat="@drawable/avatar" />
+
         <LinearLayout
-            android:gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
             <TextView
                 android:id="@+id/tvTimeSendLeft"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="abc"
                 android:textColor="#07b7f7"
-                android:textSize="12dp"
-                android:text="abc"/>
+                android:textSize="12dp" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgReactionOfMessage6"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginLeft="10dp"
-                android:backgroundTint="#fff"
-                />
+                android:backgroundTint="#fff" />
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgReactionOfMessage5"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:backgroundTint="#fff"
-                />
+                android:backgroundTint="#fff" />
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgReactionOfMessage4"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:backgroundTint="#fff"
-                />
+                android:backgroundTint="#fff" />
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgReactionOfMessage3"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:backgroundTint="#fff"
-                />
+                android:backgroundTint="#fff" />
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgReactionOfMessage2"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:backgroundTint="#fff"
-                />
+                android:backgroundTint="#fff" />
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgReactionOfMessage1"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:backgroundTint="#fff"
-                />
+                android:backgroundTint="#fff" />
+
             <TextView
-                android:layout_marginLeft="5dp"
-                android:textStyle="bold"
                 android:id="@+id/tvQuantityReaction"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text=""
                 android:textColor="#07b7f7"
                 android:textSize="14dp"
-                android:text=""/>
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

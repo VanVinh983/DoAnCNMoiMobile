@@ -27,6 +27,7 @@ import com.example.chatappcongnghemoi.socket.MessageSocket;
 import com.example.chatappcongnghemoi.socket.MySocket;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -64,6 +65,7 @@ public class ChatBox extends AppCompatActivity {
         getUserById();
         getFriendById(friendId);
         mSocket.on("response-add-new-text", responeMessage);
+        mSocket.on("response-add-new-file", responeAddFile);
         findViewById(R.id.btn_chatbox_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -184,6 +186,7 @@ public class ChatBox extends AppCompatActivity {
         listCall.enqueue(new Callback<List<Message>>() {
             @Override
             public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+               System.out.println("so luong tin nhan la: "+ response.body().size());
                 messages = new ArrayList<>();
                 for (Message message:
                      response.body()) {
@@ -251,6 +254,34 @@ public class ChatBox extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
+                }
+            });
+        }
+    };
+    private Emitter.Listener responeAddFile = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    JSONArray mess = null;
+                    Message messObject = null;
+                    try {
+                        mess = data.getJSONArray("messages");
+                        messObject = new Gson().fromJson(mess.get(0).toString(), Message.class);
+                        messages.add(messObject);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    messageAdapter = new MessageAdapter(messages, ChatBox.this,userCurrent, friendCurrent);
+                    recyclerViewMessage.setAdapter(messageAdapter);
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBox.this, LinearLayoutManager.VERTICAL, false);
+                    linearLayoutManager.setStackFromEnd(true);
+                    recyclerViewMessage.setLayoutManager(linearLayoutManager);
+                    if (messageAdapter.getItemCount()>0){
+                        recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount()-1);
+                    }
                 }
             });
         }
