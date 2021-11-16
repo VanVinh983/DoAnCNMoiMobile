@@ -64,7 +64,7 @@ public class InfoGroupChat extends AppCompatActivity {
     DataService dataService;
     ImageView btnBack;
     ImageButton btnRename,btnAddMember;
-    LinearLayout btnWatchMembers,btnChangeBackground;
+    LinearLayout btnWatchMembers,btnChangeBackground,btnLeaveGroup;
     User user = null;
     List<User> members ;
     DatabaseReference database;
@@ -73,6 +73,7 @@ public class InfoGroupChat extends AppCompatActivity {
     ArrayList<User> friendList;
     public static ArrayList<User> listAddMembers = new ArrayList<>();
     AddMembersInfoGroupRecyclerAdapter adapterAddMembers;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,6 +158,12 @@ public class InfoGroupChat extends AppCompatActivity {
                 addMember();
             }
         });
+        btnLeaveGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                leaveGroup();
+            }
+        });
     }
     public  void mapping(){
         tvGroupName = findViewById(R.id.tvGroupNameInfoGroup);
@@ -168,6 +175,7 @@ public class InfoGroupChat extends AppCompatActivity {
         btnWatchMembers = findViewById(R.id.btnWatchMembers);
         btnChangeBackground = findViewById(R.id.btnChangeBackgroundInfoGroup);
         btnAddMember = findViewById(R.id.imgAddMemberInfoGroup);
+        btnLeaveGroup = findViewById(R.id.btnLeaveGroup);
     }
     public void init(){
         Intent intent = getIntent();
@@ -650,6 +658,9 @@ public class InfoGroupChat extends AppCompatActivity {
                             listAddMembers.removeAll(listAddMembers);
                             dialog.dismiss();
                             Toast.makeText(InfoGroupChat.this, "Thêm thành viên thành công", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(InfoGroupChat.this,ChatBoxGroup.class);
+                            intent.putExtra("groupId",groupId);
+                            finish();
                         }
 
                         @Override
@@ -707,5 +718,151 @@ public class InfoGroupChat extends AppCompatActivity {
             }, 500);
         }
 
+    }
+    public void leaveGroup(){
+        final Dialog dialog =new Dialog(InfoGroupChat.this);
+        dialog.setContentView(R.layout.dialog_logout);
+        Window window = dialog.getWindow();
+        if(window == null)
+            return;
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        window.setLayout(layoutParams.MATCH_PARENT,layoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        layoutParams.gravity = Gravity.CENTER;
+        window.setAttributes(layoutParams);
+        dialog.setCancelable(true);
+        TextView textView21 = dialog.findViewById(R.id.textView21);
+        TextView tvCancel = dialog.findViewById(R.id.tvCancel);
+        TextView tvConfirm = dialog.findViewById(R.id.tvLogout_Dialog);
+        textView21.setText("Bạn có muốn rời nhóm hay không?");
+        tvConfirm.setText("Xác nhận");
+        tvCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        members = new ArrayList<>();
+        List<Map<String,String>> listMap = chatGroup.getMembers();
+        List<String> listId = new ArrayList<>();
+        listMap.forEach((map) -> {
+            listId.add(map.get("userId"));
+        });
+        listId.forEach((id) ->{
+            Call<UserDTO> userCall = dataService.getUserById(id);
+            userCall.enqueue(new Callback<UserDTO>() {
+                @Override
+                public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                    User user = response.body().getUser();
+                    members.add(user);
+                }
+
+                @Override
+                public void onFailure(Call<UserDTO> call, Throwable t) {
+
+                }
+            });
+        });
+        tvConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(chatGroup.getUserId().equals(new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn())){
+                    Message message = new Message();
+                    message.setCreatedAt(new Date().getTime());
+                    message.setMessageType("note");
+                    message.setReceiverId(groupId);
+                    message.setSenderId(new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn());
+                    message.setText(" đã rời nhóm.");
+                    message.setChatType("group");
+                    Call<Message> messageCall = dataService.postMessage(message);
+                    messageCall.enqueue(new Callback<Message>() {
+                        @Override
+                        public void onResponse(Call<Message> call, Response<Message> response) {
+                            User newLeader = null;
+                            for (int i = 0;i < members.size();i++){
+                                if(!members.get(i).getId().equals(new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn())){
+                                    newLeader = members.get(i);
+                                    break;
+                                }
+                            }
+                            ArrayList<Map<String,String>> mapMembers = chatGroup.getMembers();
+                            for(int i = 0 ; i< mapMembers.size();i++){
+                                if(mapMembers.get(i).get("userId").equals(new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn())){
+                                    mapMembers.remove(mapMembers.get(i));
+                                    break;
+                                }
+                            }
+                            chatGroup.setUserId(newLeader.getId());
+                            chatGroup.setMembers(mapMembers);
+                            Call<ChatGroup> chatGroupCall = dataService.updateGroup(chatGroup.getId(),chatGroup);
+                            chatGroupCall.enqueue(new Callback<ChatGroup>() {
+                                @Override
+                                public void onResponse(Call<ChatGroup> call, Response<ChatGroup> response) {
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<ChatGroup> call, Throwable t) {
+
+                                }
+                            });
+                            dialog.dismiss();
+                            Toast.makeText(InfoGroupChat.this, "Bạn đã rời nhóm", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(InfoGroupChat.this,Home.class));
+                            finish();
+                        }
+
+                        @Override
+                        public void onFailure(Call<Message> call, Throwable t) {
+
+                        }
+                    });
+                }else{
+                    Message message = new Message();
+                    message.setCreatedAt(new Date().getTime());
+                    message.setMessageType("note");
+                    message.setReceiverId(groupId);
+                    message.setSenderId(new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn());
+                    message.setText("đã rời nhóm.");
+                    message.setChatType("group");
+                    Call<Message> messageCall = dataService.postMessage(message);
+                    messageCall.enqueue(new Callback<Message>() {
+                        @Override
+                        public void onResponse(Call<Message> call, Response<Message> response) {
+                            ArrayList<Map<String,String>> mapMembers = chatGroup.getMembers();
+                            for(int i = 0 ; i< mapMembers.size();i++){
+                                if(mapMembers.get(i).get("userId").equals(new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn())){
+                                    mapMembers.remove(mapMembers.get(i));
+                                    break;
+                                }
+                            }
+                            chatGroup.setMembers(mapMembers);
+                            Call<ChatGroup> chatGroupCall = dataService.updateGroup(chatGroup.getId(),chatGroup);
+                            chatGroupCall.enqueue(new Callback<ChatGroup>() {
+                                @Override
+                                public void onResponse(Call<ChatGroup> call, Response<ChatGroup> response) {
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<ChatGroup> call, Throwable t) {
+
+                                }
+                            });
+                            dialog.dismiss();
+                            Toast.makeText(InfoGroupChat.this, "Bạn đã rời nhóm2", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(InfoGroupChat.this,Home.class));
+                            finish();
+                        }
+
+                        @Override
+                        public void onFailure(Call<Message> call, Throwable t) {
+
+                        }
+                    });
+                }
+            }
+        });
+        dialog.show();
     }
 }

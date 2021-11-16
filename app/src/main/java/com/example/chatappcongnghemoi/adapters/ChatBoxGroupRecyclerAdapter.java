@@ -25,6 +25,9 @@ import com.example.chatappcongnghemoi.activities.Personal;
 import com.example.chatappcongnghemoi.activities.StartApp;
 import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
+import com.example.chatappcongnghemoi.models.UserDTO;
+import com.example.chatappcongnghemoi.retrofit.ApiService;
+import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -43,13 +46,18 @@ import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGroupRecyclerAdapter.ViewHolder>{
     private List<Message> messages;
     private Context context;
     private User userCurrent;
     private List<User> members;
+    User userByMessage;
     boolean isReceiver = true;
+    DataService dataService;
     User sender = null;
     List<String> listKey = new ArrayList<>();
     List<String> listValue = new ArrayList<>();
@@ -89,90 +97,108 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
     @Override
     public void onBindViewHolder(@NonNull ChatBoxGroupRecyclerAdapter.ViewHolder holder, int position) {
         Message message = messages.get(position);
+        dataService = ApiService.getService();
+        Call<UserDTO> call = dataService.getUserById(message.getSenderId());
+        call.enqueue(new Callback<UserDTO>() {
+            @Override
+            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                userByMessage =  response.body().getUser();
+                Glide.with(context).load(userByMessage.getAvatar()).into(holder.avatar);
+                holder.txt_username.setText(userByMessage.getUserName());
+            }
+
+            @Override
+            public void onFailure(Call<UserDTO> call, Throwable t) {
+
+            }
+        });
+
         database = FirebaseDatabase.getInstance().getReference("reaction");
-        members.forEach((user) ->{
-            if(user.getId().equals(message.getSenderId())) {
-                Glide.with(context).load(user.getAvatar()).into(holder.avatar);
-                holder.txt_username.setText(user.getUserName().toString());
-                sender = user;
-            }
-        });
-        database.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<String> tempKey = new ArrayList<>();
-                List<String> tempValue = new ArrayList<>();
-                for(DataSnapshot snap : snapshot.child(message.getId()).getChildren()){
-                    if(snap.getValue() == null){
 
-                    }else{
-                        tempKey.add(snap.getKey());
-                        tempValue.add(snap.getValue().toString());
-                        if(snapshot.child(message.getId()).getChildrenCount() == tempKey.size()){
-                            listKey.addAll(tempKey);
-                            listValue.addAll(tempValue);
-                            tempKey.removeAll(tempKey);
-                            tempValue.removeAll(tempValue);
-                            if(listKey.size() == 0){
-                                holder.txt_quantityReaction.setText("");
-                            }else{
-                                holder.txt_quantityReaction.setText(listKey.size()+"");
-                                listValue.forEach((react) -> {
-                                    if(react.equals("haha"))
-                                        haha++;
-                                    else if(react.equals("like"))
-                                        like++;
-                                    else if(react.equals("love"))
-                                        love++;
-                                    else if(react.equals("wow"))
-                                        wow++;
-                                    else if(react.equals("cry"))
-                                        cry++;
-                                    else if(react.equals("angry"))
-                                        angry++;
-                                });
-                                if(like == 0){
-                                    holder.imgReaction1.setVisibility(View.INVISIBLE);
-                                }else{
-                                    holder.imgReaction1.setImageResource(R.drawable.like);
-                                }
-                                if(love == 0){
-                                    holder.imgReaction2.setVisibility(View.INVISIBLE);
-                                }else{
-                                    holder.imgReaction2.setImageResource(R.drawable.heart);
-                                }
-                                if(haha == 0){
-                                    holder.imgReaction3.setVisibility(View.INVISIBLE);
-                                }else{
-                                    holder.imgReaction3.setImageResource(R.drawable.laughing);
-                                }
-                                if(wow == 0){
-                                    holder.imgReaction4.setVisibility(View.INVISIBLE);
-                                }else{
-                                    holder.imgReaction4.setImageResource(R.drawable.wow);
-                                }
-                                if(cry == 0){
-                                    holder.imgReaction5.setVisibility(View.INVISIBLE);
-                                }else{
-                                    holder.imgReaction5.setImageResource(R.drawable.crying);
-                                }
-                                if(angry == 0){
-                                    holder.imgReaction6.setVisibility(View.INVISIBLE);
-                                }else{
-                                    holder.imgReaction6.setImageResource(R.drawable.angry);
-                                }
-                            }
-                        }
-                        listKey.removeAll(listKey);
-                        listValue.removeAll(listValue);
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+//        members.forEach((user) ->{
+//            if(user.getId().equals(message.getSenderId())) {
+//                Glide.with(context).load(user.getAvatar()).into(holder.avatar);
+//                holder.txt_username.setText(user.getUserName().toString());
+//                sender = user;
+//            }
+//        });
+//        database.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                List<String> tempKey = new ArrayList<>();
+//                List<String> tempValue = new ArrayList<>();
+//                for(DataSnapshot snap : snapshot.child(message.getId()).getChildren()){
+//                    if(snap.getValue() == null){
+//
+//                    }else{
+//                        tempKey.add(snap.getKey());
+//                        tempValue.add(snap.getValue().toString());
+//                        if(snapshot.child(message.getId()).getChildrenCount() == tempKey.size()){
+//                            listKey.addAll(tempKey);
+//                            listValue.addAll(tempValue);
+//                            tempKey.removeAll(tempKey);
+//                            tempValue.removeAll(tempValue);
+//                            if(listKey.size() == 0){
+//                                holder.txt_quantityReaction.setText("");
+//                            }else{
+//                                holder.txt_quantityReaction.setText(listKey.size()+"");
+//                                listValue.forEach((react) -> {
+//                                    if(react.equals("haha"))
+//                                        haha++;
+//                                    else if(react.equals("like"))
+//                                        like++;
+//                                    else if(react.equals("love"))
+//                                        love++;
+//                                    else if(react.equals("wow"))
+//                                        wow++;
+//                                    else if(react.equals("cry"))
+//                                        cry++;
+//                                    else if(react.equals("angry"))
+//                                        angry++;
+//                                });
+//                                if(like == 0){
+//                                    holder.imgReaction1.setVisibility(View.INVISIBLE);
+//                                }else{
+//                                    holder.imgReaction1.setImageResource(R.drawable.like);
+//                                }
+//                                if(love == 0){
+//                                    holder.imgReaction2.setVisibility(View.INVISIBLE);
+//                                }else{
+//                                    holder.imgReaction2.setImageResource(R.drawable.heart);
+//                                }
+//                                if(haha == 0){
+//                                    holder.imgReaction3.setVisibility(View.INVISIBLE);
+//                                }else{
+//                                    holder.imgReaction3.setImageResource(R.drawable.laughing);
+//                                }
+//                                if(wow == 0){
+//                                    holder.imgReaction4.setVisibility(View.INVISIBLE);
+//                                }else{
+//                                    holder.imgReaction4.setImageResource(R.drawable.wow);
+//                                }
+//                                if(cry == 0){
+//                                    holder.imgReaction5.setVisibility(View.INVISIBLE);
+//                                }else{
+//                                    holder.imgReaction5.setImageResource(R.drawable.crying);
+//                                }
+//                                if(angry == 0){
+//                                    holder.imgReaction6.setVisibility(View.INVISIBLE);
+//                                }else{
+//                                    holder.imgReaction6.setImageResource(R.drawable.angry);
+//                                }
+//                            }
+//                        }
+//                        listKey.removeAll(listKey);
+//                        listValue.removeAll(listValue);
+//                    }
+//                }
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
         if (message != null) {
             if (message.getText() == null) {
                 holder.txt_content.setText(message.getFileName().toString());
@@ -190,11 +216,11 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-//                if(!message.getSenderId().equals(userCurrent.getId())){
+                if(!message.getSenderId().equals(userCurrent.getId())){
                     if(!message.getMessageType().equals("note")){
                         sendReactionForMessage(sender,message);
                     }
-//                }
+                }
                 return  true;
             }
         });
@@ -231,36 +257,51 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
             String date = DateFormat.getDateFormat(context).format(message.getCreatedAt());
             time.setText(date);
         }
-        database.addValueEventListener(new ValueEventListener() {
+//        database.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                for (DataSnapshot snap : snapshot.child(message.getId()).getChildren()) {
+//                    if (snap.getValue() == null) {
+//
+//                    } else { ;
+//                        if(snap.getKey().equals(userCurrent.getId())){
+//                            if(snap.getValue().toString().equals("like")){
+//                                imgLike.setBackgroundResource(R.drawable.background_message_center);
+//                            }else if(snap.getValue().toString().equals("love"))
+//                                imgLove.setBackgroundResource(R.drawable.background_message_center);
+//                            else if(snap.getValue().toString().equals("haha"))
+//                                imgHaha.setBackgroundResource(R.drawable.background_message_center);
+//                            else if(snap.getValue().toString().equals("wow"))
+//                                imgWow.setBackgroundResource(R.drawable.background_message_center);
+//                            else if(snap.getValue().toString().equals("cry"))
+//                                imgCry.setBackgroundResource(R.drawable.background_message_center);
+//                            else if(snap.getValue().toString().equals("angry"))
+//                                imgAngry.setBackgroundResource(R.drawable.background_message_center);
+//                        }
+//                    }
+//                }
+//            }
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+        dialog.show();
+    }
+    public void getUserByMessage(Message message){
+        dataService = ApiService.getService();
+        Call<UserDTO> call = dataService.getUserById(message.getSenderId());
+        call.enqueue(new Callback<UserDTO>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot snap : snapshot.child(message.getId()).getChildren()) {
-                    if (snap.getValue() == null) {
-
-                    } else { ;
-                        if(snap.getKey().equals(userCurrent.getId())){
-                            if(snap.getValue().toString().equals("like")){
-                                imgLike.setBackgroundResource(R.drawable.background_message_center);
-                            }else if(snap.getValue().toString().equals("love"))
-                                imgLove.setBackgroundResource(R.drawable.background_message_center);
-                            else if(snap.getValue().toString().equals("haha"))
-                                imgHaha.setBackgroundResource(R.drawable.background_message_center);
-                            else if(snap.getValue().toString().equals("wow"))
-                                imgWow.setBackgroundResource(R.drawable.background_message_center);
-                            else if(snap.getValue().toString().equals("cry"))
-                                imgCry.setBackgroundResource(R.drawable.background_message_center);
-                            else if(snap.getValue().toString().equals("angry"))
-                                imgAngry.setBackgroundResource(R.drawable.background_message_center);
-                        }
-                    }
-                }
+            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                userByMessage =  response.body().getUser();
             }
+
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            public void onFailure(Call<UserDTO> call, Throwable t) {
 
             }
         });
-        dialog.show();
     }
     @Override
     public int getItemCount() {

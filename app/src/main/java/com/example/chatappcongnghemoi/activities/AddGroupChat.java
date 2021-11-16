@@ -315,6 +315,7 @@ public class AddGroupChat extends AppCompatActivity {
                             if(response.isSuccessful()){
                                 Toast.makeText(AddGroupChat.this, "Tạo nhóm thành công", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(AddGroupChat.this,Home.class));
+                                listFriendsClickAdd.removeAll(listFriendsClickAdd);
                                 finish();
                             }else{
                                 Toast.makeText(AddGroupChat.this, "Tạo nhóm không thành công", Toast.LENGTH_SHORT).show();

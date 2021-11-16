@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -122,6 +124,26 @@ public class ChatBoxGroup extends AppCompatActivity {
                 startActivity(new Intent(ChatBoxGroup.this,Home.class));
             }
         });
+        txtMessage.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(txtMessage.getText().toString().equals(""))
+                    btnSend.setVisibility(View.INVISIBLE);
+                else{
+                    btnSend.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,6 +194,7 @@ public class ChatBoxGroup extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBackChatBoxGroup);
         recyclerView = findViewById(R.id.recyclerviewChatBoxGroup);
         btnSend = findViewById(R.id.imgSendMessageChatBoxGroup);
+        btnSend.setVisibility(View.INVISIBLE);
         btnMenu = findViewById(R.id.imgMenuChatBoxGroup);
 //        database.child(groupId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
 //            @Override

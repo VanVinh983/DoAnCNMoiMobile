@@ -37,4 +37,10 @@
             android:text=""/>
     </LinearLayout>
 
+    <Spinner
+        android:id="@+id/btnOptionsMembersOfGroup"
+        android:layout_width="40dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        />
 </LinearLayout>
