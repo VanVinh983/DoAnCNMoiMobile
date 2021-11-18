@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -27,17 +28,26 @@ import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.example.chatappcongnghemoi.socket.MessageSocket;
+import com.example.chatappcongnghemoi.socket.MySocket;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,6 +68,8 @@ public class ChatBoxGroup extends AppCompatActivity {
     User userCurrent = null;
     DatabaseReference database;
     boolean flag = true;
+    private MessageSocket socket;
+    private static Socket mSocket = MySocket.getInstance().getSocket();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +80,7 @@ public class ChatBoxGroup extends AppCompatActivity {
         mapping();
         Intent intent = getIntent();
         groupId = intent.getStringExtra("groupId");
-
+        mSocket.on("response-add-new-text", responeMessage);
         database.child(groupId).child("background").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -144,6 +156,28 @@ public class ChatBoxGroup extends AppCompatActivity {
 
             }
         });
+        Handler handler1 = new Handler();
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (userCurrent.getId()!=null){
+                    Call<List<ChatGroup>> listCall = dataService.getChatGroupByUserId(userCurrent.getId());
+                    listCall.enqueue(new Callback<List<ChatGroup>>() {
+                        @Override
+                        public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
+                            socket = new MessageSocket(response.body(), userCurrent);
+                        }
+                        @Override
+                        public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
+                            System.err.println("fail get list group by user"+t.getMessage());
+                        }
+                    });
+                    handler1.removeCallbacks(this);
+                }else {
+                    handler1.postDelayed(this, 500);
+                }
+            }
+        },500);
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,7 +194,9 @@ public class ChatBoxGroup extends AppCompatActivity {
                 messageCall.enqueue(new Callback<Message>() {
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
-                        messages.add(message);
+                        Message message1 = response.body();
+                        socket.sendMessage(message1,"true");
+                        messages.add(message1);
                         adapter = new ChatBoxGroupRecyclerAdapter(messages, ChatBoxGroup.this,userCurrent, members);
                         recyclerView.setAdapter(adapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBoxGroup.this, LinearLayoutManager.VERTICAL, false);
@@ -186,6 +222,12 @@ public class ChatBoxGroup extends AppCompatActivity {
                 startActivity(intentMenu);
             }
         });
+        btnOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ChatBoxGroup.this, ""+members, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
     private void mapping(){
         txtMessage = findViewById(R.id.txtMessageText);
@@ -196,6 +238,7 @@ public class ChatBoxGroup extends AppCompatActivity {
         btnSend = findViewById(R.id.imgSendMessageChatBoxGroup);
         btnSend.setVisibility(View.INVISIBLE);
         btnMenu = findViewById(R.id.imgMenuChatBoxGroup);
+        btnOption = findViewById(R.id.btnOptionsChatBoxGroup);
 //        database.child(groupId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
 //            @Override
 //            public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -288,24 +331,81 @@ public class ChatBoxGroup extends AppCompatActivity {
             }
         });
     }
-    public void getChatBoxById(String groupId){
-        Call<ChatGroup> groupDTOCall = dataService.getGroupById(groupId);
-        groupDTOCall.enqueue(new Callback<ChatGroup>() {
-            @Override
-            public void onResponse(Call<ChatGroup> call, Response<ChatGroup> response) {
-                chatGroup = response.body();
-                tvGroupName.setText(chatGroup.getName());
-                List<Map<String,String>> listMembers = chatGroup.getMembers();
-                listMembers.forEach((map) ->{
-                    listId.add(map.get("userId"));
-                });
-                tvQuantityMember.setText(listId.size()+" thành viên");
-            }
+    private Emitter.Listener responeMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    String mess = null;
+                    try {
+                        mess = data.getString("message");
+                        Gson gson = new Gson();
+                        Message message = gson.fromJson(mess, Message.class);
+                        messages.add(message);
+                        adapter = new ChatBoxGroupRecyclerAdapter(messages, ChatBoxGroup.this,userCurrent, members);
+                        recyclerView.setAdapter(adapter);
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBoxGroup.this, LinearLayoutManager.VERTICAL, false);
+                        linearLayoutManager.setStackFromEnd(true);
+                        recyclerView.setLayoutManager(linearLayoutManager);
+                        if (adapter.getItemCount()>0){
+                            recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
-            @Override
-            public void onFailure(Call<ChatGroup> call, Throwable t) {
-                Toast.makeText(ChatBoxGroup.this, ""+t, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+                }
+            });
+        }
+    };
+//    private Emitter.Listener responeAddFile = new Emitter.Listener() {
+//        @Override
+//        public void call(final Object... args) {
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    JSONObject data = (JSONObject) args[0];
+//                    JSONArray mess = null;
+//                    Message messObject = null;
+//                    try {
+//                        mess = data.getJSONArray("messages");
+//                        messObject = new Gson().fromJson(mess.get(0).toString(), Message.class);
+//                        messages.add(messObject);
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                    messageAdapter = new MessageAdapter(messages, ChatBox.this,userCurrent, friendCurrent);
+//                    recyclerViewMessage.setAdapter(messageAdapter);
+//                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBox.this, LinearLayoutManager.VERTICAL, false);
+//                    linearLayoutManager.setStackFromEnd(true);
+//                    recyclerViewMessage.setLayoutManager(linearLayoutManager);
+//                    if (messageAdapter.getItemCount()>0){
+//                        recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount()-1);
+//                    }
+//                }
+//            });
+//        }
+//    };
+//    public void getChatBoxById(String groupId){
+//        Call<ChatGroup> groupDTOCall = dataService.getGroupById(groupId);
+//        groupDTOCall.enqueue(new Callback<ChatGroup>() {
+//            @Override
+//            public void onResponse(Call<ChatGroup> call, Response<ChatGroup> response) {
+//                chatGroup = response.body();
+//                tvGroupName.setText(chatGroup.getName());
+//                List<Map<String,String>> listMembers = chatGroup.getMembers();
+//                listMembers.forEach((map) ->{
+//                    listId.add(map.get("userId"));
+//                });
+//                tvQuantityMember.setText(listId.size()+" thành viên");
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ChatGroup> call, Throwable t) {
+//                Toast.makeText(ChatBoxGroup.this, ""+t, Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 }

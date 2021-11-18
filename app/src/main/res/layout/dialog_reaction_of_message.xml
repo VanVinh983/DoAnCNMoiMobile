@@ -31,15 +31,24 @@
                 android:textStyle="bold"
                 android:textSize="18dp"
                 />
-            <TextView
-                android:id="@+id/tvMessageReaction"
-                android:layout_marginTop="5dp"
+            <LinearLayout
+                android:gravity="center"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:text="abc"
-                android:textSize="19dp"
-                />
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/imgMessageReaction"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"/>
+                <TextView
+                    android:id="@+id/tvMessageReaction"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:text="abc"
+                    android:textSize="19dp"
+                    />
+            </LinearLayout>
             <TextView
                 android:id="@+id/tvTimeReaction"
                 android:layout_marginTop="5dp"

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.adapters.ChatBoxGroupRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.ContactRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.FriendsRecyclerAdapterAddGroup;
 import com.example.chatappcongnghemoi.adapters.ImageFriendsWhenClickAddGroupRecyclerAdapter;
@@ -26,18 +27,31 @@ import com.example.chatappcongnghemoi.models.ChatGroup;
 import com.example.chatappcongnghemoi.models.ChatGroupDTO;
 import com.example.chatappcongnghemoi.models.Contact;
 import com.example.chatappcongnghemoi.models.ContactList;
+import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.example.chatappcongnghemoi.socket.GroupSocket;
+import com.example.chatappcongnghemoi.socket.MessageSocket;
+import com.example.chatappcongnghemoi.socket.MySocket;
+import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -55,6 +69,11 @@ public class AddGroupChat extends AppCompatActivity {
     private ArrayList phoneNumberList;
     private ArrayList<User> userList;
     private boolean flag = false;
+    private GroupSocket groupSocket;
+    private MessageSocket messageSocket;
+    private User userCurrent = null;
+    private List<ChatGroup> chatGroupList;
+    private static Socket mSocket = MySocket.getInstance().getSocket();
     private FriendsRecyclerAdapterAddGroup friendsRecyclerAdapterAddGroup;
     private PhoneBookRecyclerAdapterAddGroup phoneBookRecyclerAdapterAddGroup;
     public static ImageFriendsWhenClickAddGroupRecyclerAdapter imageFriendsWhenClickAddGroupRecyclerAdapter;
@@ -64,6 +83,8 @@ public class AddGroupChat extends AppCompatActivity {
         setContentView(R.layout.activity_add_group_chat);
         getSupportActionBar().hide();
         dataService = ApiService.getService();
+        mSocket.on("response-add-new-text", responeMessage);
+        mSocket.on("response-create-group", responeCreateGroup);
         recyclerViewFriends = findViewById(R.id.recyclerview_friends_add_group);
         recyclerViewPhoneBook = findViewById(R.id.recyclerview_phonebook_add_group);
         btnBack = findViewById(R.id.btnBackAddGroupChat);
@@ -100,9 +121,42 @@ public class AddGroupChat extends AppCompatActivity {
         } else {
             requestPermission();
         }
+        Call<UserDTO> userDTOCall = dataService.getUserById(new DataLoggedIn(this).getUserIdLoggedIn());
+        userDTOCall.enqueue(new Callback<UserDTO>() {
+            @Override
+            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                userCurrent = response.body().getUser();
+            }
 
+            @Override
+            public void onFailure(Call<UserDTO> call, Throwable t) {
+
+            }
+        });
         getUserList();
-
+        Handler handler1 = new Handler();
+        handler1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (userCurrent.getId()!=null){
+                    Call<List<ChatGroup>> listCall = dataService.getChatGroupByUserId(userCurrent.getId());
+                    listCall.enqueue(new Callback<List<ChatGroup>>() {
+                        @Override
+                        public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
+                            groupSocket = new GroupSocket(response.body(),userCurrent);
+                            messageSocket = new MessageSocket(response.body(),userCurrent);
+                        }
+                        @Override
+                        public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
+                            System.err.println("fail get list group by user"+t.getMessage());
+                        }
+                    });
+                    handler1.removeCallbacks(this);
+                }else {
+                    handler1.postDelayed(this, 500);
+                }
+            }
+        },500);
 //        Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -312,15 +366,57 @@ public class AddGroupChat extends AppCompatActivity {
                     callGroup.enqueue(new Callback<ChatGroupDTO>() {
                         @Override
                         public void onResponse(Call<ChatGroupDTO> call, Response<ChatGroupDTO> response) {
-                            if(response.isSuccessful()){
-                                Toast.makeText(AddGroupChat.this, "Tạo nhóm thành công", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(AddGroupChat.this,Home.class));
-                                listFriendsClickAdd.removeAll(listFriendsClickAdd);
-                                finish();
-                            }else{
-                                Toast.makeText(AddGroupChat.this, "Tạo nhóm không thành công", Toast.LENGTH_SHORT).show();
+                            Handler handler1 = new Handler();
+                            handler1.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (userCurrent.getId()!=null){
+                                        Call<List<ChatGroup>> listCall = dataService.getChatGroupByUserId(userCurrent.getId());
+                                        listCall.enqueue(new Callback<List<ChatGroup>>() {
+                                            @Override
+                                            public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
+                                                chatGroupList = response.body();
+                                                chatGroupList.forEach(group -> {
+                                                if(group.getUserId().equals(userCurrent.getId())&& group.getName().equals(groupName)){
+                                                    Message message = new Message();
+                                                    message.setCreatedAt(new Date().getTime());
+                                                    message.setMessageType("note");
+                                                    message.setReceiverId(group.getId());
+                                                    message.setSenderId(new DataLoggedIn(AddGroupChat.this).getUserIdLoggedIn());
+                                                    message.setText(" đã tạo nhóm.");
+                                                    message.setChatType("group");
+                                                    Call<Message> messageCall = dataService.postMessage(message);
+                                                    messageCall.enqueue(new Callback<Message>() {
+                                                        @Override
+                                                        public void onResponse(Call<Message> call, Response<Message> response) {
+                                                            Message message1 = response.body();
+                                                            groupSocket.createGroup(group);
+                                                            messageSocket.sendMessage(message1,"true");
+                                                            Toast.makeText(AddGroupChat.this, "Tạo nhóm thành công", Toast.LENGTH_SHORT).show();
+                                                            startActivity(new Intent(AddGroupChat.this,Home.class));
+                                                            listFriendsClickAdd.removeAll(listFriendsClickAdd);
+                                                            finish();
+                                                        }
 
-                            }
+                                                        @Override
+                                                        public void onFailure(Call<Message> call, Throwable t) {
+
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                            }
+                                            @Override
+                                            public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
+                                                System.err.println("fail get list group by user"+t.getMessage());
+                                            }
+                                        });
+                                        handler1.removeCallbacks(this);
+                                    }else {
+                                        handler1.postDelayed(this, 500);
+                                    }
+                                }
+                            },500);
 
                         }
 
@@ -492,4 +588,27 @@ public class AddGroupChat extends AppCompatActivity {
         }
         return phoneNumberList;
     }
+    private Emitter.Listener responeMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
+        }
+    };
+    private Emitter.Listener responeCreateGroup = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+//                    JSONObject data = (JSONObject) args[0];
+
+                }
+            });
+        }
+    };
 }

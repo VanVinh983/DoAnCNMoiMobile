@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.text.format.DateUtils;
 import android.view.Gravity;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.activities.Full_Image_Avatar;
 import com.example.chatappcongnghemoi.activities.Personal;
 import com.example.chatappcongnghemoi.activities.StartApp;
 import com.example.chatappcongnghemoi.models.Message;
@@ -199,11 +201,35 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
 //
 //            }
 //        });
+        String url_s3 = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/";
         if (message != null) {
-            if (message.getText() == null) {
-                holder.txt_content.setText(message.getFileName().toString());
-            } else {
-                holder.txt_content.setText(message.getText().toString());
+            if (message.getMessageType().equals("image")) {
+                android.view.ViewGroup.LayoutParams layoutParams = holder.image_message.getLayoutParams();
+                layoutParams.width = 100;
+                layoutParams.height = 100;
+                holder.image_message.setLayoutParams(layoutParams);
+                Glide.with(context).load(url_s3+message.getFileName()).into(holder.image_message);
+                holder.txt_content.setWidth(0);
+                holder.txt_content.setHeight(0);
+                holder.image_message.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, Full_Image_Avatar.class);
+                        intent.putExtra("url", url_s3+message.getFileName());
+                        context.startActivity(intent);
+                    }
+                });
+            } else if (message.getMessageType().equals("file")){
+                holder.txt_content.setTypeface(holder.txt_content.getTypeface(), Typeface.ITALIC);
+                String fileName = message.getFileName().substring(37);
+                holder.txt_content.setText(fileName);
+                android.view.ViewGroup.LayoutParams layoutParams = holder.image_message.getLayoutParams();
+                layoutParams.width = 100;
+                layoutParams.height = 100;
+                holder.image_message.setLayoutParams(layoutParams);
+                holder.image_message.setImageResource(R.drawable.file);
+            }else {
+                holder.txt_content.setText(message.getText());
             }
             if(new Date().getTime() - message.getCreatedAt() < 86400000){
                 holder.txt_timeSend.setText(DateUtils.getRelativeTimeSpanString(message.getCreatedAt()));
@@ -218,7 +244,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
             public boolean onLongClick(View v) {
                 if(!message.getSenderId().equals(userCurrent.getId())){
                     if(!message.getMessageType().equals("note")){
-                        sendReactionForMessage(sender,message);
+                        sendReactionForMessage(userByMessage,message);
                     }
                 }
                 return  true;
@@ -247,9 +273,25 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
         ImageButton imgWow = dialog.findViewById(R.id.imgWowReaction);
         ImageButton imgCry = dialog.findViewById(R.id.imgCryReaction);
         ImageButton imgAngry = dialog.findViewById(R.id.imgAngryReaction);
+        ImageView imgMessage =dialog.findViewById(R.id.imgMessageReaction);
         Glide.with(context).load(sender.getAvatar()).into(avatar);
         username.setText(sender.getUserName());
-        content.setText(message.getText());
+        String url_s3 = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/";
+        if (message.getMessageType().equals("image")) {
+            android.view.ViewGroup.LayoutParams layoutParamsReaction = imgMessage.getLayoutParams();
+            layoutParamsReaction.width = 100;
+            layoutParamsReaction.height = 100;
+            imgMessage.setLayoutParams(layoutParamsReaction);
+            Glide.with(context).load(url_s3+message.getFileName()).into(imgMessage);
+            content.setWidth(0);
+            content.setHeight(0);
+        } else if (message.getMessageType().equals("file")){
+            content.setTextColor(Color.parseColor("#008ae6"));
+            content.setTypeface(content.getTypeface(), Typeface.ITALIC);
+            content.setText(message.getFileName());
+        }else {
+            content.setText(message.getText());
+        }
         if(new Date().getTime() - message.getCreatedAt() < 86400000){
             time.setText(DateUtils.getRelativeTimeSpanString(message.getCreatedAt()));
         }
@@ -288,27 +330,13 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
 //        });
         dialog.show();
     }
-    public void getUserByMessage(Message message){
-        dataService = ApiService.getService();
-        Call<UserDTO> call = dataService.getUserById(message.getSenderId());
-        call.enqueue(new Callback<UserDTO>() {
-            @Override
-            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
-                userByMessage =  response.body().getUser();
-            }
-
-            @Override
-            public void onFailure(Call<UserDTO> call, Throwable t) {
-
-            }
-        });
-    }
     @Override
     public int getItemCount() {
         return messages.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        private ImageView image_message;
         private TextView txt_content,txt_username,txt_timeSend,txt_quantityReaction;
         private CircleImageView avatar,imgReaction1,imgReaction2,imgReaction3,imgReaction6,imgReaction4,imgReaction5;
         private ImageView btnOptions;
@@ -325,6 +353,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
             imgReaction4 = itemView.findViewById(R.id.imgReactionOfMessage4);
             imgReaction5 = itemView.findViewById(R.id.imgReactionOfMessage5);
             imgReaction6 = itemView.findViewById(R.id.imgReactionOfMessage6);
+            image_message = itemView.findViewById(R.id.image_message);
         }
     }
     @Override

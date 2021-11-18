@@ -34,6 +34,9 @@ import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.example.chatappcongnghemoi.socket.GroupSocket;
+import com.example.chatappcongnghemoi.socket.MessageSocket;
+import com.example.chatappcongnghemoi.socket.MySocket;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,6 +44,8 @@ import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,10 +55,21 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
     Context context;
     ChatGroup chatGroup;
     DataService dataService;
-    public MembersOfInfoGroupRecyclerAdapter(List<User> members, Context context,ChatGroup chatGroup) {
+    User userCurrent = null;
+    private GroupSocket groupSocket;
+    private MessageSocket messageSocket;
+    private static Socket mSocket = MySocket.getInstance().getSocket();
+    private Emitter.Listener responeMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+
+        }
+    };
+    public MembersOfInfoGroupRecyclerAdapter(List<User> members, Context context,ChatGroup chatGroup,User userCurrent) {
         this.members = members;
         this.context = context;
         this.chatGroup = chatGroup;
+        this.userCurrent = userCurrent;
     }
 
     @NonNull
@@ -66,7 +82,20 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
     @Override
     public void onBindViewHolder(@NonNull MembersOfInfoGroupRecyclerAdapter.ViewHolder holder, int position) {
         User user = members.get(position);
+        mSocket.on("response-add-new-text", responeMessage);
         dataService = ApiService.getService();
+        Call<List<ChatGroup>> listCall = dataService.getChatGroupByUserId(userCurrent.getId());
+        listCall.enqueue(new Callback<List<ChatGroup>>() {
+            @Override
+            public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
+                groupSocket = new GroupSocket(response.body(),userCurrent);
+                messageSocket = new MessageSocket(response.body(),userCurrent);
+            }
+            @Override
+            public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
+                System.err.println("fail get list group by user"+t.getMessage());
+            }
+        });
         members.forEach((u) ->{
             if(user.getId().equals(chatGroup.getUserId()))
                 holder.leader.setText("Trường nhóm");
@@ -137,6 +166,8 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
                             messageCall.enqueue(new Callback<Message>() {
                                 @Override
                                 public void onResponse(Call<Message> call, Response<Message> response) {
+                                    Message message1 = response.body();
+                                    messageSocket.sendMessage(message1,"true");
                                     Toast.makeText(context, "Nhường trưởng nhóm thành công", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(context, ChatBoxGroup.class);
                                     intent.putExtra("groupId",chatGroup.getId());
@@ -208,6 +239,8 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
                             messageCall.enqueue(new Callback<Message>() {
                                 @Override
                                 public void onResponse(Call<Message> call, Response<Message> response) {
+                                    Message message1 = response.body();
+                                    messageSocket.sendMessage(message1,"true");
                                     Toast.makeText(context, "Yêu cầu rời nhóm thành công", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(context, ChatBoxGroup.class);
                                     intent.putExtra("groupId",chatGroup.getId());
@@ -249,4 +282,5 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
             btnOptions = itemView.findViewById(R.id.btnOptionsMembersOfGroup);
         }
     }
+
 }

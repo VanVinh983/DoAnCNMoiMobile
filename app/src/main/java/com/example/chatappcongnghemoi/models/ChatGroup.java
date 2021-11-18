@@ -37,6 +37,12 @@ public class ChatGroup implements Parcelable {
     @SerializedName("messageAmount")
     @Expose
     private Long messageAmount;
+    @SerializedName("avatar")
+    @Expose
+    private String avatar;
+    @SerializedName("background")
+    @Expose
+    private String  background;
     @SerializedName("createdAt")
     @Expose
     private Long createdAt;
@@ -65,6 +71,21 @@ public class ChatGroup implements Parcelable {
         this.v = v;
     }
 
+    public ChatGroup(String id, String name, String userId, Long userAmount, ArrayList<Map<String, String>> members, Long messageAmount, String avatar, String background, Long createdAt, Long updatedAt, Long deletedAt, Integer v) {
+        this.id = id;
+        this.name = name;
+        this.userId = userId;
+        this.userAmount = userAmount;
+        this.members = members;
+        this.messageAmount = messageAmount;
+        this.avatar = avatar;
+        this.background = background;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.deletedAt = deletedAt;
+        this.v = v;
+    }
+
     public ChatGroup(String name, String userId, Long userAmount) {
         this.name = name;
         this.userId = userId;
@@ -72,6 +93,22 @@ public class ChatGroup implements Parcelable {
     }
 
     public ChatGroup() {
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
     }
 
     public String getId() {

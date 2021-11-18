@@ -100,7 +100,7 @@ public class ChatBox extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        socket.sendMessage(message1);
+                        socket.sendMessage(message1,"false");
                         messages.add(message1);
                         messageAdapter = new MessageAdapter(messages, ChatBox.this,userCurrent, friendCurrent);
                         recyclerViewMessage.setAdapter(messageAdapter);

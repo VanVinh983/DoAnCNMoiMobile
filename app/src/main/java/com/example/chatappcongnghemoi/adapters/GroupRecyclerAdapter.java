@@ -1,6 +1,7 @@
 package com.example.chatappcongnghemoi.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.activities.ChatBoxGroup;
 import com.example.chatappcongnghemoi.models.ChatGroup;
 import com.example.chatappcongnghemoi.models.User;
 
@@ -36,8 +39,19 @@ public class GroupRecyclerAdapter extends RecyclerView.Adapter<GroupRecyclerAdap
 
     @Override
     public void onBindViewHolder(@NonNull GroupRecyclerAdapter.ViewHolder holder, int position) {
-        holder.sizeGroup.setText(chatGroups.size() + " thành viên");
-        holder.groupName.setText(chatGroups.get(position).getName());
+        ChatGroup group = chatGroups.get(position);
+        String url_s3 = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/";
+        Glide.with(context).load(url_s3+group.getAvatar()).into(holder.avatar);
+        holder.sizeGroup.setText(group.getMembers().size() + " thành viên");
+        holder.groupName.setText(group.getName());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ChatBoxGroup.class);
+                intent.putExtra("groupId",group.getId());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
