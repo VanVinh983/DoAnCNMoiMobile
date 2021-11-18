@@ -73,4 +73,7 @@ public interface DataService {
 
     @PUT("chatGroups/{id}")
     Call<ChatGroup> updateGroup(@Path("id") String id,@Body ChatGroup chatGroup);
+
+    @DELETE("chatGroups/{id}")
+    Call<ChatGroup> deleteGroup(@Path("id") String id);
 }

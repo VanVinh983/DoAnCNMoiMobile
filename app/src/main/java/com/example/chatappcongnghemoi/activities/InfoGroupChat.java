@@ -69,7 +69,7 @@ public class InfoGroupChat extends AppCompatActivity {
     DataService dataService;
     ImageView btnBack;
     ImageButton btnRename,btnAddMember;
-    LinearLayout btnWatchMembers,btnChangeBackground,btnLeaveGroup;
+    LinearLayout btnWatchMembers,btnChangeBackground,btnLeaveGroup,btnDeleteGroup;
     User userCurrent = null;
     List<User> members ;
     DatabaseReference database;
@@ -87,11 +87,14 @@ public class InfoGroupChat extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_group_chat);
         getSupportActionBar().hide();
-        mSocket.on("response-add-new-text", responeMessage);
+//        mSocket.on("response-add-new-text", responeMessage);
         dataService = ApiService.getService();
         database = FirebaseDatabase.getInstance().getReference("background");
         mapping();
         init();
+//        mSocket.on("response-add-user-to-group",responeAddUserToGroup);
+//        mSocket.on("response-leave-group",responeLeaveGroup);
+//        mSocket.on("response-delete-group",responeDeleteGroup);
         btnBack.setOnClickListener((view) ->{
             Intent intent = new Intent(InfoGroupChat.this,ChatBoxGroup.class);
             intent.putExtra("groupId",groupId);
@@ -120,7 +123,7 @@ public class InfoGroupChat extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
                             groupSocket = new GroupSocket(response.body(),userCurrent);
-                            messageSocket = new MessageSocket(response.body(),userCurrent);
+//                            messageSocket = new MessageSocket(response.body(),userCurrent);
                         }
                         @Override
                         public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
@@ -188,7 +191,7 @@ public class InfoGroupChat extends AppCompatActivity {
                                 @Override
                                 public void onResponse(Call<Message> call, Response<Message> response) {
                                     Message message1 = response.body();
-                                    messageSocket.sendMessage(message1,"true");
+//                                    messageSocket.sendMessage(message1,"true");
                                     dialog.dismiss();
                                     Toast.makeText(InfoGroupChat.this, "Đổi tên nhóm thành công", Toast.LENGTH_SHORT).show();
                                     tvGroupName.setText(newName);
@@ -229,6 +232,12 @@ public class InfoGroupChat extends AppCompatActivity {
                 leaveGroup();
             }
         });
+        btnDeleteGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteGroup(chatGroup);
+            }
+        });
     }
     public  void mapping(){
         tvGroupName = findViewById(R.id.tvGroupNameInfoGroup);
@@ -241,6 +250,7 @@ public class InfoGroupChat extends AppCompatActivity {
         btnChangeBackground = findViewById(R.id.btnChangeBackgroundInfoGroup);
         btnAddMember = findViewById(R.id.imgAddMemberInfoGroup);
         btnLeaveGroup = findViewById(R.id.btnLeaveGroup);
+        btnDeleteGroup = findViewById(R.id.btnDeleteGroup);
     }
     public void init(){
         Intent intent = getIntent();
@@ -252,6 +262,10 @@ public class InfoGroupChat extends AppCompatActivity {
                 chatGroup = response.body();
                 tvGroupName.setText(chatGroup.getName());
                 tvQuantityMember.setText("Xem thành viên ("+chatGroup.getMembers().size()+")");
+                btnDeleteGroup.setVisibility(View.INVISIBLE);
+                if(chatGroup.getUserId().equals(new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn())){
+                    btnDeleteGroup.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -435,7 +449,7 @@ public class InfoGroupChat extends AppCompatActivity {
                         public void onResponse(Call<Message> call, Response<Message> response) {
                             database.child(groupId).child("background").setValue(background);
                             Message message1 = response.body();
-                            messageSocket.sendMessage(message1,"true");
+//                            messageSocket.sendMessage(message1,"true");
                             dialog.dismiss();
                             Toast.makeText(InfoGroupChat.this, "Đổi hình nền chat thành công", Toast.LENGTH_SHORT).show();
                         }
@@ -726,7 +740,8 @@ public class InfoGroupChat extends AppCompatActivity {
                                 @Override
                                 public void onResponse(Call<Message> call, Response<Message> response) {
                                     Message message1 = response.body();
-                                    messageSocket.sendMessage(message1,"true");
+                                    groupSocket.addUserToGroup(chatGroup,listAddMembers);
+//                                    messageSocket.sendMessage(message1,"true");
                                     listAddMembers.removeAll(listAddMembers);
                                     dialog.dismiss();
                                     Toast.makeText(InfoGroupChat.this, "Thêm thành viên thành công", Toast.LENGTH_SHORT).show();
@@ -854,7 +869,7 @@ public class InfoGroupChat extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Message> call, Response<Message> response) {
                             Message message1 = response.body();
-                            messageSocket.sendMessage(message1,"true");
+//                            messageSocket.sendMessage(message1,"true");
                             User newLeader = null;
                             for (int i = 0;i < members.size();i++){
                                 if(!members.get(i).getId().equals(new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn())){
@@ -883,6 +898,7 @@ public class InfoGroupChat extends AppCompatActivity {
 
                                 }
                             });
+                            groupSocket.leaveGroup(chatGroup);
                             dialog.dismiss();
                             Toast.makeText(InfoGroupChat.this, "Bạn đã rời nhóm", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(InfoGroupChat.this,Home.class));
@@ -907,7 +923,7 @@ public class InfoGroupChat extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Message> call, Response<Message> response) {
                             Message message1 = response.body();
-                            messageSocket.sendMessage(message1,"true");
+//                            messageSocket.sendMessage(message1,"true");
                             ArrayList<Map<String,String>> mapMembers = chatGroup.getMembers();
                             for(int i = 0 ; i< mapMembers.size();i++){
                                 if(mapMembers.get(i).get("userId").equals(new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn())){
@@ -928,6 +944,7 @@ public class InfoGroupChat extends AppCompatActivity {
 
                                 }
                             });
+                            groupSocket.leaveGroup(chatGroup);
                             dialog.dismiss();
                             Toast.makeText(InfoGroupChat.this, "Bạn đã rời nhóm", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(InfoGroupChat.this,Home.class));
@@ -944,7 +961,76 @@ public class InfoGroupChat extends AppCompatActivity {
         });
         dialog.show();
     }
-    private Emitter.Listener responeMessage = new Emitter.Listener() {
+    public void deleteGroup(ChatGroup chatGroup){
+        final Dialog dialog =new Dialog(InfoGroupChat.this);
+        dialog.setContentView(R.layout.dialog_logout);
+        Window window = dialog.getWindow();
+        if(window == null)
+            return;
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        window.setLayout(layoutParams.MATCH_PARENT,layoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        layoutParams.gravity = Gravity.CENTER;
+        window.setAttributes(layoutParams);
+        dialog.setCancelable(true);
+        TextView textView21= dialog.findViewById(R.id.textView21);
+        TextView tvCancel = dialog.findViewById(R.id.tvCancel);
+        TextView tvConfirm = dialog.findViewById(R.id.tvLogout_Dialog);
+        tvConfirm.setText("XÁC NHẬN");
+        textView21.setText("Bạn có muốn giải tán nhóm hay không?");
+        tvCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        tvConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<ChatGroup> chatGroupCall = dataService.deleteGroup(chatGroup.getId());
+                chatGroupCall.enqueue(new Callback<ChatGroup>() {
+                    @Override
+                    public void onResponse(Call<ChatGroup> call, Response<ChatGroup> response) {
+                    }
+
+                    @Override
+                    public void onFailure(Call<ChatGroup> call, Throwable t) {
+
+                    }
+                });
+                groupSocket.deleteGroup(chatGroup);
+                Toast.makeText(InfoGroupChat.this, "Giải tán nhóm thành công!" , Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(InfoGroupChat.this,Home.class);
+                dialog.dismiss();
+                startActivity(intent);
+                finish();
+            }
+        });
+        dialog.show();
+    }
+    private Emitter.Listener responeAddUserToGroup = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
+        }
+    };
+    private Emitter.Listener responeLeaveGroup = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
+        }
+    };
+    private Emitter.Listener responeDeleteGroup = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             runOnUiThread(new Runnable() {

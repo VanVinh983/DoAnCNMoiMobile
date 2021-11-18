@@ -59,12 +59,6 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
     private GroupSocket groupSocket;
     private MessageSocket messageSocket;
     private static Socket mSocket = MySocket.getInstance().getSocket();
-    private Emitter.Listener responeMessage = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-
-        }
-    };
     public MembersOfInfoGroupRecyclerAdapter(List<User> members, Context context,ChatGroup chatGroup,User userCurrent) {
         this.members = members;
         this.context = context;
@@ -82,14 +76,14 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
     @Override
     public void onBindViewHolder(@NonNull MembersOfInfoGroupRecyclerAdapter.ViewHolder holder, int position) {
         User user = members.get(position);
-        mSocket.on("response-add-new-text", responeMessage);
+//        mSocket.on("response-leave-group",responeLeaveGroup);
         dataService = ApiService.getService();
         Call<List<ChatGroup>> listCall = dataService.getChatGroupByUserId(userCurrent.getId());
         listCall.enqueue(new Callback<List<ChatGroup>>() {
             @Override
             public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
                 groupSocket = new GroupSocket(response.body(),userCurrent);
-                messageSocket = new MessageSocket(response.body(),userCurrent);
+//                messageSocket = new MessageSocket(response.body(),userCurrent);
             }
             @Override
             public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
@@ -167,7 +161,7 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
                                 @Override
                                 public void onResponse(Call<Message> call, Response<Message> response) {
                                     Message message1 = response.body();
-                                    messageSocket.sendMessage(message1,"true");
+//                                    messageSocket.sendMessage(message1,"true");
                                     Toast.makeText(context, "Nhường trưởng nhóm thành công", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(context, ChatBoxGroup.class);
                                     intent.putExtra("groupId",chatGroup.getId());
@@ -198,7 +192,7 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
                     TextView tvCancel = dialog.findViewById(R.id.tvCancel);
                     TextView tvConfirm = dialog.findViewById(R.id.tvLogout_Dialog);
                     tvConfirm.setText("XÁC NHẬN");
-                    textView21.setText("Đã yêu cầu "+user.getUserName()+" rời nhóm.");
+                    textView21.setText("Yêu cầu "+user.getUserName()+" rời nhóm.");
                     tvCancel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -215,6 +209,7 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
                                     break;
                                 }
                             }
+                            groupSocket.leaveGroup(chatGroup);
                             chatGroup.setMembers(members);
                             Call<ChatGroup> chatGroupCall = dataService.updateGroup(chatGroup.getId(),chatGroup);
                             chatGroupCall.enqueue(new Callback<ChatGroup>() {
@@ -240,7 +235,7 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
                                 @Override
                                 public void onResponse(Call<Message> call, Response<Message> response) {
                                     Message message1 = response.body();
-                                    messageSocket.sendMessage(message1,"true");
+//                                    messageSocket.sendMessage(message1,"true");
                                     Toast.makeText(context, "Yêu cầu rời nhóm thành công", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(context, ChatBoxGroup.class);
                                     intent.putExtra("groupId",chatGroup.getId());

@@ -80,7 +80,6 @@ public class ChatBoxGroup extends AppCompatActivity {
         mapping();
         Intent intent = getIntent();
         groupId = intent.getStringExtra("groupId");
-        mSocket.on("response-add-new-text", responeMessage);
         database.child(groupId).child("background").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -110,6 +109,8 @@ public class ChatBoxGroup extends AppCompatActivity {
                 }
             }
         });
+        mSocket.on("response-add-new-text", responeMessage);
+        mSocket.on("response-add-new-file", responeAddFile);
         Call<ChatGroup> groupDTOCall = dataService.getGroupById(groupId);
         groupDTOCall.enqueue(new Callback<ChatGroup>() {
             @Override
@@ -360,52 +361,32 @@ public class ChatBoxGroup extends AppCompatActivity {
             });
         }
     };
-//    private Emitter.Listener responeAddFile = new Emitter.Listener() {
-//        @Override
-//        public void call(final Object... args) {
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    JSONObject data = (JSONObject) args[0];
-//                    JSONArray mess = null;
-//                    Message messObject = null;
-//                    try {
-//                        mess = data.getJSONArray("messages");
-//                        messObject = new Gson().fromJson(mess.get(0).toString(), Message.class);
-//                        messages.add(messObject);
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                    messageAdapter = new MessageAdapter(messages, ChatBox.this,userCurrent, friendCurrent);
-//                    recyclerViewMessage.setAdapter(messageAdapter);
-//                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBox.this, LinearLayoutManager.VERTICAL, false);
-//                    linearLayoutManager.setStackFromEnd(true);
-//                    recyclerViewMessage.setLayoutManager(linearLayoutManager);
-//                    if (messageAdapter.getItemCount()>0){
-//                        recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount()-1);
-//                    }
-//                }
-//            });
-//        }
-//    };
-//    public void getChatBoxById(String groupId){
-//        Call<ChatGroup> groupDTOCall = dataService.getGroupById(groupId);
-//        groupDTOCall.enqueue(new Callback<ChatGroup>() {
-//            @Override
-//            public void onResponse(Call<ChatGroup> call, Response<ChatGroup> response) {
-//                chatGroup = response.body();
-//                tvGroupName.setText(chatGroup.getName());
-//                List<Map<String,String>> listMembers = chatGroup.getMembers();
-//                listMembers.forEach((map) ->{
-//                    listId.add(map.get("userId"));
-//                });
-//                tvQuantityMember.setText(listId.size()+" thành viên");
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ChatGroup> call, Throwable t) {
-//                Toast.makeText(ChatBoxGroup.this, ""+t, Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
+    private Emitter.Listener responeAddFile = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    JSONArray mess = null;
+                    Message messObject = null;
+                    try {
+                        mess = data.getJSONArray("messages");
+                        messObject = new Gson().fromJson(mess.get(0).toString(), Message.class);
+                        messages.add(messObject);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    adapter = new ChatBoxGroupRecyclerAdapter(messages, ChatBoxGroup.this,userCurrent, members);
+                    recyclerView.setAdapter(adapter);
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBoxGroup.this, LinearLayoutManager.VERTICAL, false);
+                    linearLayoutManager.setStackFromEnd(true);
+                    recyclerView.setLayoutManager(linearLayoutManager);
+                    if (adapter.getItemCount()>0){
+                        recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
+                    }
+                }
+            });
+        }
+    };
 }

@@ -90,9 +90,10 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_weight="1"
+            android:maxHeight="48dp"
             android:backgroundTint="#FFFFFF"
             android:hint="Tin nhắn ..."
-            android:inputType="textMultiLine|text"
+            android:inputType="textMultiLine"
             android:textSize="18sp"></EditText>
 
         <ImageView

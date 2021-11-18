@@ -83,7 +83,7 @@ public class AddGroupChat extends AppCompatActivity {
         setContentView(R.layout.activity_add_group_chat);
         getSupportActionBar().hide();
         dataService = ApiService.getService();
-        mSocket.on("response-add-new-text", responeMessage);
+//        mSocket.on("response-add-new-text", responeMessage);
         mSocket.on("response-create-group", responeCreateGroup);
         recyclerViewFriends = findViewById(R.id.recyclerview_friends_add_group);
         recyclerViewPhoneBook = findViewById(R.id.recyclerview_phonebook_add_group);
@@ -391,11 +391,11 @@ public class AddGroupChat extends AppCompatActivity {
                                                         public void onResponse(Call<Message> call, Response<Message> response) {
                                                             Message message1 = response.body();
                                                             groupSocket.createGroup(group);
-                                                            messageSocket.sendMessage(message1,"true");
-                                                            Toast.makeText(AddGroupChat.this, "Tạo nhóm thành công", Toast.LENGTH_SHORT).show();
-                                                            startActivity(new Intent(AddGroupChat.this,Home.class));
+//                                                            messageSocket.sendMessage(message1,"true");
                                                             listFriendsClickAdd.removeAll(listFriendsClickAdd);
-                                                            finish();
+                                                            Toast.makeText(AddGroupChat.this, "Tạo nhóm thành công", Toast.LENGTH_SHORT).show();
+                                                            Intent intent = new Intent(AddGroupChat.this,Home.class);
+                                                            startActivity(intent);
                                                         }
 
                                                         @Override
@@ -602,13 +602,6 @@ public class AddGroupChat extends AppCompatActivity {
     private Emitter.Listener responeCreateGroup = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-//                    JSONObject data = (JSONObject) args[0];
-
-                }
-            });
         }
     };
 }
