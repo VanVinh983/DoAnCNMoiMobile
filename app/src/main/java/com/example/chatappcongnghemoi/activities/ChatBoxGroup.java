@@ -5,18 +5,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.adapters.ChatBoxGroupRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.MessageAdapter;
@@ -30,6 +38,7 @@ import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.example.chatappcongnghemoi.socket.MessageSocket;
 import com.example.chatappcongnghemoi.socket.MySocket;
+import com.facebook.common.file.FileUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -41,10 +50,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -70,11 +84,14 @@ public class ChatBoxGroup extends AppCompatActivity {
     boolean flag = true;
     private MessageSocket socket;
     private static Socket mSocket = MySocket.getInstance().getSocket();
+    public static final int PICKFILE_RESULT_CODE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_box_group);
         getSupportActionBar().hide();
+        new AmplifyInitialize(ChatBoxGroup.this).amplifyInitialize();
+        mSocket.on("response-delete-group",responeDeleteGroup);
         dataService = ApiService.getService();
         database = FirebaseDatabase.getInstance().getReference("background");
         mapping();
@@ -226,9 +243,91 @@ public class ChatBoxGroup extends AppCompatActivity {
         btnOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(ChatBoxGroup.this, ""+members, Toast.LENGTH_SHORT).show();
+                showFileChooser();
             }
         });
+    }
+    public void showFileChooser(){
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+//        intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeType);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        startActivityForResult(intent,PICKFILE_RESULT_CODE );
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PICKFILE_RESULT_CODE:
+                if (resultCode == -1) {
+                    Uri fileUri = data.getData();
+                    File file = new File(getPath(fileUri));
+                    UUID uuid = UUID.randomUUID();
+                    String extension = file.getName().substring(file.getName().lastIndexOf(".")+1);
+                    try {
+                        InputStream exampleInputStream = getContentResolver().openInputStream(fileUri);
+                        com.amplifyframework.core.Amplify.Storage.uploadInputStream(
+                                uuid+"."+file.getName(),
+                                exampleInputStream,
+                                result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
+                                storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
+                        );
+                        Message message = new Message();
+                        String userId = new DataLoggedIn(ChatBoxGroup.this).getUserIdLoggedIn();
+                        message.setSenderId(userId);
+                        message.setReceiverId(groupId);
+                        message.setChatType("group");
+                        if(extension.equals("png") || extension.equals("jpg") || extension.equals("jpeg") || extension.equals("svg") || extension.equals("gif"))
+                            message.setMessageType("image");
+                        else
+                            message.setMessageType("file");
+                        message.setCreatedAt(new Date().getTime());
+                        message.setFileName(uuid+"."+file.getName());
+                        Toast.makeText(ChatBoxGroup.this, ""+message.getMessageType(), Toast.LENGTH_SHORT).show();
+                        Call<Message> messageCall = dataService.postMessage(message);
+                        messageCall.enqueue(new Callback<Message>() {
+                            @Override
+                            public void onResponse(Call<Message> call, Response<Message> response) {
+                                Message message1 = response.body();
+                                List<Message> list = new ArrayList<>();
+                                list.add(message1);
+                                socket.sendFile(list,"true");
+                                messages.add(message1);
+                                adapter = new ChatBoxGroupRecyclerAdapter(messages, ChatBoxGroup.this,userCurrent, members);
+                                recyclerView.setAdapter(adapter);
+                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBoxGroup.this, LinearLayoutManager.VERTICAL, false);
+                                linearLayoutManager.setStackFromEnd(true);
+                                recyclerView.setLayoutManager(linearLayoutManager);
+                                if (adapter.getItemCount()>0){
+                                    recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Message> call, Throwable t) {
+
+                            }
+                        });
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+        }
+    }
+    private String getPath(Uri uri)
+    {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            throw new IllegalArgumentException("Can't obtain file name, cursor is empty");
+        }
+        cursor.moveToFirst();
+        String fileName = cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME));
+        cursor.close();
+        return fileName;
     }
     private void mapping(){
         txtMessage = findViewById(R.id.txtMessageText);
@@ -385,6 +484,19 @@ public class ChatBoxGroup extends AppCompatActivity {
                     if (adapter.getItemCount()>0){
                         recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
                     }
+                }
+            });
+        }
+    };
+    private Emitter.Listener responeDeleteGroup = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(ChatBoxGroup.this,Home.class);
+                    startActivity(intent);
+                    finish();
                 }
             });
         }

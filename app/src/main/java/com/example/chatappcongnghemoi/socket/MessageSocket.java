@@ -7,6 +7,7 @@ import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -72,6 +73,33 @@ public class MessageSocket {
                 if (socket.connected()==true){
                     System.out.println("json object general: "+ jsonObjectGeneral);
                     socket.emit("add-new-text", jsonObjectGeneral);
+                    handler.removeCallbacks(this);
+                }else {
+                    socket.connect();
+                    handler.postDelayed(this, 500);
+                }
+            }
+        },500);
+    }
+    public void sendFile(List<Message> message,String isChatGroup){
+        String mess = new Gson().toJson(message);
+        JSONArray messJson = null;
+        JSONObject jsonObjectGeneral = new JSONObject();
+
+        try {
+            messJson = new JSONArray(mess);
+            jsonObjectGeneral.put("messages", messJson);
+            jsonObjectGeneral.put("isChatGroup", isChatGroup);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (socket.connected()==true){
+                    System.out.println("json object general: "+ jsonObjectGeneral);
+                    socket.emit("add-new-file", jsonObjectGeneral);
                     handler.removeCallbacks(this);
                 }else {
                     socket.connect();

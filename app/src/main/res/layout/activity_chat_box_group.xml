@@ -78,12 +78,6 @@
             android:layout_height="40dp"
             app:srcCompat="@drawable/option" />
 
-        <ImageView
-            android:layout_marginLeft="10dp"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:srcCompat="@drawable/greetings" />
-
         <EditText
             android:id="@+id/txtMessageText"
             android:layout_width="match_parent"

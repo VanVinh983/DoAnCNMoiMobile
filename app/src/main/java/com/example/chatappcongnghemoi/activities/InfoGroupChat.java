@@ -94,7 +94,7 @@ public class InfoGroupChat extends AppCompatActivity {
         init();
 //        mSocket.on("response-add-user-to-group",responeAddUserToGroup);
 //        mSocket.on("response-leave-group",responeLeaveGroup);
-//        mSocket.on("response-delete-group",responeDeleteGroup);
+        mSocket.on("response-delete-group",responeDeleteGroup);
         btnBack.setOnClickListener((view) ->{
             Intent intent = new Intent(InfoGroupChat.this,ChatBoxGroup.class);
             intent.putExtra("groupId",groupId);
@@ -1036,7 +1036,9 @@ public class InfoGroupChat extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
+                    Intent intent = new Intent(InfoGroupChat.this,Home.class);
+                    startActivity(intent);
+                    finish();
                 }
             });
         }
