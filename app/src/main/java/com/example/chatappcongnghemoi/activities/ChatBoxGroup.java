@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -17,6 +18,7 @@ import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
@@ -70,8 +72,8 @@ public class ChatBoxGroup extends AppCompatActivity {
     private EditText txtMessage;
     private TextView tvGroupName,tvQuantityMember;
     private ImageView btnBack,btnMenu,btnOption,btnReaction,btnSend;
-    private ChatBoxGroupRecyclerAdapter adapter;
-    private RecyclerView recyclerView;
+    public static ChatBoxGroupRecyclerAdapter adapter;
+    public static RecyclerView recyclerView;
     private String groupId;
     private DataService dataService;
     public ChatGroup chatGroup = null;
@@ -85,6 +87,7 @@ public class ChatBoxGroup extends AppCompatActivity {
     private MessageSocket socket;
     private static Socket mSocket = MySocket.getInstance().getSocket();
     public static final int PICKFILE_RESULT_CODE = 1;
+    int count = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -246,6 +249,48 @@ public class ChatBoxGroup extends AppCompatActivity {
                 showFileChooser();
             }
         });
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(!recyclerView.canScrollVertically(-1)&& dy<0){
+                    count =count +10;
+                    Call<List<Message>> messageCall = dataService.getMessagePaging(groupId,count);
+                    messageCall.enqueue(new Callback<List<Message>>() {
+                        @Override
+                        public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+                            if(response.body().size() == 0){
+
+                            }else{
+                                List<Message> list = new ArrayList<>();
+                                for(int i = response.body().size()-1;i>=0;i--){
+                                    list.add(response.body().get(i));
+                                }
+                                messages.addAll(0,list);
+                                list.clear();
+                                adapter = new ChatBoxGroupRecyclerAdapter(messages, ChatBoxGroup.this, userCurrent, members);
+                                recyclerView.setAdapter(adapter);
+                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBoxGroup.this, LinearLayoutManager.VERTICAL, false);
+                                linearLayoutManager.setStackFromEnd(true);
+                                recyclerView.setLayoutManager(linearLayoutManager);
+                                recyclerView.scrollToPosition(messages.size()-count);
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<List<Message>> call, Throwable t) {
+
+                        }
+                    });
+                }
+
+            }
+        });
     }
     public void showFileChooser(){
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -329,6 +374,16 @@ public class ChatBoxGroup extends AppCompatActivity {
         cursor.close();
         return fileName;
     }
+    public static void sendEventDeleteMessage(List<Message> messages,User userCurrent,List<User> members,Context context){
+        adapter = new ChatBoxGroupRecyclerAdapter(messages, context,userCurrent, members);
+        recyclerView.setAdapter(adapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        if (adapter.getItemCount()>0){
+            recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
+        }
+    }
     private void mapping(){
         txtMessage = findViewById(R.id.txtMessageText);
         tvGroupName = findViewById(R.id.tvGroupNameChatBoxGroup);
@@ -367,7 +422,7 @@ public class ChatBoxGroup extends AppCompatActivity {
                 public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
                     members.add(response.body().getUser());
                     if(members.size() == listId.size()){
-                        Call<List<Message>> messageCall = dataService.getMessagesGroupByGroupId(groupId);
+                        Call<List<Message>> messageCall = dataService.getMessagePaging(groupId,0);
                         messageCall.enqueue(new Callback<List<Message>>() {
                             @Override
                             public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {

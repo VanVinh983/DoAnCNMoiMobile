@@ -21,6 +21,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface DataService {
 
@@ -76,4 +77,10 @@ public interface DataService {
 
     @DELETE("chatGroups/{id}")
     Call<ChatGroup> deleteGroup(@Path("id") String id);
+
+    @DELETE("messages/{id}")
+    Call<Message> deleteMessage(@Path("id") String id);
+
+    @GET("messages/SearchByReceiverId/{id}?")
+    Call<List<Message>> getMessagePaging(@Path("id") String id, @Query("startFrom") int startFrom);
 }

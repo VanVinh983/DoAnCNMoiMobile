@@ -1,6 +1,8 @@
 package com.example.chatappcongnghemoi.adapters;
 
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,14 +25,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.activities.ChatBoxGroup;
 import com.example.chatappcongnghemoi.activities.Full_Image_Avatar;
 import com.example.chatappcongnghemoi.activities.Personal;
 import com.example.chatappcongnghemoi.activities.StartApp;
+import com.example.chatappcongnghemoi.models.ChatGroup;
 import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.example.chatappcongnghemoi.socket.MessageSocket;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -61,6 +67,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
     boolean isReceiver = true;
     DataService dataService;
     User sender = null;
+    MessageSocket messageSocket;
     List<String> listKey = new ArrayList<>();
     List<String> listValue = new ArrayList<>();
     int haha = 0;
@@ -114,7 +121,18 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
 
             }
         });
+        Call<List<ChatGroup>> chatGroupCall = dataService.getChatGroupByUserId(userCurrent.getId());
+        chatGroupCall.enqueue(new Callback<List<ChatGroup>>() {
+            @Override
+            public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
+                messageSocket = new MessageSocket(response.body(),userCurrent);
+            }
 
+            @Override
+            public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
+
+            }
+        });
         database = FirebaseDatabase.getInstance().getReference("reaction");
 
 
@@ -239,19 +257,29 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                 holder.txt_timeSend.setText(date);
             }
         }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, ""+position, Toast.LENGTH_SHORT).show();
+            }
+        });
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 if(!message.getSenderId().equals(userCurrent.getId())){
                     if(!message.getMessageType().equals("note")){
-                        sendReactionForMessage(userByMessage,message);
+                        sendReactionForMessageMembers(userByMessage,message);
+                    }
+                }else{
+                    if(!message.getMessageType().equals("note")){
+                        sendReactionForMessagePersonal(userByMessage,message);
                     }
                 }
                 return  true;
             }
         });
     }
-    public void sendReactionForMessage(User sender,Message message){
+    public void sendReactionForMessageMembers(User sender,Message message){
         final Dialog dialog =new Dialog(context);
         dialog.setContentView(R.layout.dialog_reaction_of_message);
         Window window = dialog.getWindow();
@@ -288,7 +316,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
         } else if (message.getMessageType().equals("file")){
             content.setTextColor(Color.parseColor("#008ae6"));
             content.setTypeface(content.getTypeface(), Typeface.ITALIC);
-            content.setText(message.getFileName());
+            content.setText(message.getFileName().substring(message.getFileName().indexOf(".")+1));
         }else {
             content.setText(message.getText());
         }
@@ -299,6 +327,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
             String date = DateFormat.getDateFormat(context).format(message.getCreatedAt());
             time.setText(date);
         }
+
 //        database.addValueEventListener(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -328,6 +357,95 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
 //
 //            }
 //        });
+        dialog.show();
+    }
+    public void sendReactionForMessagePersonal(User sender,Message message) {
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_reaction_of_message);
+        Window window = dialog.getWindow();
+        if (window == null)
+            return;
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        window.setLayout(layoutParams.MATCH_PARENT, layoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        layoutParams.gravity = Gravity.CENTER;
+        window.setAttributes(layoutParams);
+        dialog.setCancelable(true);
+        CircleImageView avatar = dialog.findViewById(R.id.imgAvatarReaction);
+        TextView username = dialog.findViewById(R.id.tvUsernameReaction);
+        TextView content = dialog.findViewById(R.id.tvMessageReaction);
+        TextView time = dialog.findViewById(R.id.tvTimeReaction);
+        ImageView imgMessage = dialog.findViewById(R.id.imgMessageReaction);
+        ImageView btnDeleteMessage = dialog.findViewById(R.id.btnDeleteMessage);
+        ImageView btnCopy = dialog.findViewById(R.id.btnCopyMessage);
+        LinearLayout viewReaction = dialog.findViewById(R.id.viewReaction);
+        viewReaction.setVisibility(View.INVISIBLE);
+        Glide.with(context).load(sender.getAvatar()).into(avatar);
+        username.setText(sender.getUserName());
+        String url_s3 = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/";
+        if (message.getMessageType().equals("image")) {
+            android.view.ViewGroup.LayoutParams layoutParamsReaction = imgMessage.getLayoutParams();
+            layoutParamsReaction.width = 100;
+            layoutParamsReaction.height = 100;
+            imgMessage.setLayoutParams(layoutParamsReaction);
+            Glide.with(context).load(url_s3 + message.getFileName()).into(imgMessage);
+            content.setWidth(0);
+            content.setHeight(0);
+        } else if (message.getMessageType().equals("file")) {
+            content.setTextColor(Color.parseColor("#008ae6"));
+            content.setTypeface(content.getTypeface(), Typeface.ITALIC);
+            content.setText(message.getFileName().substring(message.getFileName().indexOf(".")+1));
+        } else {
+            content.setText(message.getText());
+        }
+        if (new Date().getTime() - message.getCreatedAt() < 86400000) {
+            time.setText(DateUtils.getRelativeTimeSpanString(message.getCreatedAt()));
+        } else {
+            String date = DateFormat.getDateFormat(context).format(message.getCreatedAt());
+            time.setText(date);
+        }
+        btnDeleteMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<Message> callDelete = dataService.deleteMessage(message.getId());
+                callDelete.enqueue(new Callback<Message>() {
+                    @Override
+                    public void onResponse(Call<Message> call, Response<Message> response) {
+                        Message message1 = response.body();
+                        messages.remove(message1);
+                        messageSocket.deleteMessage(message1);
+                        Call<List<Message>> getMessages = dataService.getMessagesGroupByGroupId(message.getReceiverId());
+                        getMessages.enqueue(new Callback<List<Message>>() {
+                            @Override
+                            public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+                                ChatBoxGroup.sendEventDeleteMessage(response.body(),userCurrent,members,context);
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<Message>> call, Throwable t) {
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Call<Message> call, Throwable t) {
+
+                    }
+                });
+                dialog.dismiss();
+            }
+        });
+        btnCopy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClipboardManager clipboardManager =(ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newPlainText("Copied Text",message.getText());
+                clipboardManager.setPrimaryClip(clipData);
+                dialog.dismiss();
+//                Toast.makeText(context, "Đã sao chép", Toast.LENGTH_SHORT).show();
+            }
+        });
         dialog.show();
     }
     @Override

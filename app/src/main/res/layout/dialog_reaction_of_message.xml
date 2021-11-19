@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_gravity="center"
     android:layout_width="350dp"
@@ -60,52 +61,116 @@
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
-        android:gravity="center"
-        android:background="@drawable/background_reaction_of_message"
+        android:id="@+id/viewReaction"
+        android:paddingHorizontal="10dp"
         android:layout_marginTop="10dp"
-        android:paddingVertical="5dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:gravity="center"
+            android:background="@drawable/background_reaction_of_message"
+            android:paddingVertical="5dp"
+            android:paddingHorizontal="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
 
-        <ImageButton
-            android:id="@+id/imgLikeReaction"
-            android:layout_marginRight="10dp"
+            <ImageButton
+                android:id="@+id/imgLikeReaction"
+                android:layout_marginRight="5dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/like" />
+
+            <ImageButton
+                android:id="@+id/imgLoveReaction"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/heart" />
+
+            <ImageButton
+                android:id="@+id/imgHahaReaction"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/laughing" />
+
+            <ImageButton
+                android:id="@+id/imgWowReaction"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/wow" />
+
+            <ImageButton
+                android:id="@+id/imgCryReaction"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/crying" />
+
+            <ImageButton
+                android:id="@+id/imgAngryReaction"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/angry" />
+        </LinearLayout>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/imgRemoveReaction"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/like" />
-
-        <ImageButton
-            android:id="@+id/imgLoveReaction"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/heart" />
-
-        <ImageButton
-            android:id="@+id/imgHahaReaction"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/laughing" />
-
-        <ImageButton
-            android:id="@+id/imgWowReaction"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/wow" />
-
-        <ImageButton
-            android:id="@+id/imgCryReaction"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/crying" />
-
-        <ImageButton
-            android:id="@+id/imgAngryReaction"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/angry" />
+            android:src="@drawable/cancel" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:paddingVertical="5dp"
+        android:paddingHorizontal="20dp"
+        android:background="@drawable/background_reaction_of_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/btnCopyMessage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:srcCompat="@drawable/copy_paste"
+                app:tint="@color/main_color" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sao chép"
+                android:textSize="18dp"
+                android:textColor="#000"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/btnDeleteMessage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:srcCompat="@drawable/delete"
+                app:tint="@color/main_color" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Xoá"
+                android:textSize="18dp"
+                android:textColor="#000"
+                />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
