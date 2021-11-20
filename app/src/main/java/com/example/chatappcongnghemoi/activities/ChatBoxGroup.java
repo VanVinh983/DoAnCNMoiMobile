@@ -77,8 +77,7 @@ public class ChatBoxGroup extends AppCompatActivity {
     private String groupId;
     private DataService dataService;
     public ChatGroup chatGroup = null;
-    List<Message> messages;
-    List<Message> messagesGroup;
+    public static List<Message> messages;
     List<String> listId;
     List<User> members;
     User userCurrent = null;
@@ -87,7 +86,7 @@ public class ChatBoxGroup extends AppCompatActivity {
     private MessageSocket socket;
     private static Socket mSocket = MySocket.getInstance().getSocket();
     public static final int PICKFILE_RESULT_CODE = 1;
-    int count = 0;
+    int  count = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,35 +99,7 @@ public class ChatBoxGroup extends AppCompatActivity {
         mapping();
         Intent intent = getIntent();
         groupId = intent.getStringExtra("groupId");
-        database.child(groupId).child("background").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if(task.isSuccessful()){
-                    if(task.getResult().getValue() == null) {
-                        recyclerView.setBackgroundResource(R.drawable.background_chat_default);
-                    }else{
-                        if(task.getResult().getValue().equals("blue")){
-                            recyclerView.setBackgroundResource(R.drawable.background_chat_blue);
-                        }
-                        else if (task.getResult().getValue().equals("yellow")){
-                            recyclerView.setBackgroundResource(R.drawable.background_chat_yellow);
-                        }
-                        else if (task.getResult().getValue().equals("pink")){
-                            recyclerView.setBackgroundResource(R.drawable.background_chat_pink);
-                        }
-                        else if (task.getResult().getValue().equals("green")){
-                            recyclerView.setBackgroundResource(R.drawable.background_chat_green);
-                        }
-                        else if (task.getResult().getValue().equals("red")){
-                            recyclerView.setBackgroundResource(R.drawable.background_chat_red);
-                        }
-                        else{
-                            recyclerView.setBackgroundResource(R.drawable.background_chat_default);
-                        }
-                    }
-                }
-            }
-        });
+
         mSocket.on("response-add-new-text", responeMessage);
         mSocket.on("response-add-new-file", responeAddFile);
         Call<ChatGroup> groupDTOCall = dataService.getGroupById(groupId);
@@ -144,6 +115,24 @@ public class ChatBoxGroup extends AppCompatActivity {
                 });
                 tvQuantityMember.setText(listId.size()+" thành viên");
                 getMessages(listId);
+                if(chatGroup.getBackground().equals("blue")){
+                    recyclerView.setBackgroundResource(R.drawable.background_chat_blue);
+                }
+                else if (chatGroup.getBackground().equals("yellow")){
+                    recyclerView.setBackgroundResource(R.drawable.background_chat_yellow);
+                }
+                else if (chatGroup.getBackground().equals("pink")){
+                    recyclerView.setBackgroundResource(R.drawable.background_chat_pink);
+                }
+                else if (chatGroup.getBackground().equals("green")){
+                    recyclerView.setBackgroundResource(R.drawable.background_chat_green);
+                }
+                else if (chatGroup.getBackground().equals("red")){
+                    recyclerView.setBackgroundResource(R.drawable.background_chat_red);
+                }
+                else{
+                    recyclerView.setBackgroundResource(R.drawable.background_chat_default);
+                }
             }
 
             @Override
@@ -374,16 +363,6 @@ public class ChatBoxGroup extends AppCompatActivity {
         cursor.close();
         return fileName;
     }
-    public static void sendEventDeleteMessage(List<Message> messages,User userCurrent,List<User> members,Context context){
-        adapter = new ChatBoxGroupRecyclerAdapter(messages, context,userCurrent, members);
-        recyclerView.setAdapter(adapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-        linearLayoutManager.setStackFromEnd(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        if (adapter.getItemCount()>0){
-            recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
-        }
-    }
     private void mapping(){
         txtMessage = findViewById(R.id.txtMessageText);
         tvGroupName = findViewById(R.id.tvGroupNameChatBoxGroup);
@@ -465,25 +444,6 @@ public class ChatBoxGroup extends AppCompatActivity {
 
                 }
             });
-        });
-    }
-    public void getMessagesGroup(String groupId){
-        messagesGroup = new ArrayList<>();
-        Call<List<Message>> call = dataService.getMessagesGroupByGroupId(groupId);
-        call.enqueue(new Callback<List<Message>>() {
-            @Override
-            public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
-                for (Message message:
-                        response.body()) {
-                    messagesGroup.add(message);
-                }
-                Toast.makeText(ChatBoxGroup.this, ""+messagesGroup, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(Call<List<Message>> call, Throwable t) {
-
-            }
         });
     }
     private Emitter.Listener responeMessage = new Emitter.Listener() {

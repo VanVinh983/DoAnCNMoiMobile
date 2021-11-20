@@ -6,6 +6,9 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+import java.util.Map;
+
 public class Message {
 
     @SerializedName("_id")
@@ -29,6 +32,9 @@ public class Message {
     @SerializedName("fileName")
     @Expose
     private String fileName;
+    @SerializedName("reaction")
+    @Expose
+    private List<Map<String,String>> reaction;
     @SerializedName("createdAt")
     @Expose
     private Long createdAt;
@@ -43,6 +49,14 @@ public class Message {
     private Integer v;
 
     public Message() {
+    }
+
+    public List<Map<String, String>> getReaction() {
+        return reaction;
+    }
+
+    public void setReaction(List<Map<String, String>> reaction) {
+        this.reaction = reaction;
     }
 
     public String getId() {

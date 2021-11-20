@@ -57,6 +57,7 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
+import pl.droidsonroids.gif.GifImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -242,7 +243,6 @@ public class InfoGroupChat extends AppCompatActivity {
     public  void mapping(){
         tvGroupName = findViewById(R.id.tvGroupNameInfoGroup);
         imgAvatarGroup = findViewById(R.id.imgAvatarInfoGroup);
-        Picasso.get().load("https://www.iucn.org/sites/dev/files/content/images/2020/shutterstock_1458128810.jpg").into(imgAvatarGroup);
         tvQuantityMember = findViewById(R.id.tvQuantityMemberInfoGroup);
         btnBack = findViewById(R.id.imgBackInfoGroupChat);
         btnRename = findViewById(R.id.btnRename);
@@ -266,6 +266,8 @@ public class InfoGroupChat extends AppCompatActivity {
                 if(chatGroup.getUserId().equals(new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn())){
                     btnDeleteGroup.setVisibility(View.VISIBLE);
                 }
+                String url_s3 = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/";
+                Glide.with(InfoGroupChat.this).load(url_s3+chatGroup.getAvatar()).into(imgAvatarGroup);
             }
 
             @Override
@@ -324,6 +326,7 @@ public class InfoGroupChat extends AppCompatActivity {
         dialog.show();
     }
     public void setBackGround(String newBackground){
+        chatGroup.setBackground(newBackground);
         background = newBackground;
     }
     public void changeBackground(){
@@ -427,7 +430,8 @@ public class InfoGroupChat extends AppCompatActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
+                Toast.makeText(InfoGroupChat.this, ""+chatGroup, Toast.LENGTH_SHORT).show();
+//                dialog.dismiss();
             }
         });
         btnConfirm.setOnClickListener(new View.OnClickListener() {
@@ -447,7 +451,18 @@ public class InfoGroupChat extends AppCompatActivity {
                     messageCall.enqueue(new Callback<Message>() {
                         @Override
                         public void onResponse(Call<Message> call, Response<Message> response) {
-                            database.child(groupId).child("background").setValue(background);
+                            Call<ChatGroup> chatGroupCall = dataService.updateGroup(chatGroup.getId(),chatGroup);
+                            chatGroupCall.enqueue(new Callback<ChatGroup>() {
+                                @Override
+                                public void onResponse(Call<ChatGroup> call, Response<ChatGroup> response) {
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<ChatGroup> call, Throwable t) {
+
+                                }
+                            });
                             Message message1 = response.body();
 //                            messageSocket.sendMessage(message1,"true");
                             dialog.dismiss();

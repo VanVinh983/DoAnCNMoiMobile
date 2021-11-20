@@ -71,41 +71,12 @@
             android:gravity="center">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgReactionOfMessage1"
+                android:id="@+id/imgReactionOfMessage"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginLeft="10dp"
                 android:backgroundTint="#fff" />
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgReactionOfMessage2"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:backgroundTint="#fff" />
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgReactionOfMessage3"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:backgroundTint="#fff" />
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgReactionOfMessage4"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:backgroundTint="#fff" />
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgReactionOfMessage5"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:backgroundTint="#fff" />
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgReactionOfMessage6"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:backgroundTint="#fff" />
 
             <TextView
                 android:id="@+id/tvQuantityReaction"

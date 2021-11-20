@@ -235,6 +235,8 @@ public class ChatGroup implements Parcelable {
                 ", userAmount=" + userAmount +
                 ", members=" + members +
                 ", messageAmount=" + messageAmount +
+                ", avatar='" + avatar + '\'' +
+                ", background='" + background + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", deletedAt=" + deletedAt +

@@ -83,4 +83,7 @@ public interface DataService {
 
     @GET("messages/SearchByReceiverId/{id}?")
     Call<List<Message>> getMessagePaging(@Path("id") String id, @Query("startFrom") int startFrom);
+
+    @PUT("messages/{id}")
+    Call<Message> updateMessage(@Path("id") String id, @Body Message message);
 }

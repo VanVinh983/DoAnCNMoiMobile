@@ -86,41 +86,12 @@
                 android:textStyle="bold" />
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgReactionOfMessage1"
+                android:id="@+id/imgReactionOfMessage"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginLeft="5dp"
                 android:backgroundTint="#fff" />
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgReactionOfMessage2"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:backgroundTint="#fff" />
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgReactionOfMessage3"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:backgroundTint="#fff" />
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgReactionOfMessage4"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:backgroundTint="#fff" />
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgReactionOfMessage5"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:backgroundTint="#fff" />
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgReactionOfMessage6"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:backgroundTint="#fff" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

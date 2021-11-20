@@ -134,4 +134,30 @@ public class MessageSocket {
             }
         },500);
     }
+    public void sendReaction(Message message){
+        String mess = new Gson().toJson(message);
+        JSONObject messJson = null;
+        JSONObject jsonObjectGeneral = new JSONObject();
+
+        try {
+            messJson = new JSONObject(mess);
+            jsonObjectGeneral.put("message", messJson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (socket.connected()==true){
+                    System.out.println("json object general: "+ jsonObjectGeneral);
+                    socket.emit("reaction", jsonObjectGeneral);
+                    handler.removeCallbacks(this);
+                }else {
+                    socket.connect();
+                    handler.postDelayed(this, 500);
+                }
+            }
+        },500);
+    }
 }
