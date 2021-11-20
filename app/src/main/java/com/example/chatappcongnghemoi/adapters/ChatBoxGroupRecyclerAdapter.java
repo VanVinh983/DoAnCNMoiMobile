@@ -57,6 +57,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import pl.droidsonroids.gif.GifImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -157,6 +158,11 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                         context.startActivity(intent);
                     }
                 });
+                android.view.ViewGroup.LayoutParams layoutParamsEmpty = holder.txt_content.getLayoutParams();
+                layoutParamsEmpty.width = 0;
+                layoutParamsEmpty.height = 0;
+                holder.txt_content.setLayoutParams(layoutParamsEmpty);
+                holder.gifImageView.setLayoutParams(layoutParamsEmpty);
             } else if (message.getMessageType().equals("file")){
                 holder.txt_content.setTypeface(holder.txt_content.getTypeface(), Typeface.ITALIC);
                 String fileName = message.getFileName().substring(37);
@@ -166,7 +172,23 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                 layoutParams.height = 100;
                 holder.image_message.setLayoutParams(layoutParams);
                 holder.image_message.setImageResource(R.drawable.file);
+            }else if (message.getMessageType().equals("gif")){
+                android.view.ViewGroup.LayoutParams layoutParamsEmpty = holder.txt_content.getLayoutParams();
+                layoutParamsEmpty.width = 0;
+                layoutParamsEmpty.height = 0;
+                holder.txt_content.setLayoutParams(layoutParamsEmpty);
+                holder.image_message.setLayoutParams(layoutParamsEmpty);
+                android.view.ViewGroup.LayoutParams layoutParams = holder.gifImageView.getLayoutParams();
+                layoutParams.width = 300;
+                layoutParams.height = 250;
+                holder.gifImageView.setLayoutParams(layoutParams);
+                Glide.with(context).load(message.getFileName()).into(holder.gifImageView);
             }else {
+                android.view.ViewGroup.LayoutParams layoutParamsEmpty = holder.image_message.getLayoutParams();
+                layoutParamsEmpty.width = 0;
+                layoutParamsEmpty.height = 0;
+                holder.gifImageView.setLayoutParams(layoutParamsEmpty);
+                holder.image_message.setLayoutParams(layoutParamsEmpty);
                 holder.txt_content.setText(message.getText());
             }
             if(new Date().getTime() - message.getCreatedAt() < 86400000){
@@ -858,6 +880,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
         private TextView txt_content,txt_username,txt_timeSend,txt_quantityReaction;
         private CircleImageView avatar,imgReaction;
         private ImageView btnOptions;
+        private GifImageView gifImageView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txt_content = itemView.findViewById(R.id.txt_content_message);
@@ -867,6 +890,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
             txt_quantityReaction = itemView.findViewById(R.id.tvQuantityReaction);
             imgReaction = itemView.findViewById(R.id.imgReactionOfMessage);
             image_message = itemView.findViewById(R.id.image_message);
+            gifImageView = itemView.findViewById(R.id.image_gif);
         }
     }
     @Override

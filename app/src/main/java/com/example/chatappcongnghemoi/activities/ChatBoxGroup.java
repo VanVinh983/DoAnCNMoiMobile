@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -20,19 +21,26 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.adapters.ChatBoxGroupRecyclerAdapter;
+import com.example.chatappcongnghemoi.adapters.GifRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.MessageAdapter;
+import com.example.chatappcongnghemoi.adapters.TypeGifRecyclerAdapter;
 import com.example.chatappcongnghemoi.models.ChatGroup;
 import com.example.chatappcongnghemoi.models.ChatGroupDTO;
+import com.example.chatappcongnghemoi.models.Gif;
+import com.example.chatappcongnghemoi.models.InitGif;
 import com.example.chatappcongnghemoi.models.Message;
+import com.example.chatappcongnghemoi.models.TypeGif;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
@@ -62,6 +70,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import retrofit2.Call;
@@ -70,19 +79,22 @@ import retrofit2.Response;
 
 public class ChatBoxGroup extends AppCompatActivity {
     private EditText txtMessage;
+    CircleImageView btnChooseGif,btnExitGif;
     private TextView tvGroupName,tvQuantityMember;
     private ImageView btnBack,btnMenu,btnOption,btnReaction,btnSend;
     public static ChatBoxGroupRecyclerAdapter adapter;
     public static RecyclerView recyclerView;
+    public static RecyclerView recyclerViewGif;
     private String groupId;
     private DataService dataService;
     public ChatGroup chatGroup = null;
+    RecyclerView recyclerViewTypeGif;
+    TypeGifRecyclerAdapter typeGifRecyclerAdapter;
+    public static GifRecyclerAdapter gifAdapter;
     public static List<Message> messages;
     List<String> listId;
     List<User> members;
     User userCurrent = null;
-    DatabaseReference database;
-    boolean flag = true;
     private MessageSocket socket;
     private static Socket mSocket = MySocket.getInstance().getSocket();
     public static final int PICKFILE_RESULT_CODE = 1;
@@ -95,11 +107,9 @@ public class ChatBoxGroup extends AppCompatActivity {
         new AmplifyInitialize(ChatBoxGroup.this).amplifyInitialize();
         mSocket.on("response-delete-group",responeDeleteGroup);
         dataService = ApiService.getService();
-        database = FirebaseDatabase.getInstance().getReference("background");
         mapping();
         Intent intent = getIntent();
         groupId = intent.getStringExtra("groupId");
-
         mSocket.on("response-add-new-text", responeMessage);
         mSocket.on("response-add-new-file", responeAddFile);
         Call<ChatGroup> groupDTOCall = dataService.getGroupById(groupId);
@@ -176,6 +186,8 @@ public class ChatBoxGroup extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
                             socket = new MessageSocket(response.body(), userCurrent);
+                            getGifs(userCurrent);
+                            getTypeGifs(userCurrent);
                         }
                         @Override
                         public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
@@ -236,6 +248,50 @@ public class ChatBoxGroup extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showFileChooser();
+            }
+        });
+        btnChooseGif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float dp = getApplicationContext().getResources().getDisplayMetrics().density;
+                ViewGroup.LayoutParams layoutParams = btnExitGif.getLayoutParams();
+                layoutParams.height =(int)(50*dp);
+                layoutParams.width = (int)(50*dp);
+                btnExitGif.setLayoutParams(layoutParams);
+                ViewGroup.LayoutParams layoutParamsChoose = btnChooseGif.getLayoutParams();
+                layoutParamsChoose.height = 0;
+                layoutParamsChoose.width = 0;
+                btnChooseGif.setLayoutParams(layoutParamsChoose);
+                ViewGroup.LayoutParams layoutParamsGif = recyclerViewGif.getLayoutParams();
+                layoutParamsGif.height =ViewGroup.LayoutParams.WRAP_CONTENT;
+                layoutParamsGif.width = (int)(400*dp);
+                recyclerViewGif.setLayoutParams(layoutParamsGif);
+//                ViewGroup.LayoutParams layoutParamsTypeGif = recyclerViewTypeGif.getLayoutParams();
+//                layoutParamsTypeGif.height =(int)(50*dp);
+//                layoutParamsTypeGif.width = (int)(400*dp);
+//                recyclerViewTypeGif.setLayoutParams(layoutParamsTypeGif);
+            }
+        });
+        btnExitGif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                float dp = getApplicationContext().getResources().getDisplayMetrics().density;
+                ViewGroup.LayoutParams layoutParams = btnChooseGif.getLayoutParams();
+                layoutParams.height =(int)(50*dp);
+                layoutParams.width = (int)(50*dp);
+                btnChooseGif.setLayoutParams(layoutParams);
+                ViewGroup.LayoutParams layoutParamsExit = btnExitGif.getLayoutParams();
+                layoutParamsExit.height = 0;
+                layoutParamsExit.width = 0;
+                btnExitGif.setLayoutParams(layoutParamsExit);
+                ViewGroup.LayoutParams layoutParamsGif = recyclerViewGif.getLayoutParams();
+                layoutParamsGif.height =0;
+                layoutParamsGif.width = 0;
+                recyclerViewGif.setLayoutParams(layoutParamsGif);
+                ViewGroup.LayoutParams layoutParamsTypeGif = recyclerViewTypeGif.getLayoutParams();
+                layoutParamsTypeGif.height =0;
+                layoutParamsTypeGif.width = 0;
+                recyclerViewTypeGif.setLayoutParams(layoutParamsTypeGif);
             }
         });
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -373,22 +429,31 @@ public class ChatBoxGroup extends AppCompatActivity {
         btnSend.setVisibility(View.INVISIBLE);
         btnMenu = findViewById(R.id.imgMenuChatBoxGroup);
         btnOption = findViewById(R.id.btnOptionsChatBoxGroup);
-//        database.child(groupId).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DataSnapshot> task) {
-//                if(task.isSuccessful()){
-//                    Toast.makeText(ChatBoxGroup.this, ""+task.getResult().getValue().toString(), Toast.LENGTH_SHORT).show();
-//                    if(task.getResult().getValue().toString().equals("blue"))
-//                        recyclerView.setBackgroundResource(R.drawable.background_chat_blue);
-//                    else if (task.getResult().getValue().toString().equals("yellow"))
-//                        recyclerView.setBackgroundResource(R.drawable.background_chat_yellow);
-//                    else if (task.getResult().getValue().toString().equals("green"))
-//                        recyclerView.setBackgroundResource(R.drawable.background_chat_green);
-//                    else
-//                        recyclerView.setBackgroundColor(Color.parseColor("#e9eff0"));
-//                }
-//            }
-//        });
+        btnChooseGif = findViewById(R.id.btnChooseGif);
+        btnExitGif = findViewById(R.id.btnExitGif);
+        recyclerViewGif = findViewById(R.id.recyclerview_gif);
+        ViewGroup.LayoutParams layoutParams = btnExitGif.getLayoutParams();
+        layoutParams.height = 0;
+        layoutParams.width = 0;
+        btnExitGif.setLayoutParams(layoutParams);
+        recyclerViewTypeGif = findViewById(R.id.recyclerview_typeGif);
+        ViewGroup.LayoutParams layoutParamsGif = recyclerViewGif.getLayoutParams();
+        layoutParamsGif.height = 0;
+        layoutParamsGif.width = 0;
+        recyclerViewGif.setLayoutParams(layoutParamsGif);
+        recyclerViewTypeGif.setLayoutParams(layoutParamsGif);
+    }
+    public void getGifs(User userCurrent){
+        List<Gif> gifs = new InitGif().addGif();
+        gifAdapter = new GifRecyclerAdapter(ChatBoxGroup.this,gifs,groupId,userCurrent);
+        recyclerViewGif.setLayoutManager(new LinearLayoutManager(ChatBoxGroup.this,RecyclerView.HORIZONTAL,false));
+        recyclerViewGif.setAdapter(gifAdapter);
+    }
+    public void getTypeGifs(User userCurrent){
+        List<TypeGif> gifs = new InitGif().addTypeGif();
+        typeGifRecyclerAdapter = new TypeGifRecyclerAdapter(gifs,ChatBoxGroup.this,groupId,userCurrent);
+        recyclerViewTypeGif.setLayoutManager(new LinearLayoutManager(ChatBoxGroup.this,RecyclerView.HORIZONTAL,false));
+        recyclerViewTypeGif.setAdapter(typeGifRecyclerAdapter);
     }
     public void getMessages(List<String> listId){
         members = new ArrayList<>();
@@ -446,6 +511,7 @@ public class ChatBoxGroup extends AppCompatActivity {
             });
         });
     }
+
     private Emitter.Listener responeMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {

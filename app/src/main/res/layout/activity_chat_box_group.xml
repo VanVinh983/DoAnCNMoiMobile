@@ -64,8 +64,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/background_chat_default" />
-    </LinearLayout>
 
+    </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:foregroundGravity="center"
+            android:paddingVertical="5dp"
+            android:layout_gravity="center"
+            android:id="@+id/recyclerview_gif"
+            android:layout_width="400dp"
+            android:paddingHorizontal="10dp"
+            android:layout_height="100dp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:foregroundGravity="center"
+        android:paddingVertical="5dp"
+        android:layout_gravity="center"
+        android:id="@+id/recyclerview_typeGif"
+        android:layout_width="400dp"
+        android:paddingHorizontal="10dp"
+        android:layout_height="50dp" />
     <LinearLayout
         android:paddingVertical="10dp"
         android:paddingHorizontal="5dp"
@@ -74,10 +90,23 @@
 
         <ImageView
             android:id="@+id/btnOptionsChatBoxGroup"
+            android:layout_gravity="center"
             android:layout_width="40dp"
             android:layout_height="40dp"
             app:srcCompat="@drawable/option" />
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_marginLeft="5dp"
+            android:id="@+id/btnChooseGif"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/gif" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_marginLeft="5dp"
+            android:id="@+id/btnExitGif"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/close" />
         <EditText
             android:id="@+id/txtMessageText"
             android:layout_width="match_parent"
