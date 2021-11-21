@@ -296,7 +296,8 @@ public class Home extends AppCompatActivity {
                                 User user = new User();
                                 user.setId(chatGroup.getId());
                                 user.setUserName(chatGroup.getName());
-                                user.setAvatar("https://mennatural.vn/wp-content/plugins/profilegrid-user-profiles-groups-and-communities/public/partials/images/default-group.png");
+                                String url_s3 = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/";
+                                user.setAvatar(url_s3+chatGroup.getAvatar());
                                 listConversation.add(user);
                             }
                             userHomeAdapter = new UserHomeAdapter(listConversation, Home.this, userCurrentId, chatGroups);

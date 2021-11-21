@@ -25,6 +25,7 @@ import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.example.chatappcongnghemoi.socket.MessageSocket;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,6 +44,7 @@ public class GifRecyclerAdapter extends RecyclerView.Adapter<GifRecyclerAdapter.
     String groupId;
     List<User> members = new ArrayList<>();
     User userCurrent;
+    MessageSocket socket;
     public GifRecyclerAdapter(Context context, List<Gif> gifs,String groupId,User userCurrent) {
         this.context = context;
         this.gifs = gifs;
@@ -62,6 +64,18 @@ public class GifRecyclerAdapter extends RecyclerView.Adapter<GifRecyclerAdapter.
         Gif gif = gifs.get(position);
         dataService = ApiService.getService();
         Glide.with(context).load(gif.getUrl()).into(holder.gif);
+        Call<List<ChatGroup>> call = dataService.getChatGroupByUserId(userCurrent.getId());
+        call.enqueue(new Callback<List<ChatGroup>>() {
+            @Override
+            public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
+                socket = new MessageSocket(response.body(),userCurrent);
+            }
+
+            @Override
+            public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
+
+            }
+        });
         holder.gif.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,6 +108,7 @@ public class GifRecyclerAdapter extends RecyclerView.Adapter<GifRecyclerAdapter.
                                         public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
                                             members.add(response.body().getUser());
                                             if (members.size() == listId.size()){
+                                                socket.sendMessage(message1,"true");
                                                 ChatBoxGroup.messages.add(message1);
                                                 ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                                                 ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);

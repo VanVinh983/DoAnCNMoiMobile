@@ -1,16 +1,21 @@
 package com.example.chatappcongnghemoi.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -47,12 +52,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.socket.client.Socket;
@@ -78,6 +87,7 @@ public class InfoGroupChat extends AppCompatActivity {
     List<String> friendIdList;
     ArrayList<User> friendList;
     private GroupSocket groupSocket;
+    private static int RESULT_LOAD_IMAGE = 1024;
     private MessageSocket messageSocket;
     private static Socket mSocket = MySocket.getInstance().getSocket();
     public static ArrayList<User> listAddMembers = new ArrayList<>();
@@ -88,6 +98,7 @@ public class InfoGroupChat extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_group_chat);
         getSupportActionBar().hide();
+        new AmplifyInitialize(InfoGroupChat.this).amplifyInitialize();
 //        mSocket.on("response-add-new-text", responeMessage);
         dataService = ApiService.getService();
         database = FirebaseDatabase.getInstance().getReference("background");
@@ -239,6 +250,84 @@ public class InfoGroupChat extends AppCompatActivity {
                 deleteGroup(chatGroup);
             }
         });
+        imgAvatarGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showImageChoose();
+            }
+        });
+    }
+    public void showImageChoose(){
+        Intent intent = new Intent(
+                Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, RESULT_LOAD_IMAGE);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null){
+            Uri selectedImage = data.getData();
+            File file = new File(getPath(selectedImage));
+            UUID uuid = UUID.randomUUID();
+            try {
+                InputStream exampleInputStream = getContentResolver().openInputStream(selectedImage);
+                com.amplifyframework.core.Amplify.Storage.uploadInputStream(
+                        uuid+"."+file.getName(),
+                        exampleInputStream,
+                        result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
+                        storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
+                );
+                updateImage(uuid+"."+file.getName());
+            }  catch ( FileNotFoundException error) {
+                Log.e("MyAmplifyApp", "Could not find file to open for input stream.", error);
+            }
+        }
+    }
+    private void updateImage(String url){
+        chatGroup.setAvatar(url);
+        Call<ChatGroup> putCall = dataService.updateGroup(chatGroup.getId(), chatGroup);
+        putCall.enqueue(new Callback<ChatGroup>() {
+            @Override
+            public void onResponse(Call<ChatGroup> call, Response<ChatGroup> response) {
+            }
+
+            @Override
+            public void onFailure(Call<ChatGroup> call, Throwable t) {
+
+            }
+        });
+        Message message = new Message();
+        String userId = new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn();
+        message.setSenderId(userId);
+        message.setReceiverId(groupId);
+        message.setChatType("group");
+        message.setCreatedAt(new Date().getTime());
+        message.setMessageType("note");
+        message.setText("Đã cập nhật hình đại diện nhóm.");
+        Call<Message> messageCall = dataService.postMessage(message);
+        messageCall.enqueue(new Callback<Message>() {
+            @Override
+            public void onResponse(Call<Message> call, Response<Message> response) {
+                Toast.makeText(InfoGroupChat.this, "Cập nhật ảnh đại diện thành công!", Toast.LENGTH_SHORT).show();
+                Glide.with(InfoGroupChat.this).load(chatGroup.getAvatar()).into(imgAvatarGroup);
+            }
+
+            @Override
+            public void onFailure(Call<Message> call, Throwable t) {
+
+            }
+        });
+    }
+    private String getPath(Uri uri)
+    {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if (cursor == null) return null;
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String s=cursor.getString(column_index);
+        cursor.close();
+        return s;
     }
     public  void mapping(){
         tvGroupName = findViewById(R.id.tvGroupNameInfoGroup);
