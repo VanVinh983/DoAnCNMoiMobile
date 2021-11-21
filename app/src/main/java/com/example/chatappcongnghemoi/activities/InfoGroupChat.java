@@ -33,6 +33,7 @@ import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.adapters.AddMembersInfoGroupRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.ContactRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.MembersOfInfoGroupRecyclerAdapter;
+import com.example.chatappcongnghemoi.adapters.MessageImageSentRecyclerAdapter;
 import com.example.chatappcongnghemoi.models.ChatGroup;
 import com.example.chatappcongnghemoi.models.Contact;
 import com.example.chatappcongnghemoi.models.ContactList;
@@ -56,6 +57,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -79,9 +82,11 @@ public class InfoGroupChat extends AppCompatActivity {
     DataService dataService;
     ImageView btnBack;
     ImageButton btnRename,btnAddMember;
-    LinearLayout btnWatchMembers,btnChangeBackground,btnLeaveGroup,btnDeleteGroup;
+    LinearLayout btnWatchMembers,btnChangeBackground,btnLeaveGroup,btnDeleteGroup,btnFileSent;
     User userCurrent = null;
     List<User> members ;
+    RecyclerView recyclerViewImageSent;
+    MessageImageSentRecyclerAdapter messageImageSentRecyclerAdapter;
     DatabaseReference database;
     String background = "";
     List<String> friendIdList;
@@ -256,6 +261,14 @@ public class InfoGroupChat extends AppCompatActivity {
                 showImageChoose();
             }
         });
+        btnFileSent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(InfoGroupChat.this,FileSent.class);
+                intent.putExtra("groupId",groupId);
+                startActivity(intent);
+            }
+        });
     }
     public void showImageChoose(){
         Intent intent = new Intent(
@@ -340,6 +353,8 @@ public class InfoGroupChat extends AppCompatActivity {
         btnAddMember = findViewById(R.id.imgAddMemberInfoGroup);
         btnLeaveGroup = findViewById(R.id.btnLeaveGroup);
         btnDeleteGroup = findViewById(R.id.btnDeleteGroup);
+        recyclerViewImageSent = findViewById(R.id.recyclerview_imageSent);
+        btnFileSent = findViewById(R.id.btnFileSent);
     }
     public void init(){
         Intent intent = getIntent();
@@ -357,6 +372,7 @@ public class InfoGroupChat extends AppCompatActivity {
                 }
                 String url_s3 = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/";
                 Glide.with(InfoGroupChat.this).load(url_s3+chatGroup.getAvatar()).into(imgAvatarGroup);
+                getImageSent(chatGroup);
             }
 
             @Override
@@ -365,8 +381,42 @@ public class InfoGroupChat extends AppCompatActivity {
             }
         });
     }
+    public void getImageSent(ChatGroup chatGroup){
+        ArrayList<Map<String,String>> mapMembers = chatGroup.getMembers();
+        List<String> listId = new ArrayList<>();
+        List<Message> allMessages = new ArrayList<>();
+        mapMembers.forEach(map ->{
+            listId.add(map.get("userId"));
+        });
+        listId.forEach(id -> {
+            Call<List<Message>> call = dataService.getAllMessages(id,chatGroup.getId());
+            call.enqueue(new Callback<List<Message>>() {
+                @Override
+                public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+                    List<Message> messages = response.body();
+                    messages.forEach(mess ->{
+                        if(mess.getMessageType().equals("image"))
+                            allMessages.add(mess);
+                    });
+                    Collections.sort(allMessages, new Comparator<Message>() {
+                        @Override
+                        public int compare(Message o1, Message o2) {
+                            return Integer.valueOf(o2.getCreatedAt().compareTo(o1.getCreatedAt()));
+                        }
+                    });
+                    messageImageSentRecyclerAdapter = new MessageImageSentRecyclerAdapter(InfoGroupChat.this,allMessages);
+                    recyclerViewImageSent.setLayoutManager(new LinearLayoutManager(InfoGroupChat.this,RecyclerView.HORIZONTAL,false));
+                    recyclerViewImageSent.setAdapter(messageImageSentRecyclerAdapter);
+                }
+
+                @Override
+                public void onFailure(Call<List<Message>> call, Throwable t) {
+
+                }
+            });
+        });
+    }
     public void watchMembers(){
-//        MembersOfInfoGroupRecyclerAdapter adapter;
         final Dialog dialog =new Dialog(InfoGroupChat.this);
         dialog.setContentView(R.layout.dialog_members_info_group);
         Window window = dialog.getWindow();

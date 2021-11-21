@@ -86,4 +86,8 @@ public interface DataService {
 
     @PUT("messages/{id}")
     Call<Message> updateMessage(@Path("id") String id, @Body Message message);
+
+    // Unlimited quantity messages
+    @GET("messages/SearchSenderIdAndReceiverId/{senderid}/{receiverid}")
+    Call<List<Message>> getAllMessages(@Path("senderid") String senderId,@Path("receiverid") String receiverId);
 }

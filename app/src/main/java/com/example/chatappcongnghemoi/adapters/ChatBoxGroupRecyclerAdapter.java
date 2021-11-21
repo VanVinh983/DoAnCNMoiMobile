@@ -256,7 +256,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                 String cookie = CookieManager.getInstance().getCookie(url);
                 request.addRequestHeader("cookie",cookie);
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,"download");
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,url);
                 DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
                 downloadManager.enqueue(request);
                 Toast.makeText(context, "Đang tải", Toast.LENGTH_SHORT).show();
