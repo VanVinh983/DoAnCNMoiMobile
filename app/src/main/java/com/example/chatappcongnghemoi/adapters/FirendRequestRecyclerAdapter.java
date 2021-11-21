@@ -29,6 +29,7 @@ import com.example.chatappcongnghemoi.models.ContactDTO;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.example.chatappcongnghemoi.socket.ContactSocket;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -76,6 +77,7 @@ public class FirendRequestRecyclerAdapter extends RecyclerView.Adapter<FirendReq
                         switch (which) {
                             case DialogInterface.BUTTON_NEGATIVE:
                                 deleteApi(contacts.get(position).getId());
+                                new ContactSocket().removeRequestContactReceiver(user);
                                 break;
                             case DialogInterface.BUTTON_POSITIVE:
                                 break;
@@ -95,6 +97,7 @@ public class FirendRequestRecyclerAdapter extends RecyclerView.Adapter<FirendReq
             public void onClick(View v) {
                 Contact contact = contacts.get(0);
                 contact.setStatus(true);
+                new ContactSocket().acceptFriendRequest(user);
                 putApi(contact.getId(), contact);
             }
         });
@@ -168,4 +171,5 @@ public class FirendRequestRecyclerAdapter extends RecyclerView.Adapter<FirendReq
         act.finish();
         act.startActivity(intent);
     }
+
 }

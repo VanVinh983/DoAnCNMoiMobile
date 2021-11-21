@@ -25,6 +25,7 @@ import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
+import com.example.chatappcongnghemoi.socket.MySocket;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -50,6 +53,8 @@ public class PhoneBookActivity extends AppCompatActivity {
     private LinearLayout lineLoadPhoneBook;
     private DataService dataService;
     private ImageView btnAddGroup;
+    private static Socket mSocket = MySocket.getInstance().getSocket();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +111,8 @@ public class PhoneBookActivity extends AppCompatActivity {
                 handler.postDelayed(this, 5000);
             }
         }, 2000);
+
+        mSocket.on("response-delete-friend", responseDeleteFriend);
     }
 
     private void mapping() {
@@ -275,4 +282,17 @@ public class PhoneBookActivity extends AppCompatActivity {
 
     }
 
+    private Emitter.Listener responseDeleteFriend = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = getIntent();
+                    finish();
+                    startActivity(intent);
+                }
+            });
+        }
+    };
 }

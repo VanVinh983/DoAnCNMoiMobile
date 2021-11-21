@@ -6,6 +6,6 @@ public class ApiService {
     private static final String BASE_URL_THONG = "http://192.168.1.10:4000/";
 
     public static DataService getService(){
-        return ApiClient.getClient(BASE_URL_THONG).create(DataService.class);
+        return ApiClient.getClient(BASE_URL_LIEM).create(DataService.class);
     }
 }

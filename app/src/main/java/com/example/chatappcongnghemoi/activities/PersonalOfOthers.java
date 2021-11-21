@@ -19,6 +19,7 @@ import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.example.chatappcongnghemoi.socket.ContactSocket;
 import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
@@ -81,6 +82,7 @@ public class PersonalOfOthers extends AppCompatActivity {
                     deleteContact();
                 } else {
                     postContact();
+                    new ContactSocket().addNewContact(user);
                 }
             }
         });
@@ -132,6 +134,7 @@ public class PersonalOfOthers extends AppCompatActivity {
                 switch (which) {
                     case DialogInterface.BUTTON_NEGATIVE:
                         deleteApi(contact.getId());
+                        new ContactSocket().removeRequestContact(user);
                         break;
                     case DialogInterface.BUTTON_POSITIVE:
                         break;

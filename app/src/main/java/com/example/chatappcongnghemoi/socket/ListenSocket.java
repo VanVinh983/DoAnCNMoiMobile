@@ -19,10 +19,17 @@ import com.example.chatappcongnghemoi.activities.OutgoingCallActivity;
 import com.example.chatappcongnghemoi.activities.PhoneBookActivity;
 import com.example.chatappcongnghemoi.activities.StartApp;
 import com.example.chatappcongnghemoi.models.CallingDTO;
+import com.example.chatappcongnghemoi.models.ChatGroup;
+import com.example.chatappcongnghemoi.models.User;
+import com.example.chatappcongnghemoi.models.UserDTO;
+import com.example.chatappcongnghemoi.retrofit.ApiService;
+import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.google.gson.Gson;
 
 import org.jitsi.meet.sdk.JitsiMeetActivity;
 import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
@@ -32,10 +39,14 @@ import java.util.List;
 
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ListenSocket extends AppCompatActivity {
 
     private static Socket socket = MySocket.getInstance().getSocket();
+    private static DataService dataService = ApiService.getService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +57,10 @@ public class ListenSocket extends AppCompatActivity {
 
         // Only Run In start app
         startActivity(new Intent(ListenSocket.this, StartApp.class));
+
+        new UserSocket().sendUserToSocket(getUserId());
     }
+
 
     private String getUserId() {
         final String SHARED_PREFERENCES = "saveID";
@@ -63,10 +77,12 @@ public class ListenSocket extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (!socket.connected())
+                if (!socket.connected()) {
                     socket.connect();
+                    new UserSocket().sendUserToSocket(getUserId());
+                }
                 System.out.println("Listen socket still running: " + socket.connected());
-                handler.postDelayed(this, 10000);
+                handler.postDelayed(this, 5000);
             }
         }, 1000);
     }

@@ -12,18 +12,27 @@ import android.widget.ImageButton;
 
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.adapters.FirendRequestRecyclerAdapter;
+import com.example.chatappcongnghemoi.adapters.MessageAdapter;
 import com.example.chatappcongnghemoi.models.Contact;
 import com.example.chatappcongnghemoi.models.ContactList;
+import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
+import com.example.chatappcongnghemoi.socket.MySocket;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Objects;
 
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -35,6 +44,8 @@ public class FriendRequestActivity extends AppCompatActivity {
     private ArrayList<User> senderList;
     private ArrayList<Contact> contactList;
     private DataService dataService;
+    private static Socket mSocket = MySocket.getInstance().getSocket();
+
 
 
     @Override
@@ -53,6 +64,10 @@ public class FriendRequestActivity extends AppCompatActivity {
                 startActivity(new Intent(FriendRequestActivity.this, PhoneBookActivity.class));
             }
         });
+
+        mSocket.on("response-add-new-contact", responeAddNewContact);
+        mSocket.on("response-remove-request-contact", responeAddNewContact);
+        mSocket.on("response-accept-Friend-Request", responeAddNewContact);
 
     }
 
@@ -146,5 +161,18 @@ public class FriendRequestActivity extends AppCompatActivity {
         });
     }
 
+    private Emitter.Listener responeAddNewContact = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                   Intent intent = getIntent();
+                   finish();
+                   startActivity(intent);
+                }
+            });
+        }
+    };
 
 }
