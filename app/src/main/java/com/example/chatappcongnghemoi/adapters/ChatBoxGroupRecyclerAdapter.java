@@ -34,6 +34,7 @@ import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.activities.ChatBoxGroup;
 import com.example.chatappcongnghemoi.activities.Full_Image_Avatar;
+import com.example.chatappcongnghemoi.activities.InfoGroupChat;
 import com.example.chatappcongnghemoi.activities.Personal;
 import com.example.chatappcongnghemoi.activities.StartApp;
 import com.example.chatappcongnghemoi.models.ChatGroup;
@@ -41,6 +42,7 @@ import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
+import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.example.chatappcongnghemoi.socket.MessageSocket;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -77,14 +79,6 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
     DataService dataService;
     User sender = null;
     MessageSocket messageSocket;
-    List<String> listKey = new ArrayList<>();
-    List<String> listValue = new ArrayList<>();
-    int haha = 0;
-    int like = 0;
-    int love = 0;
-    int cry = 0;
-    int wow = 0;
-    int angry = 0;
     int positionSelect = -1;
     private static final int LEFT = 0;
     private static final int RIGHT = 1;
@@ -155,6 +149,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                 Glide.with(context).load(url_s3+message.getFileName()).into(holder.image_message);
                 LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(0,0);
                 holder.txt_content.setLayoutParams(layoutParams1);
+                holder.gifImageView.setLayoutParams(layoutParams1);
                 holder.image_message.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -262,6 +257,12 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                 Toast.makeText(context, "Đang tải", Toast.LENGTH_SHORT).show();
             }
         });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, ""+position, Toast.LENGTH_SHORT).show();
+            }
+        });
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -297,7 +298,11 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
         TextView time = dialog.findViewById(R.id.tvTimeReaction);
         ImageView btnCopy = dialog.findViewById(R.id.btnCopyMessage);
         ImageView btnDeleteMessage = dialog.findViewById(R.id.btnDeleteMessage);
-        btnDeleteMessage.setVisibility(View.INVISIBLE);
+        TextView tvDeleteMessage = dialog.findViewById(R.id.tvDeleteMessage);
+        ImageView btnGhim = dialog.findViewById(R.id.btnGhimMessage);
+        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(0,0);
+        btnDeleteMessage.setLayoutParams(layoutParams1);
+        tvDeleteMessage.setLayoutParams(layoutParams1);
         ImageButton imgLike = dialog.findViewById(R.id.imgLikeReaction);
         ImageButton imgLove = dialog.findViewById(R.id.imgLoveReaction);
         ImageButton imgHaha = dialog.findViewById(R.id.imgHahaReaction);
@@ -579,6 +584,79 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                 Toast.makeText(context, "Đã sao chép", Toast.LENGTH_SHORT).show();
             }
         });
+        btnGhim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<ChatGroup> groupCall = dataService.getGroupById(message.getReceiverId());
+                groupCall.enqueue(new Callback<ChatGroup>() {
+                    @Override
+                    public void onResponse(Call<ChatGroup> call, Response<ChatGroup> response) {
+                        ChatGroup chatGroup = response.body();
+                        List<Map<String,String>> mapPins = chatGroup.getPins();
+                        if(mapPins.size() == 3){
+                            Toast.makeText(context, "Nhóm chat đã có 3 tin nhắn được ghim", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Map<String,String> map =new HashMap<>();
+                            map.put("messageId",message.getId());
+                            map.put("userId",userCurrent.getId());
+                            mapPins.add(map);
+                            chatGroup.setPins(mapPins);
+                            ChatBoxGroup.getGhim(chatGroup,dataService);
+                            ChatBoxGroup.showGhim(chatGroup,context,members,userCurrent);
+                            Call<ChatGroup> updateGroupCall = dataService.updateGroup(chatGroup.getId(),chatGroup);
+                            updateGroupCall.enqueue(new Callback<ChatGroup>() {
+                                @Override
+                                public void onResponse(Call<ChatGroup> call, Response<ChatGroup> response) {
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<ChatGroup> call, Throwable t) {
+
+                                }
+                            });
+
+                            Message message1 = new Message();
+                            message1.setCreatedAt(new Date().getTime());
+                            message1.setMessageType("note");
+                            message1.setReceiverId(chatGroup.getId());
+                            message1.setSenderId(new DataLoggedIn(context).getUserIdLoggedIn());
+                            message1.setText("Đã GHIM tin nhắn của "+sender.getUserName());
+                            message1.setChatType("group");
+                            Call<Message> messageCall = dataService.postMessage(message1);
+                            messageCall.enqueue(new Callback<Message>() {
+                                @Override
+                                public void onResponse(Call<Message> call, Response<Message> response) {
+                                    Message message2 = response.body();
+                                    messageSocket.sendMessage(message2,"true");
+                                    Toast.makeText(context, "Ghim tin nhắn thành công", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                    ChatBoxGroup.messages.add(message2);
+                                    ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
+                                    ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
+                                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+                                    linearLayoutManager.setStackFromEnd(true);
+                                    ChatBoxGroup.recyclerView.setLayoutManager(linearLayoutManager);
+                                    if (ChatBoxGroup.adapter.getItemCount()>0){
+                                        ChatBoxGroup.recyclerView.scrollToPosition(ChatBoxGroup.messages.size()-1);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Message> call, Throwable t) {
+
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ChatGroup> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
         dialog.show();
     }
     public void sendReactionForMessagePersonal(User sender,Message message) {
@@ -600,6 +678,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
         ImageView imgMessage = dialog.findViewById(R.id.imgMessageReaction);
         ImageView btnDeleteMessage = dialog.findViewById(R.id.btnDeleteMessage);
         ImageView btnCopy = dialog.findViewById(R.id.btnCopyMessage);
+        ImageView btnGhim = dialog.findViewById(R.id.btnGhimMessage);
         ImageButton imgLike = dialog.findViewById(R.id.imgLikeReaction);
         ImageButton imgLove = dialog.findViewById(R.id.imgLoveReaction);
         ImageButton imgHaha = dialog.findViewById(R.id.imgHahaReaction);
@@ -905,6 +984,79 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                 clipboardManager.setPrimaryClip(clipData);
                 dialog.dismiss();
                 Toast.makeText(context, "Đã sao chép", Toast.LENGTH_SHORT).show();
+            }
+        });
+        btnGhim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<ChatGroup> groupCall = dataService.getGroupById(message.getReceiverId());
+                groupCall.enqueue(new Callback<ChatGroup>() {
+                    @Override
+                    public void onResponse(Call<ChatGroup> call, Response<ChatGroup> response) {
+                        ChatGroup chatGroup = response.body();
+                        List<Map<String,String>> mapPins = chatGroup.getPins();
+                        if(mapPins.size() == 3){
+                            Toast.makeText(context, "Nhóm chat đã có 3 tin nhắn được ghim", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Map<String,String> map =new HashMap<>();
+                            map.put("messageId",message.getId());
+                            map.put("userId",userCurrent.getId());
+                            mapPins.add(map);
+                            chatGroup.setPins(mapPins);
+                            ChatBoxGroup.getGhim(chatGroup,dataService);
+                            ChatBoxGroup.showGhim(chatGroup,context,members,userCurrent);
+                            Call<ChatGroup> updateGroupCall = dataService.updateGroup(chatGroup.getId(),chatGroup);
+                            updateGroupCall.enqueue(new Callback<ChatGroup>() {
+                                @Override
+                                public void onResponse(Call<ChatGroup> call, Response<ChatGroup> response) {
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<ChatGroup> call, Throwable t) {
+
+                                }
+                            });
+
+                            Message message1 = new Message();
+                            message1.setCreatedAt(new Date().getTime());
+                            message1.setMessageType("note");
+                            message1.setReceiverId(chatGroup.getId());
+                            message1.setSenderId(new DataLoggedIn(context).getUserIdLoggedIn());
+                            message1.setText("Đã GHIM tin nhắn của "+sender.getUserName());
+                            message1.setChatType("group");
+                            Call<Message> messageCall = dataService.postMessage(message1);
+                            messageCall.enqueue(new Callback<Message>() {
+                                @Override
+                                public void onResponse(Call<Message> call, Response<Message> response) {
+                                    Message message2 = response.body();
+                                    messageSocket.sendMessage(message2,"true");
+                                    Toast.makeText(context, "Ghim tin nhắn thành công", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                    ChatBoxGroup.messages.add(message2);
+                                    ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
+                                    ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
+                                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+                                    linearLayoutManager.setStackFromEnd(true);
+                                    ChatBoxGroup.recyclerView.setLayoutManager(linearLayoutManager);
+                                    if (ChatBoxGroup.adapter.getItemCount()>0){
+                                        ChatBoxGroup.recyclerView.scrollToPosition(ChatBoxGroup.messages.size()-1);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Message> call, Throwable t) {
+
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ChatGroup> call, Throwable t) {
+
+                    }
+                });
             }
         });
         dialog.show();

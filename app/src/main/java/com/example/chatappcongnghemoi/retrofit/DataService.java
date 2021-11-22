@@ -90,4 +90,7 @@ public interface DataService {
     // Unlimited quantity messages
     @GET("messages/SearchSenderIdAndReceiverId/{senderid}/{receiverid}")
     Call<List<Message>> getAllMessages(@Path("senderid") String senderId,@Path("receiverid") String receiverId);
+
+    @GET("messages/{id}")
+    Call<Message> getMessageById(@Path("id") String id);
 }

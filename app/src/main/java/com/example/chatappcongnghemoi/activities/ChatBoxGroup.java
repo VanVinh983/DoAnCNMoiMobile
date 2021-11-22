@@ -6,11 +6,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,7 +24,10 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,6 +39,7 @@ import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.adapters.ChatBoxGroupRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.GifRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.MessageAdapter;
+import com.example.chatappcongnghemoi.adapters.MessageGhimRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.TypeGifRecyclerAdapter;
 import com.example.chatappcongnghemoi.models.ChatGroup;
 import com.example.chatappcongnghemoi.models.ChatGroupDTO;
@@ -78,9 +84,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ChatBoxGroup extends AppCompatActivity {
+    public static RecyclerView recyclerViewGhim;
+    public static MessageGhimRecyclerAdapter messageGhimRecyclerAdapter;
     private EditText txtMessage;
+    public static Button btnShowGhim;
+    public static LinearLayout viewGhim;
     CircleImageView btnChooseGif,btnExitGif;
     private TextView tvGroupName,tvQuantityMember;
+    public static  TextView tvMessageGhim,tvUsernameGhim;
     private ImageView btnBack,btnMenu,btnOption,btnReaction,btnSend;
     public static ChatBoxGroupRecyclerAdapter adapter;
     public static RecyclerView recyclerView;
@@ -91,14 +102,14 @@ public class ChatBoxGroup extends AppCompatActivity {
     RecyclerView recyclerViewTypeGif;
     TypeGifRecyclerAdapter typeGifRecyclerAdapter;
     public static GifRecyclerAdapter gifAdapter;
-    public static List<Message> messages;
+    public static List<Message> messages = new ArrayList<>();
     List<String> listId;
     List<User> members;
     User userCurrent = null;
     private MessageSocket socket;
     private static Socket mSocket = MySocket.getInstance().getSocket();
     public static final int PICKFILE_RESULT_CODE = 1;
-    int  count = 0;
+    public static int  count = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +118,7 @@ public class ChatBoxGroup extends AppCompatActivity {
         new AmplifyInitialize(ChatBoxGroup.this).amplifyInitialize();
         mSocket.on("response-delete-group",responeDeleteGroup);
         dataService = ApiService.getService();
+        count= 0;
         mapping();
         Intent intent = getIntent();
         groupId = intent.getStringExtra("groupId");
@@ -117,6 +129,7 @@ public class ChatBoxGroup extends AppCompatActivity {
             @Override
             public void onResponse(Call<ChatGroup> call, Response<ChatGroup> response) {
                 chatGroup = response.body();
+                getGhim(chatGroup,dataService);
                 tvGroupName.setText(chatGroup.getName());
                 listId = new ArrayList<>();
                 List<Map<String,String>> listMembers = chatGroup.getMembers();
@@ -272,6 +285,12 @@ public class ChatBoxGroup extends AppCompatActivity {
 //                recyclerViewTypeGif.setLayoutParams(layoutParamsTypeGif);
             }
         });
+        btnShowGhim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showGhim(chatGroup,ChatBoxGroup.this,members,userCurrent);
+            }
+        });
         btnExitGif.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -326,6 +345,7 @@ public class ChatBoxGroup extends AppCompatActivity {
                                 recyclerView.setLayoutManager(linearLayoutManager);
                                 recyclerView.scrollToPosition(messages.size()-count);
                             }
+                            Toast.makeText(ChatBoxGroup.this, ""+count, Toast.LENGTH_SHORT).show();
                         }
                         @Override
                         public void onFailure(Call<List<Message>> call, Throwable t) {
@@ -336,6 +356,80 @@ public class ChatBoxGroup extends AppCompatActivity {
 
             }
         });
+    }
+    public static void getGhim(ChatGroup chatGroup,DataService service){
+        List<Map<String,String>> pins = chatGroup.getPins();
+        if(pins.size() <= 0){
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(0,0);
+            viewGhim.setLayoutParams(layoutParams);
+        }else{
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,(130));
+            viewGhim.setLayoutParams(layoutParams);
+            btnShowGhim.setText("+"+(pins.size()-1));
+            Map<String,String> lastPin = pins.get(pins.size()-1);
+            String messagePinId = lastPin.get("messageId");
+            String userPinId = lastPin.get("userId");
+            Call<Message> messageCall = service.getMessageById(messagePinId);
+            messageCall.enqueue(new Callback<Message>() {
+                @Override
+                public void onResponse(Call<Message> call, Response<Message> response) {
+                    Message message = response.body();
+                    if(message.getMessageType().equals("text")){
+                        tvMessageGhim.setText("[Tin nhắn] "+message.getText());
+                    }else if(message.getMessageType().equals("file")){
+                        tvMessageGhim.setText("[File] "+message.getFileName().substring(37));
+                    }else if(message.getMessageType().equals("image")){
+                        tvMessageGhim.setText("[Hình ảnh]");
+                    }else if(message.getMessageType().equals("gif")){
+                        tvMessageGhim.setText("[Gif]");
+                    }
+                    Call<UserDTO> userDTOCall = service.getUserById(message.getSenderId());
+                    userDTOCall.enqueue(new Callback<UserDTO>() {
+                        @Override
+                        public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                            User senderMessage = response.body().getUser();
+                            tvUsernameGhim.setText("Gửi bởi "+senderMessage.getUserName());
+                        }
+
+                        @Override
+                        public void onFailure(Call<UserDTO> call, Throwable t) {
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(Call<Message> call, Throwable t) {
+
+                }
+            });
+        }
+    }
+    public static void showGhim(ChatGroup chatGroup,Context context,List<User> members,User userCurrent){
+        Dialog dialogGhim =new Dialog(context);
+        dialogGhim.setContentView(R.layout.dialog_ghim_message);
+        Window window = dialogGhim.getWindow();
+        if(window == null)
+            return;
+        WindowManager.LayoutParams layoutParams = window.getAttributes();
+        window.setLayout(layoutParams.MATCH_PARENT,layoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        layoutParams.gravity = Gravity.CENTER;
+        window.setAttributes(layoutParams);
+        dialogGhim.setCancelable(true);
+        Button btnClose = dialogGhim.findViewById(R.id.btnHiddenGhim);
+        List<Map<String,String>> pins = chatGroup.getPins();
+        RecyclerView recyclerViewGhim = dialogGhim.findViewById(R.id.recyclerview_ghim);
+        messageGhimRecyclerAdapter = new MessageGhimRecyclerAdapter(pins,context,chatGroup,members,userCurrent);
+        recyclerViewGhim.setLayoutManager(new LinearLayoutManager(context));
+        recyclerViewGhim.setAdapter(messageGhimRecyclerAdapter);
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogGhim.dismiss();
+            }
+        });
+        dialogGhim.show();
     }
     public void showFileChooser(){
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -431,7 +525,11 @@ public class ChatBoxGroup extends AppCompatActivity {
         btnOption = findViewById(R.id.btnOptionsChatBoxGroup);
         btnChooseGif = findViewById(R.id.btnChooseGif);
         btnExitGif = findViewById(R.id.btnExitGif);
+        tvMessageGhim = findViewById(R.id.tvMessageGhim);
+        tvUsernameGhim = findViewById(R.id.tvUsernameGhim);
+        btnShowGhim = findViewById(R.id.btnShowGhim);
         recyclerViewGif = findViewById(R.id.recyclerview_gif);
+        viewGhim = findViewById(R.id.viewGhim);
         ViewGroup.LayoutParams layoutParams = btnExitGif.getLayoutParams();
         layoutParams.height = 0;
         layoutParams.width = 0;
@@ -442,6 +540,7 @@ public class ChatBoxGroup extends AppCompatActivity {
         layoutParamsGif.width = 0;
         recyclerViewGif.setLayoutParams(layoutParamsGif);
         recyclerViewTypeGif.setLayoutParams(layoutParamsGif);
+        recyclerViewGhim = findViewById(R.id.recyclerview_ghim);
     }
     public void getGifs(User userCurrent){
         List<Gif> gifs = new InitGif().addGif();

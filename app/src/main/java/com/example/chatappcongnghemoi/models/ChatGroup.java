@@ -7,6 +7,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ChatGroup implements Parcelable {
@@ -43,6 +44,9 @@ public class ChatGroup implements Parcelable {
     @SerializedName("background")
     @Expose
     private String  background;
+    @SerializedName("pin")
+    @Expose
+    private List<Map<String,String>> pins;
     @SerializedName("createdAt")
     @Expose
     private Long createdAt;
@@ -93,6 +97,14 @@ public class ChatGroup implements Parcelable {
     }
 
     public ChatGroup() {
+    }
+
+    public List<Map<String, String>> getPins() {
+        return pins;
+    }
+
+    public void setPins(List<Map<String, String>> pins) {
+        this.pins = pins;
     }
 
     public String getAvatar() {

@@ -165,9 +165,30 @@
                 app:srcCompat="@drawable/delete"
                 app:tint="@color/main_color" />
             <TextView
+                android:id="@+id/tvDeleteMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Xoá"
+                android:textSize="18dp"
+                android:textColor="#000"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/btnGhimMessage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:srcCompat="@drawable/pin"
+                app:tint="@color/main_color" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ghim"
                 android:textSize="18dp"
                 android:textColor="#000"
                 />
