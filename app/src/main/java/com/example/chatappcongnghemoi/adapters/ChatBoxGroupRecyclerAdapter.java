@@ -112,6 +112,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
     public void onBindViewHolder(@NonNull ChatBoxGroupRecyclerAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Message message = messages.get(position);
         dataService = ApiService.getService();
+        String url_s3 = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/";
         Call<UserDTO> call = dataService.getUserById(message.getSenderId());
         call.enqueue(new Callback<UserDTO>() {
             @Override
@@ -139,7 +140,6 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
             }
         });
 
-        String url_s3 = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/";
         if (message != null) {
             if (message.getMessageType().equals("image")) {
                 android.view.ViewGroup.LayoutParams layoutParams = holder.image_message.getLayoutParams();
@@ -260,7 +260,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, ""+position, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, ""+position, Toast.LENGTH_SHORT).show();
             }
         });
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {

@@ -92,7 +92,7 @@ public class ChatBoxGroup extends AppCompatActivity {
     CircleImageView btnChooseGif,btnExitGif;
     private TextView tvGroupName,tvQuantityMember;
     public static  TextView tvMessageGhim,tvUsernameGhim;
-    private ImageView btnBack,btnMenu,btnOption,btnReaction,btnSend;
+    private ImageView btnBack,btnMenu,btnOption,btnReaction,btnSend,btnGoToBottom;
     public static ChatBoxGroupRecyclerAdapter adapter;
     public static RecyclerView recyclerView;
     public static RecyclerView recyclerViewGif;
@@ -279,10 +279,6 @@ public class ChatBoxGroup extends AppCompatActivity {
                 layoutParamsGif.height =ViewGroup.LayoutParams.WRAP_CONTENT;
                 layoutParamsGif.width = (int)(400*dp);
                 recyclerViewGif.setLayoutParams(layoutParamsGif);
-//                ViewGroup.LayoutParams layoutParamsTypeGif = recyclerViewTypeGif.getLayoutParams();
-//                layoutParamsTypeGif.height =(int)(50*dp);
-//                layoutParamsTypeGif.width = (int)(400*dp);
-//                recyclerViewTypeGif.setLayoutParams(layoutParamsTypeGif);
             }
         });
         btnShowGhim.setOnClickListener(new View.OnClickListener() {
@@ -317,7 +313,11 @@ public class ChatBoxGroup extends AppCompatActivity {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-
+                if(newState == RecyclerView.SCROLL_STATE_IDLE && !recyclerView.canScrollVertically(1)){
+                    btnGoToBottom.setVisibility(View.INVISIBLE);
+                }else{
+                    btnGoToBottom.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -345,7 +345,6 @@ public class ChatBoxGroup extends AppCompatActivity {
                                 recyclerView.setLayoutManager(linearLayoutManager);
                                 recyclerView.scrollToPosition(messages.size()-count);
                             }
-                            Toast.makeText(ChatBoxGroup.this, ""+count, Toast.LENGTH_SHORT).show();
                         }
                         @Override
                         public void onFailure(Call<List<Message>> call, Throwable t) {
@@ -353,7 +352,13 @@ public class ChatBoxGroup extends AppCompatActivity {
                         }
                     });
                 }
-
+            }
+        });
+        btnGoToBottom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerView.scrollToPosition(messages.size()-1);
+                btnGoToBottom.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -541,6 +546,8 @@ public class ChatBoxGroup extends AppCompatActivity {
         recyclerViewGif.setLayoutParams(layoutParamsGif);
         recyclerViewTypeGif.setLayoutParams(layoutParamsGif);
         recyclerViewGhim = findViewById(R.id.recyclerview_ghim);
+        btnGoToBottom = findViewById(R.id.imgGoToBottomChatBoxGroup);
+        btnGoToBottom.setVisibility(View.INVISIBLE);
     }
     public void getGifs(User userCurrent){
         List<Gif> gifs = new InitGif().addGif();
@@ -662,7 +669,7 @@ public class ChatBoxGroup extends AppCompatActivity {
                     linearLayoutManager.setStackFromEnd(true);
                     recyclerView.setLayoutManager(linearLayoutManager);
                     if (adapter.getItemCount()>0){
-                        recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
+                        recyclerView.scrollToPosition(messages.size() - 1);
                     }
                 }
             });
@@ -677,6 +684,17 @@ public class ChatBoxGroup extends AppCompatActivity {
                     Intent intent = new Intent(ChatBoxGroup.this,Home.class);
                     startActivity(intent);
                     finish();
+                }
+            });
+        }
+    };
+    private Emitter.Listener responseReaction = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
                 }
             });
         }

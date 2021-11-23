@@ -81,7 +81,7 @@ public class InfoGroupChat extends AppCompatActivity {
     String groupId;
     DataService dataService;
     ImageView btnBack;
-    ImageButton btnRename,btnAddMember;
+    ImageButton btnRename,btnAddMember,btnSearchMessage;
     LinearLayout btnWatchMembers,btnChangeBackground,btnLeaveGroup,btnDeleteGroup,btnFileSent;
     User userCurrent = null;
     List<User> members ;
@@ -128,6 +128,16 @@ public class InfoGroupChat extends AppCompatActivity {
             @Override
             public void onFailure(Call<UserDTO> call, Throwable t) {
 
+            }
+        });
+        btnSearchMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(InfoGroupChat.this,SearchMessage.class);
+                intent.putExtra("groupId",groupId);
+                intent.putExtra("userCurrent",userCurrent);
+                startActivity(intent);
+                finish();
             }
         });
         Handler handler1 = new Handler();
@@ -355,6 +365,7 @@ public class InfoGroupChat extends AppCompatActivity {
         btnDeleteGroup = findViewById(R.id.btnDeleteGroup);
         recyclerViewImageSent = findViewById(R.id.recyclerview_imageSent);
         btnFileSent = findViewById(R.id.btnFileSent);
+        btnSearchMessage = findViewById(R.id.imgSearchMessageInfoChatGroup);
     }
     public void init(){
         Intent intent = getIntent();

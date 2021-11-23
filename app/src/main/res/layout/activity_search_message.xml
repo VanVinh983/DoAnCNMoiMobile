@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.SearchMessage">
+    <LinearLayout
+        android:background="#fff"
+        android:paddingVertical="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_gravity="center"
+            android:id="@+id/btnBackSearchMessage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_baseline_arrow_back_24"
+            />
+        <EditText
+            android:layout_gravity="center"
+            android:id="@+id/txtSearchMessage"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:text=""
+            android:layout_marginLeft="10dp"
+            android:hint="Tìm tin nhắn"
+            android:backgroundTint="#fff"
+            android:textColor="#000"
+            />
+        <Spinner
+            android:id="@+id/btnChooseUserSearchMessage"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_searchMessage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_chat_default"
+            android:paddingVertical="5dp" />
+
+    </RelativeLayout>
+    <LinearLayout
+        android:paddingVertical="5dp"
+        android:paddingHorizontal="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="55dp">
+
+        <ImageView
+            android:layout_gravity="center_vertical"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat="@drawable/search_user" />
+        <TextView
+            android:id="@+id/tvSizeSearch"
+            android:layout_marginLeft="30dp"
+            android:layout_gravity="center"
+            android:layout_width="200dp"
+            android:textSize="17dp"
+            android:textColor="#000"
+            android:layout_height="wrap_content"
+            android:text=""
+            />
+
+        <ImageView
+            android:layout_gravity="center_vertical"
+            android:id="@+id/btnUpSearchMessage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="30dp"
+            app:srcCompat="@drawable/arrow_up" />
+
+        <ImageView
+            android:layout_gravity="center_vertical"
+            android:id="@+id/btnDownSearchMessage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            app:srcCompat="@drawable/arrow_down" />
+    </LinearLayout>
+</LinearLayout>

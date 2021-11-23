@@ -103,7 +103,7 @@
             app:strokeColor="@color/main_color"
             app:strokeWidth="1dp" />
     </LinearLayout>
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
@@ -114,7 +114,20 @@
             android:layout_height="match_parent"
             android:background="@drawable/background_chat_default" />
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/imgGoToBottomChatBoxGroup"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="359dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="23dp"
+            android:src="@drawable/down_arrow"
+            />
+
+    </RelativeLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:foregroundGravity="center"
             android:paddingVertical="5dp"

@@ -16,6 +16,9 @@
         android:theme="@style/Theme.ChatAppCongNgheMoi"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activities.SearchMessage"
+            android:exported="true" />
+        <activity
             android:name=".activities.FileSent"
             android:exported="true" />
         <activity
