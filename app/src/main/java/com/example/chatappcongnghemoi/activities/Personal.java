@@ -34,6 +34,7 @@ import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.example.chatappcongnghemoi.socket.MySocket;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.File;
@@ -201,6 +202,7 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                         dialog.dismiss();
                         updateOffline();
                         Intent intent = new Intent(Personal.this,StartApp.class);
+                        MySocket.getInstance().getSocket().disconnect();
                         startActivity(intent);
                         finish();
                     }

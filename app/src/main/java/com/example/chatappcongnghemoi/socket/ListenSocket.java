@@ -79,7 +79,6 @@ public class ListenSocket extends AppCompatActivity {
             public void run() {
                 if (!socket.connected()) {
                     socket.connect();
-                    new UserSocket().sendUserToSocket(getUserId());
                 }
                 System.out.println("Listen socket still running: " + socket.connected());
                 handler.postDelayed(this, 5000);

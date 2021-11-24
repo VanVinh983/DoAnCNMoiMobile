@@ -18,6 +18,7 @@ import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.example.chatappcongnghemoi.socket.UserSocket;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -96,6 +97,7 @@ public class Login extends AppCompatActivity {
                                             updateOnline(user.getId(),user);
                                             saveID(user.getId());
                                             Toast.makeText(Login.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                                            new UserSocket().sendUserToSocket(user.getId());
                                             startActivity(intent);
                                             finish();
                                         }else
@@ -128,6 +130,7 @@ public class Login extends AppCompatActivity {
             return;
         else{
             Intent intent = new Intent(Login.this,Home.class);
+            new UserSocket().sendUserToSocket(id);
             startActivity(intent);
             finish();
         }
