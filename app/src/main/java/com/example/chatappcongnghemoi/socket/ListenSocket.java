@@ -79,9 +79,9 @@ public class ListenSocket extends AppCompatActivity {
             public void run() {
                 if (!socket.connected()) {
                     socket.connect();
+                    System.out.println("Socket is reconnect....");
                 }
-                System.out.println("Listen socket still running: " + socket.connected());
-                handler.postDelayed(this, 5000);
+                handler.postDelayed(this, 1000);
             }
         }, 1000);
     }
