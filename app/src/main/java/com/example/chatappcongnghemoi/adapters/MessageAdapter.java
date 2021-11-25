@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,11 +29,15 @@ import com.example.chatappcongnghemoi.activities.Personal;
 import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
+import com.example.chatappcongnghemoi.retrofit.ApiService;
+import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.example.chatappcongnghemoi.socket.MessageSocket;
 
 import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import pl.droidsonroids.gif.GifImageView;
 import retrofit2.Call;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
@@ -43,12 +48,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private static final int LEFT = 0;
     private static final int RIGHT = 1;
     private static int message_type;
+    private DataService dataService;
+    private MessageSocket messageSocket;
 
     public MessageAdapter(List<Message> messages, Context context, User userCurrent, User friend) {
         this.messages = messages;
         this.context = context;
         this.userCurrent = userCurrent;
         this.friend = friend;
+        dataService = ApiService.getService();
+        messageSocket = new MessageSocket();
     }
 
     @NonNull
@@ -72,12 +81,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         if (message != null) {
             if (message.getMessageType().equals("image")) {
                 android.view.ViewGroup.LayoutParams layoutParams = holder.image_message.getLayoutParams();
-                layoutParams.width = 1000;
-                layoutParams.height = 1000;
+                layoutParams.width = 100;
+                layoutParams.height = 100;
                 holder.image_message.setLayoutParams(layoutParams);
                 Glide.with(context).load(url_s3+message.getFileName()).into(holder.image_message);
-                holder.txt_content.setWidth(0);
-                holder.txt_content.setHeight(0);
+                LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(0,0);
+                holder.txt_content.setLayoutParams(layoutParams1);
+                holder.gifImageView.setLayoutParams(layoutParams1);
                 holder.image_message.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -86,6 +96,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                         context.startActivity(intent);
                     }
                 });
+                android.view.ViewGroup.LayoutParams layoutParamsLoad = holder.img_download.getLayoutParams();
+                layoutParamsLoad.width = 70;
+                layoutParamsLoad.height = 70;
+                holder.img_download.setLayoutParams(layoutParamsLoad);
+                holder.img_download.setImageResource(R.drawable.download);
             } else if (message.getMessageType().equals("file")){
                 holder.txt_content.setTextColor(Color.parseColor("#008ae6"));
                 holder.txt_content.setTypeface(holder.txt_content.getTypeface(), Typeface.ITALIC);
@@ -131,7 +146,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         private TextView txt_content,username, time;
         private CircleImageView avatar;
         private View view;
-        private ImageView image_message;
+        private ImageView image_message,img_download;
+        private GifImageView gifImageView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txt_content = itemView.findViewById(R.id.txt_content_message);
@@ -140,6 +156,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             time = itemView.findViewById(R.id.tvTimeSendLeft);
             view = itemView;
             image_message = itemView.findViewById(R.id.image_message);
+            gifImageView = itemView.findViewById(R.id.image_gif);
+            img_download = itemView.findViewById(R.id.imgDownload);
         }
     }
 

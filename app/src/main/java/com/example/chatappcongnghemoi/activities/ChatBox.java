@@ -2,19 +2,26 @@ package com.example.chatappcongnghemoi.activities;
 
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.OpenableColumns;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.adapters.ChatBoxGroupRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.MessageAdapter;
 import com.example.chatappcongnghemoi.models.ChatGroup;
 import com.example.chatappcongnghemoi.models.Message;
@@ -31,8 +38,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.socket.client.Socket;
@@ -52,6 +64,8 @@ public class ChatBox extends AppCompatActivity {
     private RecyclerView recyclerViewMessage;
     private EditText input_message_text;
     private MessageSocket socket;
+    private ImageButton btn_chatbox_file, btn_chatbox_gif;
+    private static final int PICKFILE_RESULT_CODE = 1;
     private static Socket mSocket = MySocket.getInstance().getSocket();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +78,7 @@ public class ChatBox extends AppCompatActivity {
         initialize();
         getUserById();
         getFriendById(friendId);
+        new AmplifyInitialize(ChatBox.this).amplifyInitialize();
         mSocket.on("response-add-new-text", responeMessage);
         mSocket.on("response-add-new-file", responeAddFile);
         findViewById(R.id.btn_chatbox_back).setOnClickListener(new View.OnClickListener() {
@@ -128,7 +143,8 @@ public class ChatBox extends AppCompatActivity {
                     listCall.enqueue(new Callback<List<ChatGroup>>() {
                         @Override
                         public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
-                            socket = new MessageSocket(response.body(), userCurrent);
+//                            socket = new MessageSocket(response.body(), userCurrent);
+                            socket = new MessageSocket();
                         }
                         @Override
                         public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
@@ -141,11 +157,19 @@ public class ChatBox extends AppCompatActivity {
                 }
             }
         },500);
+        btn_chatbox_file.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showFileChooser();
+            }
+        });
     }
     private void mapping(){
         txt_username = findViewById(R.id.txt_chatbox_username);
         recyclerViewMessage = findViewById(R.id.recylerview_message);
         input_message_text = findViewById(R.id.input_chatbox_message);
+        btn_chatbox_file = findViewById(R.id.btn_chatbox_file);
+        btn_chatbox_gif = findViewById(R.id.btn_chatbox_gif);
     }
     private void initialize(){
         dataService = ApiService.getService();
@@ -224,7 +248,6 @@ public class ChatBox extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mSocket.disconnect();
     }
 
     private Emitter.Listener responeMessage = new Emitter.Listener() {
@@ -286,4 +309,84 @@ public class ChatBox extends AppCompatActivity {
             });
         }
     };
+    public void showFileChooser(){
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+//        intent.putExtra(Intent.EXTRA_MIME_TYPES,mimeType);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        startActivityForResult(intent,PICKFILE_RESULT_CODE );
+    }
+    private String getPath(Uri uri)
+    {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        if (cursor.getCount() <= 0) {
+            cursor.close();
+            throw new IllegalArgumentException("Can't obtain file name, cursor is empty");
+        }
+        cursor.moveToFirst();
+        String fileName = cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME));
+        cursor.close();
+        return fileName;
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PICKFILE_RESULT_CODE:
+                if (resultCode == -1) {
+                    Uri fileUri = data.getData();
+                    File file = new File(getPath(fileUri));
+                    UUID uuid = UUID.randomUUID();
+                    String extension = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+                    try {
+                        InputStream exampleInputStream = getContentResolver().openInputStream(fileUri);
+                        com.amplifyframework.core.Amplify.Storage.uploadInputStream(
+                                uuid + "." + file.getName(),
+                                exampleInputStream,
+                                result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
+                                storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
+                        );
+                        Message message = new Message();
+                        String userId = userCurrent.getId();
+                        message.setSenderId(userId);
+                        message.setReceiverId(friendCurrent.getId());
+                        message.setChatType("personal");
+                        if (extension.equals("png") || extension.equals("jpg") || extension.equals("jpeg") || extension.equals("svg") || extension.equals("gif"))
+                            message.setMessageType("image");
+                        else
+                            message.setMessageType("file");
+                        message.setCreatedAt(new Date().getTime());
+                        message.setFileName(uuid + "." + file.getName());
+                        Toast.makeText(ChatBox.this, "" + message.getMessageType(), Toast.LENGTH_SHORT).show();
+                        Call<Message> messageCall = dataService.postMessage(message);
+                        messageCall.enqueue(new Callback<Message>() {
+                            @Override
+                            public void onResponse(Call<Message> call, Response<Message> response) {
+                                Message message1 = response.body();
+                                List<Message> list = new ArrayList<>();
+                                list.add(message1);
+                                socket.sendFile(list, "false");
+                                messages.add(message1);
+                                messageAdapter = new MessageAdapter(messages, ChatBox.this, userCurrent, friendCurrent);
+                                recyclerViewMessage.setAdapter(messageAdapter);
+                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBox.this, LinearLayoutManager.VERTICAL, false);
+                                linearLayoutManager.setStackFromEnd(true);
+                                recyclerViewMessage.setLayoutManager(linearLayoutManager);
+                                if (messageAdapter.getItemCount() > 0) {
+                                    recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount() - 1);
+                                }
+                            }
+                            @Override
+                            public void onFailure(Call<Message> call, Throwable t) {
+
+                            }
+                        });
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+        }
+    }
 }

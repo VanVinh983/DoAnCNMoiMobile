@@ -65,22 +65,24 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageButton
-            android:id="@+id/imageButton"
-            android:layout_width="wrap_content"
+            android:id="@+id/btn_chatbox_file"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:backgroundTint="#00FFFFFF"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_baseline_insert_emoticon_24" />
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/option"
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <ImageButton
-            android:id="@+id/imageButton2"
-            android:layout_width="wrap_content"
+            android:id="@+id/btn_chatbox_gif"
+            android:layout_width="50dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:backgroundTint="#00FFFFFF"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/ic_baseline_image_24" />
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_baseline_gif_24"
+            tools:ignore="SpeakableTextPresentCheck" />
 
         <EditText
             android:id="@+id/input_chatbox_message"

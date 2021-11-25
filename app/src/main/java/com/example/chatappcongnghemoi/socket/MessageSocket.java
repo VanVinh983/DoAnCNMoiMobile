@@ -25,6 +25,9 @@ public class MessageSocket {
     private List<ChatGroup> chatGroups;
     private User userCurrent;
 
+    public MessageSocket() {
+    }
+
     public MessageSocket(List<ChatGroup> chatGroups, User userCurrent) {
         this.chatGroups = chatGroups;
         this.userCurrent = userCurrent;
