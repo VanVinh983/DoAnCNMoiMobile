@@ -31,6 +31,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.adapters.AddMembersInfoGroupRecyclerAdapter;
+import com.example.chatappcongnghemoi.adapters.ChatBoxGroupRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.ContactRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.MembersOfInfoGroupRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.MessageImageSentRecyclerAdapter;
@@ -51,7 +52,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -97,7 +103,7 @@ public class InfoGroupChat extends AppCompatActivity {
     private static Socket mSocket = MySocket.getInstance().getSocket();
     public static ArrayList<User> listAddMembers = new ArrayList<>();
     AddMembersInfoGroupRecyclerAdapter adapterAddMembers;
-
+    Gson gson = new Gson();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,7 +117,8 @@ public class InfoGroupChat extends AppCompatActivity {
         init();
 //        mSocket.on("response-add-user-to-group",responeAddUserToGroup);
 //        mSocket.on("response-leave-group",responeLeaveGroup);
-        mSocket.on("response-delete-group",responeDeleteGroup);
+        mSocket.on("response-leave-group",responseLeaveGroup);
+        mSocket.on("response-delete-group",responseLeaveGroup);
         btnBack.setOnClickListener((view) ->{
             Intent intent = new Intent(InfoGroupChat.this,ChatBoxGroup.class);
             intent.putExtra("groupId",groupId);
@@ -1184,26 +1191,39 @@ public class InfoGroupChat extends AppCompatActivity {
             });
         }
     };
-    private Emitter.Listener responeLeaveGroup = new Emitter.Listener() {
+    private Emitter.Listener responseLeaveGroup = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        String chatGroupJsonObject = data.getString("group");
+                        ChatGroup group = gson.fromJson(chatGroupJsonObject,ChatGroup.class);
+                        tvQuantityMember.setText("Xem thành viên ("+chatGroup.getMembers().size()+")");
+                        chatGroup = group;
+                        Toast.makeText(InfoGroupChat.this, ""+chatGroup.getMembers().size(), Toast.LENGTH_SHORT).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }
     };
-    private Emitter.Listener responeDeleteGroup = new Emitter.Listener() {
+    private Emitter.Listener responseDeleteGroup = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Intent intent = new Intent(InfoGroupChat.this,Home.class);
-                    startActivity(intent);
-                    finish();
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        String id = data.getString("groupId");
+                        Toast.makeText(InfoGroupChat.this, ""+groupId, Toast.LENGTH_SHORT).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }

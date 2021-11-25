@@ -128,12 +128,9 @@ public class GroupSocket {
         },500);
     }
     public void deleteGroup(ChatGroup chatGroup){
-        String jsonGroup = gson.toJson(chatGroup);
-        JSONObject jsonObjectGroup = null;
         JSONObject jsonObjectGeneral = new JSONObject();
         try {
-            jsonObjectGroup = new JSONObject(jsonGroup);
-            jsonObjectGeneral.put("group",jsonObjectGroup);
+            jsonObjectGeneral.put("groupId",chatGroup.getId());
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -110,13 +110,13 @@ public class ChatBoxGroup extends AppCompatActivity {
     private static Socket mSocket = MySocket.getInstance().getSocket();
     public static final int PICKFILE_RESULT_CODE = 1;
     public static int  count = 0;
+    Gson gson = new Gson();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_box_group);
         getSupportActionBar().hide();
         new AmplifyInitialize(ChatBoxGroup.this).amplifyInitialize();
-        mSocket.on("response-delete-group",responeDeleteGroup);
         dataService = ApiService.getService();
         count= 0;
         mapping();
@@ -124,6 +124,8 @@ public class ChatBoxGroup extends AppCompatActivity {
         groupId = intent.getStringExtra("groupId");
         mSocket.on("response-add-new-text", responeMessage);
         mSocket.on("response-add-new-file", responeAddFile);
+        mSocket.on("response-delete-group",responseDeleteGroup);
+        mSocket.on("response-leave-group",responseLeaveGroup);
         Call<ChatGroup> groupDTOCall = dataService.getGroupById(groupId);
         groupDTOCall.enqueue(new Callback<ChatGroup>() {
             @Override
@@ -675,7 +677,7 @@ public class ChatBoxGroup extends AppCompatActivity {
             });
         }
     };
-    private Emitter.Listener responeDeleteGroup = new Emitter.Listener() {
+    private Emitter.Listener responseDeleteGroup = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             runOnUiThread(new Runnable() {
@@ -688,13 +690,39 @@ public class ChatBoxGroup extends AppCompatActivity {
             });
         }
     };
+    private Emitter.Listener responseLeaveGroup = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        String chatGroupJsonObject = data.getString("group");
+                        ChatGroup group = gson.fromJson(chatGroupJsonObject,ChatGroup.class);
+                        tvQuantityMember.setText(chatGroup.getMembers().size()+" thành viên");
+                        chatGroup = group;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    };
     private Emitter.Listener responseReaction = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
+                    JSONObject data = (JSONObject) args[0];
+                    String id = null;
+                    try {
+                        id = data.getString("groupId");
+                        Toast.makeText(ChatBoxGroup.this, ""+id, Toast.LENGTH_SHORT).show();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }
