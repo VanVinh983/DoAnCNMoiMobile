@@ -350,7 +350,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                         ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -384,7 +384,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                         ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -418,7 +418,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                         ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -452,7 +452,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                         ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -486,7 +486,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                         ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -520,7 +520,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                         ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -555,7 +555,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                         ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -724,7 +724,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                         ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -758,7 +758,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                         ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -792,7 +792,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                         ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -826,7 +826,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                         ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -860,7 +860,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                         ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -894,7 +894,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                         ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -929,7 +929,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                         ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
