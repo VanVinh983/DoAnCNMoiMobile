@@ -59,9 +59,9 @@ public class ChatBox extends AppCompatActivity {
     private DataService dataService;
     private User userCurrent=null;
     private User friendCurrent=null;
-    private List<Message> messages;
-    private MessageAdapter messageAdapter;
-    private RecyclerView recyclerViewMessage;
+    public static List<Message> messages;
+    public static MessageAdapter messageAdapter;
+    public static RecyclerView recyclerViewMessage;
     private EditText input_message_text;
     private MessageSocket socket;
     private ImageButton btn_chatbox_file, btn_chatbox_gif;
@@ -81,6 +81,7 @@ public class ChatBox extends AppCompatActivity {
         new AmplifyInitialize(ChatBox.this).amplifyInitialize();
         mSocket.on("response-add-new-text", responeMessage);
         mSocket.on("response-add-new-file", responeAddFile);
+        mSocket.on("response-reaction", responseReaction);
         findViewById(R.id.btn_chatbox_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -281,6 +282,36 @@ public class ChatBox extends AppCompatActivity {
             });
         }
     };
+    private Emitter.Listener responseReaction = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        Message mess = new Gson().fromJson(data.getString("message"), Message.class);
+                        System.out.println(mess.toString());
+                        for (int i = 0; i < messages.size(); i++) {
+                            if (mess.getId().equals(messages.get(i).getId())){
+                                messages.get(i).setReaction(mess.getReaction());
+                                messageAdapter = new MessageAdapter(messages, ChatBox.this,userCurrent, friendCurrent);
+                                recyclerViewMessage.setAdapter(messageAdapter);
+                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBox.this, LinearLayoutManager.VERTICAL, false);
+                                linearLayoutManager.setStackFromEnd(true);
+                                recyclerViewMessage.setLayoutManager(linearLayoutManager);
+                                if (messageAdapter.getItemCount()>0){
+                                    recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount()-1);
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    };
     private Emitter.Listener responeAddFile = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
@@ -389,4 +420,5 @@ public class ChatBox extends AppCompatActivity {
                 break;
         }
     }
+
 }
