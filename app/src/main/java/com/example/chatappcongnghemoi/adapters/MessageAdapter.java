@@ -300,7 +300,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBox.messageAdapter = new MessageAdapter(ChatBox.messages,context,userCurrent,friend);
                         ChatBox.recyclerViewMessage.setAdapter(ChatBox.messageAdapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -334,7 +334,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBox.messageAdapter = new MessageAdapter(ChatBox.messages,context,userCurrent,friend);
                         ChatBox.recyclerViewMessage.setAdapter(ChatBox.messageAdapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -368,7 +368,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBox.messageAdapter = new MessageAdapter(ChatBox.messages,context,userCurrent,friend);
                         ChatBox.recyclerViewMessage.setAdapter(ChatBox.messageAdapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -402,7 +402,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBox.messageAdapter = new MessageAdapter(ChatBox.messages,context,userCurrent,friend);
                         ChatBox.recyclerViewMessage.setAdapter(ChatBox.messageAdapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -436,7 +436,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBox.messageAdapter = new MessageAdapter(ChatBox.messages,context,userCurrent,friend);
                         ChatBox.recyclerViewMessage.setAdapter(ChatBox.messageAdapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -470,7 +470,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBox.messageAdapter = new MessageAdapter(ChatBox.messages,context,userCurrent,friend);
                         ChatBox.recyclerViewMessage.setAdapter(ChatBox.messageAdapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -505,7 +505,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBox.messageAdapter = new MessageAdapter(ChatBox.messages,context,userCurrent,friend);
                         ChatBox.recyclerViewMessage.setAdapter(ChatBox.messageAdapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -601,7 +601,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBox.messageAdapter = new MessageAdapter(ChatBox.messages,context,userCurrent,friend);
                         ChatBox.recyclerViewMessage.setAdapter(ChatBox.messageAdapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -635,7 +635,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBox.messageAdapter = new MessageAdapter(ChatBox.messages,context,userCurrent,friend);
                         ChatBox.recyclerViewMessage.setAdapter(ChatBox.messageAdapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -669,7 +669,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBox.messageAdapter = new MessageAdapter(ChatBox.messages,context,userCurrent,friend);
                         ChatBox.recyclerViewMessage.setAdapter(ChatBox.messageAdapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -703,7 +703,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBox.messageAdapter = new MessageAdapter(ChatBox.messages,context,userCurrent,friend);
                         ChatBox.recyclerViewMessage.setAdapter(ChatBox.messageAdapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -737,7 +737,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBox.messageAdapter = new MessageAdapter(ChatBox.messages,context,userCurrent,friend);
                         ChatBox.recyclerViewMessage.setAdapter(ChatBox.messageAdapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -771,7 +771,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBox.messageAdapter = new MessageAdapter(ChatBox.messages,context,userCurrent,friend);
                         ChatBox.recyclerViewMessage.setAdapter(ChatBox.messageAdapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -806,7 +806,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message1);
+                        messageSocket.sendReaction(message);
                         ChatBox.messageAdapter = new MessageAdapter(ChatBox.messages,context,userCurrent,friend);
                         ChatBox.recyclerViewMessage.setAdapter(ChatBox.messageAdapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);

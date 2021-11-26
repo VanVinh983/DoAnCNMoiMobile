@@ -11,9 +11,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -63,9 +65,11 @@ public class ChatBox extends AppCompatActivity {
     public static MessageAdapter messageAdapter;
     public static RecyclerView recyclerViewMessage;
     private EditText input_message_text;
+    private ImageView btnGoToBottom;
     private MessageSocket socket;
     private ImageButton btn_chatbox_file, btn_chatbox_gif;
     private static final int PICKFILE_RESULT_CODE = 1;
+    private int  count = 0;
     private static Socket mSocket = MySocket.getInstance().getSocket();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +168,59 @@ public class ChatBox extends AppCompatActivity {
                 showFileChooser();
             }
         });
+        recyclerViewMessage.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState == RecyclerView.SCROLL_STATE_IDLE && !recyclerView.canScrollVertically(1)){
+                    btnGoToBottom.setVisibility(View.INVISIBLE);
+                }else{
+                    btnGoToBottom.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(!recyclerView.canScrollVertically(-1)&& dy<0){
+                    count =count +10;
+                    Call<List<Message>> messageCall = dataService.getMessageBySIdAndRIdPaging(userCurrent.getId() ,friendCurrent.getId(),count);
+                    messageCall.enqueue(new Callback<List<Message>>() {
+                        @Override
+                        public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+                            if(response.body().size() == 0){
+
+                            }else{
+                                List<Message> list = new ArrayList<>();
+                                for(int i = response.body().size()-1;i>=0;i--){
+                                    list.add(response.body().get(i));
+                                }
+                                messages.addAll(0,list);
+                                list.clear();
+                                messageAdapter = new MessageAdapter(messages, ChatBox.this, userCurrent, friendCurrent);
+                                recyclerViewMessage.setAdapter(messageAdapter);
+                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBox.this, LinearLayoutManager.VERTICAL, false);
+                                linearLayoutManager.setStackFromEnd(true);
+                                recyclerViewMessage.setLayoutManager(linearLayoutManager);
+                                recyclerViewMessage.scrollToPosition(messages.size()-count);
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<List<Message>> call, Throwable t) {
+
+                        }
+                    });
+                }
+            }
+        });
+        btnGoToBottom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerViewMessage.scrollToPosition(messages.size()-1);
+                btnGoToBottom.setVisibility(View.INVISIBLE);
+            }
+        });
+
     }
     private void mapping(){
         txt_username = findViewById(R.id.txt_chatbox_username);
@@ -171,6 +228,8 @@ public class ChatBox extends AppCompatActivity {
         input_message_text = findViewById(R.id.input_chatbox_message);
         btn_chatbox_file = findViewById(R.id.btn_chatbox_file);
         btn_chatbox_gif = findViewById(R.id.btn_chatbox_gif);
+        btnGoToBottom = findViewById(R.id.image_btn_gobottom);
+        btnGoToBottom.setVisibility(View.INVISIBLE);
     }
     private void initialize(){
         dataService = ApiService.getService();

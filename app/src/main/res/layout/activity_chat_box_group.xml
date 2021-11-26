@@ -124,8 +124,7 @@
             android:layout_marginStart="359dp"
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="23dp"
-            android:src="@drawable/down_arrow"
-            />
+            android:src="@drawable/down_arrow" />
 
     </RelativeLayout>
         <androidx.recyclerview.widget.RecyclerView
