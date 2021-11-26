@@ -434,44 +434,46 @@ public class ChatBox extends AppCompatActivity {
                         com.amplifyframework.core.Amplify.Storage.uploadInputStream(
                                 uuid + "." + file.getName(),
                                 exampleInputStream,
-                                result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
+                                result -> {
+                                    Message message = new Message();
+                                    String userId = userCurrent.getId();
+                                    message.setSenderId(userId);
+                                    message.setReceiverId(friendCurrent.getId());
+                                    message.setChatType("personal");
+                                    if (extension.equals("png") || extension.equals("jpg") || extension.equals("jpeg") || extension.equals("svg") || extension.equals("gif"))
+                                        message.setMessageType("image");
+                                    else
+                                        message.setMessageType("file");
+                                    message.setCreatedAt(new Date().getTime());
+                                    message.setFileName(uuid + "." + file.getName());
+                                    Toast.makeText(ChatBox.this, "" + message.getMessageType(), Toast.LENGTH_SHORT).show();
+                                    Call<Message> messageCall = dataService.postMessage(message);
+                                    messageCall.enqueue(new Callback<Message>() {
+                                        @Override
+                                        public void onResponse(Call<Message> call, Response<Message> response) {
+                                            Message message1 = response.body();
+                                            List<Message> list = new ArrayList<>();
+                                            list.add(message1);
+                                            socket.sendFile(list, "false");
+                                            messages.add(message1);
+                                            messageAdapter = new MessageAdapter(messages, ChatBox.this, userCurrent, friendCurrent);
+                                            recyclerViewMessage.setAdapter(messageAdapter);
+                                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBox.this, LinearLayoutManager.VERTICAL, false);
+                                            linearLayoutManager.setStackFromEnd(true);
+                                            recyclerViewMessage.setLayoutManager(linearLayoutManager);
+                                            if (messageAdapter.getItemCount() > 0) {
+                                                recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount() - 1);
+                                            }
+                                        }
+                                        @Override
+                                        public void onFailure(Call<Message> call, Throwable t) {
+
+                                        }
+                                    });
+                                    Toast.makeText(ChatBox.this, "Hoàn Tất", Toast.LENGTH_LONG).show();
+                                },
                                 storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
                         );
-                        Message message = new Message();
-                        String userId = userCurrent.getId();
-                        message.setSenderId(userId);
-                        message.setReceiverId(friendCurrent.getId());
-                        message.setChatType("personal");
-                        if (extension.equals("png") || extension.equals("jpg") || extension.equals("jpeg") || extension.equals("svg") || extension.equals("gif"))
-                            message.setMessageType("image");
-                        else
-                            message.setMessageType("file");
-                        message.setCreatedAt(new Date().getTime());
-                        message.setFileName(uuid + "." + file.getName());
-                        Toast.makeText(ChatBox.this, "" + message.getMessageType(), Toast.LENGTH_SHORT).show();
-                        Call<Message> messageCall = dataService.postMessage(message);
-                        messageCall.enqueue(new Callback<Message>() {
-                            @Override
-                            public void onResponse(Call<Message> call, Response<Message> response) {
-                                Message message1 = response.body();
-                                List<Message> list = new ArrayList<>();
-                                list.add(message1);
-                                socket.sendFile(list, "false");
-                                messages.add(message1);
-                                messageAdapter = new MessageAdapter(messages, ChatBox.this, userCurrent, friendCurrent);
-                                recyclerViewMessage.setAdapter(messageAdapter);
-                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBox.this, LinearLayoutManager.VERTICAL, false);
-                                linearLayoutManager.setStackFromEnd(true);
-                                recyclerViewMessage.setLayoutManager(linearLayoutManager);
-                                if (messageAdapter.getItemCount() > 0) {
-                                    recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount() - 1);
-                                }
-                            }
-                            @Override
-                            public void onFailure(Call<Message> call, Throwable t) {
-
-                            }
-                        });
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }

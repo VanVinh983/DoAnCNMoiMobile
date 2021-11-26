@@ -323,12 +323,14 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                 com.amplifyframework.core.Amplify.Storage.uploadInputStream(
                         uuid+"."+file1.getName(),
                         exampleInputStream,
-                        result -> Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey()),
+                        result -> {
+                            Toast.makeText(Personal.this, "Hoàn Tất", Toast.LENGTH_LONG).show();
+                            String url = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/"+uuid+"."+file1.getName();
+                            updateImage(uuid+"."+file1.getName());
+                            Glide.with(Personal.this).load(url).into(imageView_Avatar);
+                        },
                         storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
                 );
-                String url = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/"+uuid+"."+file1.getName();
-                updateImage(uuid+"."+file1.getName());
-                Glide.with(Personal.this).load(url).into(imageView_Avatar);
             }  catch ( FileNotFoundException error) {
                 Log.e("MyAmplifyApp", "Could not find file to open for input stream.", error);
             }

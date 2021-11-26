@@ -9,9 +9,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Environment;
 import android.os.Handler;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,8 +30,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.storage.options.StorageDownloadFileOptions;
 import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.activities.AmplifyInitialize;
 import com.example.chatappcongnghemoi.activities.ChatBox;
 import com.example.chatappcongnghemoi.activities.ChatBoxGroup;
 import com.example.chatappcongnghemoi.activities.Full_Image_Avatar;
@@ -43,6 +48,7 @@ import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.example.chatappcongnghemoi.socket.MessageSocket;
 
+import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -189,6 +195,28 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                         }
                     }
                     return  true;
+                }
+            });
+            holder.img_download.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new AmplifyInitialize(context).amplifyInitialize();
+                    File file = null;
+                    if (message.getMessageType().equals("image")){
+                        file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/"+message.getFileName());
+                    }else if (message.getMessageType().equals("file")){
+                        file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/appchat/"+message.getFileName());
+                    }
+                    Amplify.Storage.downloadFile(
+                            message.getFileName(),
+                            file,
+                            StorageDownloadFileOptions.defaultInstance(),
+                            progress -> Toast.makeText(context, "Đang tải..."+ progress.getCurrentBytes()+"bytes", Toast.LENGTH_SHORT).show(),
+                            result -> {
+                                Toast.makeText(context, "Dowload File Successfully", Toast.LENGTH_LONG).show();
+                            },
+                            error -> Log.e("MyAmplifyApp",  "Download Failure", error)
+                    );
                 }
             });
         }
