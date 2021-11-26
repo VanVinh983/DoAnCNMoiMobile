@@ -20,6 +20,7 @@ import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -472,6 +473,8 @@ public class ChatBoxGroup extends AppCompatActivity {
                         message.setChatType("group");
                         if(extension.equals("png") || extension.equals("jpg") || extension.equals("jpeg") || extension.equals("svg") || extension.equals("gif"))
                             message.setMessageType("image");
+                        else if(extension.equals("mp4") || extension.equals("mkv") || extension.equals("avi") || extension.equals("webm"))
+                            message.setMessageType("video");
                         else
                             message.setMessageType("file");
                         message.setCreatedAt(new Date().getTime());

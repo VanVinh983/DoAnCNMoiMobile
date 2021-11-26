@@ -12,6 +12,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Parcelable;
 import android.text.format.DateUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,9 +25,11 @@ import android.webkit.URLUtil;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,6 +39,7 @@ import com.example.chatappcongnghemoi.activities.ChatBoxGroup;
 import com.example.chatappcongnghemoi.activities.Full_Image_Avatar;
 import com.example.chatappcongnghemoi.activities.InfoGroupChat;
 import com.example.chatappcongnghemoi.activities.Personal;
+import com.example.chatappcongnghemoi.activities.PlayVideo;
 import com.example.chatappcongnghemoi.activities.StartApp;
 import com.example.chatappcongnghemoi.models.ChatGroup;
 import com.example.chatappcongnghemoi.models.Message;
@@ -143,13 +147,14 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
         if (message != null) {
             if (message.getMessageType().equals("image")) {
                 android.view.ViewGroup.LayoutParams layoutParams = holder.image_message.getLayoutParams();
-                layoutParams.width = 100;
-                layoutParams.height = 100;
+                layoutParams.width = 300;
+                layoutParams.height = 300;
                 holder.image_message.setLayoutParams(layoutParams);
                 Glide.with(context).load(url_s3+message.getFileName()).into(holder.image_message);
                 LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(0,0);
                 holder.txt_content.setLayoutParams(layoutParams1);
                 holder.gifImageView.setLayoutParams(layoutParams1);
+                holder.viewVideo.setLayoutParams(layoutParams1);
                 holder.image_message.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -163,7 +168,29 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                 layoutParamsLoad.height = 70;
                 holder.img_download.setLayoutParams(layoutParamsLoad);
                 holder.img_download.setImageResource(R.drawable.download);
-            } else if (message.getMessageType().equals("file")){
+            }else if(message.getMessageType().equals("video")){
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(400,400);
+                holder.viewVideo.setLayoutParams(layoutParams);
+                holder.imgPlayVideo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, PlayVideo.class);
+                        intent.putExtra("video",url_s3+message.getFileName());
+                        intent.putExtra("groupId",message.getReceiverId());
+                        context.startActivity(intent);
+                    }
+                });
+                Glide.with(context).load(url_s3+message.getFileName()).into(holder.imgVideo);
+                LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(0,0);
+                holder.txt_content.setLayoutParams(layoutParams1);
+                holder.gifImageView.setLayoutParams(layoutParams1);
+                holder.image_message.setLayoutParams(layoutParams1);
+                android.view.ViewGroup.LayoutParams layoutParamsLoad = holder.img_download.getLayoutParams();
+                layoutParamsLoad.width = 70;
+                layoutParamsLoad.height = 70;
+                holder.img_download.setLayoutParams(layoutParamsLoad);
+                holder.img_download.setImageResource(R.drawable.download);
+            }else if (message.getMessageType().equals("file")){
                 holder.txt_content.setTypeface(holder.txt_content.getTypeface(), Typeface.ITALIC);
                 String fileName = message.getFileName().substring(37);
                 android.view.ViewGroup.LayoutParams layoutParamsContent = holder.txt_content.getLayoutParams();
@@ -178,6 +205,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                 holder.image_message.setImageResource(R.drawable.file);
                 LinearLayout.LayoutParams layoutParamsGif = new LinearLayout.LayoutParams(0,0);
                 holder.gifImageView.setLayoutParams(layoutParamsGif);
+                holder.viewVideo.setLayoutParams(layoutParamsGif);
                 android.view.ViewGroup.LayoutParams layoutParamsLoad = holder.img_download.getLayoutParams();
                 layoutParamsLoad.width = 70;
                 layoutParamsLoad.height = 70;
@@ -192,6 +220,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                 holder.txt_content.setLayoutParams(layoutParams);
                 holder.image_message.setLayoutParams(layoutParams);
                 holder.img_download.setLayoutParams(layoutParams);
+                holder.viewVideo.setLayoutParams(layoutParams);
                 Glide.with(context).load(message.getFileName()).into(holder.gifImageView);
             }else {
 //                android.view.ViewGroup.LayoutParams layoutParamsEmpty = holder.image_message.getLayoutParams();
@@ -203,6 +232,8 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                 holder.gifImageView.setLayoutParams(layoutParams);
                 holder.image_message.setLayoutParams(layoutParams);
                 holder.img_download.setLayoutParams(layoutParams);
+//                RelativeLayout.LayoutParams layoutParams1 = new RelativeLayout.LayoutParams(0,0);
+                holder.viewVideo.setLayoutParams(layoutParams);
                 android.view.ViewGroup.LayoutParams layoutParamsContent = holder.txt_content.getLayoutParams();
                 layoutParamsContent.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 layoutParamsContent.height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -1068,10 +1099,12 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView image_message,img_download;
+        private ImageView imgPlayVideo,imgVideo;
         private TextView txt_content,txt_username,txt_timeSend,txt_quantityReaction;
         private CircleImageView avatar,imgReaction;
         private ImageView btnOptions;
         private GifImageView gifImageView;
+        private RelativeLayout viewVideo;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txt_content = itemView.findViewById(R.id.txt_content_message);
@@ -1083,6 +1116,9 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
             image_message = itemView.findViewById(R.id.image_message);
             gifImageView = itemView.findViewById(R.id.image_gif);
             img_download = itemView.findViewById(R.id.imgDownload);
+            imgPlayVideo = itemView.findViewById(R.id.imgPlayVideo);
+            imgVideo = itemView.findViewById(R.id.imgVideoMessage);
+            viewVideo = itemView.findViewById(R.id.viewVideoMessage);
         }
     }
     @Override
