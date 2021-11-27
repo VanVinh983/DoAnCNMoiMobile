@@ -51,7 +51,7 @@ public class UserSocket {
         listCall.enqueue(new Callback<List<ChatGroup>>() {
             @Override
             public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
-                new MessageSocket(response.body(), user);
+                new MessageSocket(user,dataService);
             }
 
             @Override

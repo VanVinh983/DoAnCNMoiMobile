@@ -68,7 +68,11 @@ public class GifRecyclerAdapter extends RecyclerView.Adapter<GifRecyclerAdapter.
         call.enqueue(new Callback<List<ChatGroup>>() {
             @Override
             public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
-                socket = new MessageSocket(response.body(),userCurrent);
+                List<String> groupIds = new ArrayList<>();
+                response.body().forEach(group -> {
+                    groupIds.add(group.getId());
+                });
+//                socket = new MessageSocket(groupIds, userCurrent);
             }
 
             @Override

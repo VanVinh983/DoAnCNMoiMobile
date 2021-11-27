@@ -87,7 +87,7 @@ public class InfoGroupChat extends AppCompatActivity {
     String groupId;
     DataService dataService;
     ImageView btnBack;
-    ImageButton btnRename,btnAddMember,btnSearchMessage;
+    ImageButton btnRename,btnAddMember,btnSearchMessage,btnNotification;
     LinearLayout btnWatchMembers,btnChangeBackground,btnLeaveGroup,btnDeleteGroup,btnFileSent;
     User userCurrent = null;
     List<User> members ;
@@ -286,6 +286,23 @@ public class InfoGroupChat extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        btnNotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<List<ChatGroup>> call = dataService.getChatGroupByUserId(new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn());
+                call.enqueue(new Callback<List<ChatGroup>>() {
+                    @Override
+                    public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
+                        Toast.makeText(InfoGroupChat.this, ""+response.body(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
     }
     public void showImageChoose(){
         Intent intent = new Intent(
@@ -373,6 +390,7 @@ public class InfoGroupChat extends AppCompatActivity {
         recyclerViewImageSent = findViewById(R.id.recyclerview_imageSent);
         btnFileSent = findViewById(R.id.btnFileSent);
         btnSearchMessage = findViewById(R.id.imgSearchMessageInfoChatGroup);
+        btnNotification = findViewById(R.id.btnNotification);
     }
     public void init(){
         Intent intent = getIntent();

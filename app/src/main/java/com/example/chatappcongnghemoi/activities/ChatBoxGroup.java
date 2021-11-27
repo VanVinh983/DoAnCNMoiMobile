@@ -117,16 +117,14 @@ public class ChatBoxGroup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_box_group);
         getSupportActionBar().hide();
+        mSocket.on("response-add-new-file", responseAddFile);
+        mSocket.on("response-reaction",responseReaction);
         new AmplifyInitialize(ChatBoxGroup.this).amplifyInitialize();
         dataService = ApiService.getService();
         count= 0;
         mapping();
         Intent intent = getIntent();
         groupId = intent.getStringExtra("groupId");
-        mSocket.on("response-add-new-text", responeMessage);
-        mSocket.on("response-add-new-file", responeAddFile);
-        mSocket.on("response-delete-group",responseDeleteGroup);
-        mSocket.on("response-leave-group",responseLeaveGroup);
         Call<ChatGroup> groupDTOCall = dataService.getGroupById(groupId);
         groupDTOCall.enqueue(new Callback<ChatGroup>() {
             @Override
@@ -201,9 +199,18 @@ public class ChatBoxGroup extends AppCompatActivity {
                     listCall.enqueue(new Callback<List<ChatGroup>>() {
                         @Override
                         public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
-                            socket = new MessageSocket(response.body(), userCurrent);
+                            List<String> groupIds = new ArrayList<>();
+                            response.body().forEach(group -> {
+                                groupIds.add(group.getId());
+                            });
+                            socket = new MessageSocket();
+                            Toast.makeText(ChatBoxGroup.this, ""+response.body(), Toast.LENGTH_SHORT).show();
+//                            socket = new MessageSocket();
                             getGifs(userCurrent);
                             getTypeGifs(userCurrent);
+                            mSocket.on("response-add-new-text", responseMessage);
+                            mSocket.on("response-delete-group",responseDeleteGroup);
+                            mSocket.on("response-leave-group",responseLeaveGroup);
                         }
                         @Override
                         public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
@@ -623,7 +630,7 @@ public class ChatBoxGroup extends AppCompatActivity {
         });
     }
 
-    private Emitter.Listener responeMessage = new Emitter.Listener() {
+    private Emitter.Listener responseMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             runOnUiThread(new Runnable() {
@@ -652,19 +659,22 @@ public class ChatBoxGroup extends AppCompatActivity {
             });
         }
     };
-    private Emitter.Listener responeAddFile = new Emitter.Listener() {
+    private Emitter.Listener responseAddFile = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     JSONObject data = (JSONObject) args[0];
+                    System.out.println(data+"");
                     JSONArray mess = null;
                     Message messObject = null;
                     try {
                         mess = data.getJSONArray("messages");
                         messObject = new Gson().fromJson(mess.get(0).toString(), Message.class);
                         messages.add(messObject);
+                        String isChatGroup = data.getString("isChatGroup");
+                        Toast.makeText(ChatBoxGroup.this, ""+isChatGroup, Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

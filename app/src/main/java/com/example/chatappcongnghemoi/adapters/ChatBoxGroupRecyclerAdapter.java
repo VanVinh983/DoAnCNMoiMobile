@@ -135,7 +135,11 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
         chatGroupCall.enqueue(new Callback<List<ChatGroup>>() {
             @Override
             public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
-                messageSocket = new MessageSocket(response.body(),userCurrent);
+                List<String> groupIds = new ArrayList<>();
+                response.body().forEach(group -> {
+                    groupIds.add(group.getId());
+                });
+//                messageSocket = new MessageSocket(groupIds, userCurrent);
             }
 
             @Override

@@ -144,7 +144,11 @@ public class AddGroupChat extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
                             groupSocket = new GroupSocket(response.body(),userCurrent);
-                            messageSocket = new MessageSocket(response.body(),userCurrent);
+                            List<String> groupIds = new ArrayList<>();
+                            response.body().forEach(group -> {
+                                groupIds.add(group.getId());
+                            });
+//                            messageSocket = new MessageSocket(groupIds, userCurrent);
                         }
                         @Override
                         public void onFailure(Call<List<ChatGroup>> call, Throwable t) {

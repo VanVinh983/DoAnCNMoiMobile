@@ -84,7 +84,7 @@ public class ChatBox extends AppCompatActivity {
         getFriendById(friendId);
         new AmplifyInitialize(ChatBox.this).amplifyInitialize();
         mSocket.on("response-add-new-text", responeMessage);
-        mSocket.on("response-add-new-file", responeAddFile);
+        mSocket.on("response-add-new-files", responeAddFile);
         mSocket.on("response-reaction", responseReaction);
         findViewById(R.id.btn_chatbox_back).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -382,8 +382,13 @@ public class ChatBox extends AppCompatActivity {
                     Message messObject = null;
                     try {
                         mess = data.getJSONArray("messages");
+                        String isChatGroup = data.getString("isChatGroup");
                         messObject = new Gson().fromJson(mess.get(0).toString(), Message.class);
                         messages.add(messObject);
+                        if(isChatGroup.equals("false")){
+                            Toast.makeText(ChatBox.this, "cc" + isChatGroup, Toast.LENGTH_SHORT).show();
+                        }
+                        else Toast.makeText(ChatBox.this, "dsads" + isChatGroup, Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

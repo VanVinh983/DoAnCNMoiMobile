@@ -7,18 +7,18 @@ import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import io.socket.client.Socket;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MessageSocket {
     private static Socket socket = MySocket.getInstance().getSocket();
@@ -28,35 +28,47 @@ public class MessageSocket {
     public MessageSocket() {
     }
 
-    public MessageSocket(List<ChatGroup> chatGroups, User userCurrent) {
-        this.chatGroups = chatGroups;
-        this.userCurrent = userCurrent;
-        String sender = new Gson().toJson(userCurrent);
-        JSONObject senderJson = null;
-        JSONArray jsonArray = new JSONArray(chatGroups);
-        try {
-            senderJson = new JSONObject(sender);
-            senderJson.put("chatGroupIds", jsonArray);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Handler handler = new Handler();
-        JSONObject finalSenderJson = senderJson;
-        handler.postDelayed(new Runnable() {
+    public MessageSocket(User userCurrent, DataService dataService) {
+        Call<List<ChatGroup>> chatGroupCall = dataService.getChatGroupByUserId(userCurrent.getId());
+        chatGroupCall.enqueue(new Callback<List<ChatGroup>>() {
             @Override
-            public void run() {
-                if (socket.connected()==true){
-                    System.out.println("user json: "+ finalSenderJson);
-                    socket.emit("send-user", finalSenderJson);
-                }else {
-                    socket.connect();
-                    System.out.println("socket connect fail and again");
-                    handler.postDelayed(this, 500);
+            public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
+                List<String> groupIds = new ArrayList<>();
+                response.body().forEach(group -> {
+                    groupIds.add(group.getId());
+                });
+                String sender = new Gson().toJson(userCurrent);
+                JSONObject senderJson = null;
+                JSONArray jsonArray = new JSONArray(groupIds);
+                try {
+                    senderJson = new JSONObject(sender);
+                    senderJson.put("chatGroupIds", jsonArray);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+                Handler handler = new Handler();
+                JSONObject finalSenderJson = senderJson;
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (socket.connected()==true){
+                            System.out.println("user json: "+ finalSenderJson);
+                            socket.emit("send-user", finalSenderJson);
+                        }else {
+                            socket.connect();
+                            System.out.println("socket connect fail and again");
+                            handler.postDelayed(this, 500);
+                        }
+                    }
+                },500);
             }
-        },500);
-    }
 
+            @Override
+            public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
+
+            }
+        });
+    }
     public void sendMessage(Message message,String isChatGroup){
         String mess = new Gson().toJson(message);
         JSONObject messJson = null;
