@@ -139,7 +139,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                 response.body().forEach(group -> {
                     groupIds.add(group.getId());
                 });
-//                messageSocket = new MessageSocket(groupIds, userCurrent);
+                messageSocket = new MessageSocket();
             }
 
             @Override
@@ -590,7 +590,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message);
+                        messageSocket.removeReaction(message);
                         ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                         ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -663,10 +663,10 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                                 @Override
                                 public void onResponse(Call<Message> call, Response<Message> response) {
                                     Message message2 = response.body();
-                                    messageSocket.sendMessage(message2,"true");
+//                                    messageSocket.sendMessage(message2,"true");
                                     Toast.makeText(context, "Ghim tin nhắn thành công", Toast.LENGTH_SHORT).show();
                                     dialog.dismiss();
-                                    ChatBoxGroup.messages.add(message2);
+//                                    ChatBoxGroup.messages.add(message2);
                                     ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                                     ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
                                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -964,7 +964,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                     @Override
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
-                        messageSocket.sendReaction(message);
+                        messageSocket.removeReaction(message);
                         ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
                         ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
@@ -1044,7 +1044,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                             updateGroupCall.enqueue(new Callback<ChatGroup>() {
                                 @Override
                                 public void onResponse(Call<ChatGroup> call, Response<ChatGroup> response) {
-
+                                    Toast.makeText(context, ""+response.body(), Toast.LENGTH_SHORT).show();
                                 }
 
                                 @Override
@@ -1065,7 +1065,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                                 @Override
                                 public void onResponse(Call<Message> call, Response<Message> response) {
                                     Message message2 = response.body();
-                                    messageSocket.sendMessage(message2,"true");
+//                                    messageSocket.sendMessage(message2,"true");
                                     Toast.makeText(context, "Ghim tin nhắn thành công", Toast.LENGTH_SHORT).show();
                                     dialog.dismiss();
                                     ChatBoxGroup.messages.add(message2);

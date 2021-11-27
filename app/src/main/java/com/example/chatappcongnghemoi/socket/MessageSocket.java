@@ -24,7 +24,7 @@ public class MessageSocket {
     private static Socket socket = MySocket.getInstance().getSocket();
     private List<ChatGroup> chatGroups;
     private User userCurrent;
-
+    private Gson gson = new Gson();
     public MessageSocket() {
     }
 
@@ -149,6 +149,31 @@ public class MessageSocket {
             }
         },500);
     }
+    public void createGroup(ChatGroup chatGroup){
+        String jsonChatGroup = gson.toJson(chatGroup);
+        JSONObject jsonObjectGeneral = new JSONObject();
+        try {
+            JSONObject jsonObject = new JSONObject(jsonChatGroup);
+            jsonObjectGeneral.put("group",jsonObject);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (socket.connected()==true){
+                    System.out.println("json object general create-group: "+ jsonObjectGeneral);
+                    socket.emit("create-group", jsonObjectGeneral);
+                    handler.removeCallbacks(this);
+                }else {
+                    socket.connect();
+                    handler.postDelayed(this, 500);
+                }
+            }
+        },500);
+    }
     public void sendReaction(Message message){
         String mess = new Gson().toJson(message);
         JSONObject messJson = null;
@@ -167,6 +192,32 @@ public class MessageSocket {
                 if (socket.connected()==true){
                     System.out.println("json object general: "+ jsonObjectGeneral);
                     socket.emit("reaction", jsonObjectGeneral);
+                    handler.removeCallbacks(this);
+                }else {
+                    socket.connect();
+                    handler.postDelayed(this, 500);
+                }
+            }
+        },500);
+    }
+    public void removeReaction(Message message){
+        String mess = new Gson().toJson(message);
+        JSONObject messJson = null;
+        JSONObject jsonObjectGeneral = new JSONObject();
+
+        try {
+            messJson = new JSONObject(mess);
+            jsonObjectGeneral.put("message", messJson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (socket.connected()==true){
+                    System.out.println("json object general: "+ jsonObjectGeneral);
+                    socket.emit("remove-reaction", jsonObjectGeneral);
                     handler.removeCallbacks(this);
                 }else {
                     socket.connect();

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,7 @@ import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.example.chatappcongnghemoi.socket.MessageSocket;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -173,7 +175,6 @@ public class MessageGhimRecyclerAdapter extends RecyclerView.Adapter<MessageGhim
                     });
                     for(int i = 0 ;i < listId.size();i++){
                         Call<List<Message>> call = dataService.getAllMessages(listId.get(i),chatGroup.getId());
-                        int finalI = i;
                         call.enqueue(new Callback<List<Message>>() {
                             @Override
                             public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
@@ -181,37 +182,41 @@ public class MessageGhimRecyclerAdapter extends RecyclerView.Adapter<MessageGhim
                                 messages.forEach(mess ->{
                                     allMessages.add(mess);
                                 });
-                                if( finalI >= listId.size()-1) {
-                                    Collections.sort(allMessages, new Comparator<Message>() {
-                                        @Override
-                                        public int compare(Message o1, Message o2) {
-                                            return Integer.valueOf(o1.getCreatedAt().compareTo(o2.getCreatedAt()));
-                                        }
-                                    });
-                                    ChatBoxGroup.count = allMessages.size();
-                                    ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(allMessages,context,userCurrent,members);
-                                    ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
-                                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-                                    linearLayoutManager.setStackFromEnd(true);
-                                    ChatBoxGroup.recyclerView.setLayoutManager(linearLayoutManager);
-                                    int position = 0;
-                                    if (ChatBoxGroup.adapter.getItemCount()>0){
-                                        for (int i = 0 ;i<allMessages.size();i++){
-                                            if(allMessages.get(i).getId().equals(map.get("messageId"))){
-                                                position = i;
-                                                break;
-                                            }
-                                        }
-                                        ChatBoxGroup.recyclerView.scrollToPosition(position);
-                                    }
                                 }
-                            }
                             @Override
                             public void onFailure(Call<List<Message>> call, Throwable t) {
 
                             }
                         });
                     }
+                    Handler handler1 = new Handler();
+                    handler1.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Collections.sort(allMessages, new Comparator<Message>() {
+                                @Override
+                                public int compare(Message o1, Message o2) {
+                                    return Integer.valueOf(o1.getCreatedAt().compareTo(o2.getCreatedAt()));
+                                }
+                            });
+                            ChatBoxGroup.count = allMessages.size();
+                            ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(allMessages,context,userCurrent,members);
+                            ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+                            linearLayoutManager.setStackFromEnd(true);
+                            ChatBoxGroup.recyclerView.setLayoutManager(linearLayoutManager);
+                            int position = 0;
+                            if (ChatBoxGroup.adapter.getItemCount()>0){
+                                for (int j = 0 ;j<allMessages.size();j++){
+                                    if(allMessages.get(j).getId().equals(map.get("messageId"))){
+                                        position = j;
+                                        break;
+                                    }
+                                }
+                                ChatBoxGroup.recyclerView.scrollToPosition(position);
+                            }
+                        }
+                    },500);
                 }else if(position==2){
                     List<Map<String,String>> mapPins = chatGroup.getPins();
                     for(int i = 0 ; i < mapPins.size() ;i++){

@@ -110,15 +110,13 @@ public class InfoGroupChat extends AppCompatActivity {
         setContentView(R.layout.activity_info_group_chat);
         getSupportActionBar().hide();
         new AmplifyInitialize(InfoGroupChat.this).amplifyInitialize();
-//        mSocket.on("response-add-new-text", responeMessage);
         dataService = ApiService.getService();
         database = FirebaseDatabase.getInstance().getReference("background");
         mapping();
         init();
-//        mSocket.on("response-add-user-to-group",responeAddUserToGroup);
-//        mSocket.on("response-leave-group",responeLeaveGroup);
+        mSocket.on("response-add-user-to-group",responseAddMembers);
         mSocket.on("response-leave-group",responseLeaveGroup);
-        mSocket.on("response-delete-group",responseLeaveGroup);
+        mSocket.on("response-delete-group",responseDeleteGroup);
         btnBack.setOnClickListener((view) ->{
             Intent intent = new Intent(InfoGroupChat.this,ChatBoxGroup.class);
             intent.putExtra("groupId",groupId);
@@ -144,7 +142,7 @@ public class InfoGroupChat extends AppCompatActivity {
                 intent.putExtra("groupId",groupId);
                 intent.putExtra("userCurrent",userCurrent);
                 startActivity(intent);
-                finish();
+//                finish();
             }
         });
         Handler handler1 = new Handler();
@@ -156,8 +154,8 @@ public class InfoGroupChat extends AppCompatActivity {
                     listCall.enqueue(new Callback<List<ChatGroup>>() {
                         @Override
                         public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
-                            groupSocket = new GroupSocket(response.body(),userCurrent);
-//                            messageSocket = new MessageSocket(response.body(),userCurrent);
+                            groupSocket = new GroupSocket();
+                            messageSocket = new MessageSocket();
                         }
                         @Override
                         public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
@@ -225,7 +223,7 @@ public class InfoGroupChat extends AppCompatActivity {
                                 @Override
                                 public void onResponse(Call<Message> call, Response<Message> response) {
                                     Message message1 = response.body();
-//                                    messageSocket.sendMessage(message1,"true");
+                                    messageSocket.sendMessage(message1,"true");
                                     dialog.dismiss();
                                     Toast.makeText(InfoGroupChat.this, "Đổi tên nhóm thành công", Toast.LENGTH_SHORT).show();
                                     tvGroupName.setText(newName);
@@ -284,23 +282,6 @@ public class InfoGroupChat extends AppCompatActivity {
                 Intent intent = new Intent(InfoGroupChat.this,FileSent.class);
                 intent.putExtra("groupId",groupId);
                 startActivity(intent);
-            }
-        });
-        btnNotification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Call<List<ChatGroup>> call = dataService.getChatGroupByUserId(new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn());
-                call.enqueue(new Callback<List<ChatGroup>>() {
-                    @Override
-                    public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
-                        Toast.makeText(InfoGroupChat.this, ""+response.body(), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
-
-                    }
-                });
             }
         });
     }
@@ -639,7 +620,7 @@ public class InfoGroupChat extends AppCompatActivity {
                                 }
                             });
                             Message message1 = response.body();
-//                            messageSocket.sendMessage(message1,"true");
+                            messageSocket.sendMessage(message1,"true");
                             dialog.dismiss();
                             Toast.makeText(InfoGroupChat.this, "Đổi hình nền chat thành công", Toast.LENGTH_SHORT).show();
                         }
@@ -931,7 +912,7 @@ public class InfoGroupChat extends AppCompatActivity {
                                 public void onResponse(Call<Message> call, Response<Message> response) {
                                     Message message1 = response.body();
                                     groupSocket.addUserToGroup(chatGroup,listAddMembers);
-//                                    messageSocket.sendMessage(message1,"true");
+                                    messageSocket.sendMessage(message1,"true");
                                     listAddMembers.removeAll(listAddMembers);
                                     dialog.dismiss();
                                     Toast.makeText(InfoGroupChat.this, "Thêm thành viên thành công", Toast.LENGTH_SHORT).show();
@@ -1059,7 +1040,7 @@ public class InfoGroupChat extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Message> call, Response<Message> response) {
                             Message message1 = response.body();
-//                            messageSocket.sendMessage(message1,"true");
+                            messageSocket.sendMessage(message1,"true");
                             User newLeader = null;
                             for (int i = 0;i < members.size();i++){
                                 if(!members.get(i).getId().equals(new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn())){
@@ -1113,7 +1094,7 @@ public class InfoGroupChat extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Message> call, Response<Message> response) {
                             Message message1 = response.body();
-//                            messageSocket.sendMessage(message1,"true");
+                            messageSocket.sendMessage(message1,"true");
                             ArrayList<Map<String,String>> mapMembers = chatGroup.getMembers();
                             for(int i = 0 ; i< mapMembers.size();i++){
                                 if(mapMembers.get(i).get("userId").equals(new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn())){
@@ -1198,17 +1179,6 @@ public class InfoGroupChat extends AppCompatActivity {
         });
         dialog.show();
     }
-    private Emitter.Listener responeAddUserToGroup = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-
-                }
-            });
-        }
-    };
     private Emitter.Listener responseLeaveGroup = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
@@ -1219,9 +1189,27 @@ public class InfoGroupChat extends AppCompatActivity {
                     try {
                         String chatGroupJsonObject = data.getString("group");
                         ChatGroup group = gson.fromJson(chatGroupJsonObject,ChatGroup.class);
-                        tvQuantityMember.setText("Xem thành viên ("+chatGroup.getMembers().size()+")");
                         chatGroup = group;
-                        Toast.makeText(InfoGroupChat.this, ""+chatGroup.getMembers().size(), Toast.LENGTH_SHORT).show();
+                        tvQuantityMember.setText("Xem thành viên ("+chatGroup.getMembers().size()+")");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    };
+    private Emitter.Listener responseAddMembers = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        String chatGroupJsonObject = data.getString("group");
+                        ChatGroup group = gson.fromJson(chatGroupJsonObject,ChatGroup.class);
+                        chatGroup = group;
+                        tvQuantityMember.setText("Xem thành viên ("+chatGroup.getMembers().size()+")");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -1235,13 +1223,9 @@ public class InfoGroupChat extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    try {
-                        String id = data.getString("groupId");
-                        Toast.makeText(InfoGroupChat.this, ""+groupId, Toast.LENGTH_SHORT).show();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                        Intent intent = new Intent(InfoGroupChat.this,Home.class);
+                        startActivity(intent);
+                        finish();
                 }
             });
         }

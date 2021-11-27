@@ -117,8 +117,6 @@ public class ChatBoxGroup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_box_group);
         getSupportActionBar().hide();
-        mSocket.on("response-add-new-file", responseAddFile);
-        mSocket.on("response-reaction",responseReaction);
         new AmplifyInitialize(ChatBoxGroup.this).amplifyInitialize();
         dataService = ApiService.getService();
         count= 0;
@@ -204,13 +202,13 @@ public class ChatBoxGroup extends AppCompatActivity {
                                 groupIds.add(group.getId());
                             });
                             socket = new MessageSocket();
-                            Toast.makeText(ChatBoxGroup.this, ""+response.body(), Toast.LENGTH_SHORT).show();
-//                            socket = new MessageSocket();
                             getGifs(userCurrent);
                             getTypeGifs(userCurrent);
                             mSocket.on("response-add-new-text", responseMessage);
                             mSocket.on("response-delete-group",responseDeleteGroup);
                             mSocket.on("response-leave-group",responseLeaveGroup);
+                            mSocket.on("response-add-new-file", responseAddFile);
+                            mSocket.on("response-reaction",responseReaction);
                         }
                         @Override
                         public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
@@ -241,15 +239,16 @@ public class ChatBoxGroup extends AppCompatActivity {
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
                         socket.sendMessage(message1,"true");
-                        messages.add(message1);
-                        adapter = new ChatBoxGroupRecyclerAdapter(messages, ChatBoxGroup.this,userCurrent, members);
-                        recyclerView.setAdapter(adapter);
-                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBoxGroup.this, LinearLayoutManager.VERTICAL, false);
-                        linearLayoutManager.setStackFromEnd(true);
-                        recyclerView.setLayoutManager(linearLayoutManager);
-                        if (adapter.getItemCount()>0){
-                            recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
-                        }
+                        btnGoToBottom.setVisibility(View.INVISIBLE);
+//                        messages.add(message1);
+//                        adapter = new ChatBoxGroupRecyclerAdapter(messages, ChatBoxGroup.this,userCurrent, members);
+//                        recyclerView.setAdapter(adapter);
+//                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBoxGroup.this, LinearLayoutManager.VERTICAL, false);
+//                        linearLayoutManager.setStackFromEnd(true);
+//                        recyclerView.setLayoutManager(linearLayoutManager);
+//                        if (adapter.getItemCount()>0){
+//                            recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
+//                        }
                     }
 
                     @Override
@@ -294,7 +293,18 @@ public class ChatBoxGroup extends AppCompatActivity {
         btnShowGhim.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showGhim(chatGroup,ChatBoxGroup.this,members,userCurrent);
+                Call<ChatGroup> chatGroupCall = dataService.getGroupById(groupId);
+                chatGroupCall.enqueue(new Callback<ChatGroup>() {
+                    @Override
+                    public void onResponse(Call<ChatGroup> call, Response<ChatGroup> response) {
+                        showGhim(response.body(),ChatBoxGroup.this,members,userCurrent);
+                    }
+
+                    @Override
+                    public void onFailure(Call<ChatGroup> call, Throwable t) {
+
+                    }
+                });
             }
         });
         btnExitGif.setOnClickListener(new View.OnClickListener() {
@@ -421,6 +431,7 @@ public class ChatBoxGroup extends AppCompatActivity {
         }
     }
     public static void showGhim(ChatGroup chatGroup,Context context,List<User> members,User userCurrent){
+        Toast.makeText(context, ""+chatGroup.getPins(), Toast.LENGTH_SHORT).show();
         Dialog dialogGhim =new Dialog(context);
         dialogGhim.setContentView(R.layout.dialog_ghim_message);
         Window window = dialogGhim.getWindow();
@@ -673,8 +684,6 @@ public class ChatBoxGroup extends AppCompatActivity {
                         mess = data.getJSONArray("messages");
                         messObject = new Gson().fromJson(mess.get(0).toString(), Message.class);
                         messages.add(messObject);
-                        String isChatGroup = data.getString("isChatGroup");
-                        Toast.makeText(ChatBoxGroup.this, ""+isChatGroup, Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -684,7 +693,7 @@ public class ChatBoxGroup extends AppCompatActivity {
                     linearLayoutManager.setStackFromEnd(true);
                     recyclerView.setLayoutManager(linearLayoutManager);
                     if (adapter.getItemCount()>0){
-                        recyclerView.scrollToPosition(messages.size() - 1);
+                        recyclerView.smoothScrollToPosition(messages.size() - 1);
                     }
                 }
             });
@@ -713,8 +722,8 @@ public class ChatBoxGroup extends AppCompatActivity {
                     try {
                         String chatGroupJsonObject = data.getString("group");
                         ChatGroup group = gson.fromJson(chatGroupJsonObject,ChatGroup.class);
-                        tvQuantityMember.setText(chatGroup.getMembers().size()+" thành viên");
                         chatGroup = group;
+                        tvQuantityMember.setText(chatGroup.getMembers().size()+" thành viên");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -729,10 +738,22 @@ public class ChatBoxGroup extends AppCompatActivity {
                 @Override
                 public void run() {
                     JSONObject data = (JSONObject) args[0];
-                    String id = null;
                     try {
-                        id = data.getString("groupId");
-                        Toast.makeText(ChatBoxGroup.this, ""+id, Toast.LENGTH_SHORT).show();
+                        Message mess = new Gson().fromJson(data.getString("message"), Message.class);
+                        System.out.println(mess.toString());
+                        for (int i = 0; i < messages.size(); i++) {
+                            if (mess.getId().equals(messages.get(i).getId())){
+                                messages.get(i).setReaction(mess.getReaction());
+                                adapter = new ChatBoxGroupRecyclerAdapter(messages, ChatBoxGroup.this,userCurrent, members);
+                                recyclerView.setAdapter(adapter);
+                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBoxGroup.this, LinearLayoutManager.VERTICAL, false);
+                                linearLayoutManager.setStackFromEnd(true);
+                                recyclerView.setLayoutManager(linearLayoutManager);
+                                if (adapter.getItemCount()>0){
+                                    recyclerView.smoothScrollToPosition(messages.size() - 1);
+                                }
+                            }
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

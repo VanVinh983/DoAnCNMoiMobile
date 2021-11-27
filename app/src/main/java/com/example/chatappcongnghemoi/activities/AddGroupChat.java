@@ -83,7 +83,6 @@ public class AddGroupChat extends AppCompatActivity {
         setContentView(R.layout.activity_add_group_chat);
         getSupportActionBar().hide();
         dataService = ApiService.getService();
-//        mSocket.on("response-add-new-text", responeMessage);
         mSocket.on("response-create-group", responeCreateGroup);
         recyclerViewFriends = findViewById(R.id.recyclerview_friends_add_group);
         recyclerViewPhoneBook = findViewById(R.id.recyclerview_phonebook_add_group);
@@ -143,12 +142,8 @@ public class AddGroupChat extends AppCompatActivity {
                     listCall.enqueue(new Callback<List<ChatGroup>>() {
                         @Override
                         public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
-                            groupSocket = new GroupSocket(response.body(),userCurrent);
-                            List<String> groupIds = new ArrayList<>();
-                            response.body().forEach(group -> {
-                                groupIds.add(group.getId());
-                            });
-//                            messageSocket = new MessageSocket(groupIds, userCurrent);
+                            messageSocket = new MessageSocket();
+                            groupSocket = new GroupSocket();
                         }
                         @Override
                         public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
@@ -394,7 +389,7 @@ public class AddGroupChat extends AppCompatActivity {
                                                         @Override
                                                         public void onResponse(Call<Message> call, Response<Message> response) {
                                                             Message message1 = response.body();
-                                                            groupSocket.createGroup(group);
+                                                            messageSocket.createGroup(group);
 //                                                            messageSocket.sendMessage(message1,"true");
                                                             listFriendsClickAdd.removeAll(listFriendsClickAdd);
                                                             Toast.makeText(AddGroupChat.this, "Tạo nhóm thành công", Toast.LENGTH_SHORT).show();
@@ -592,17 +587,6 @@ public class AddGroupChat extends AppCompatActivity {
         }
         return phoneNumberList;
     }
-    private Emitter.Listener responeMessage = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-
-                }
-            });
-        }
-    };
     private Emitter.Listener responeCreateGroup = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {

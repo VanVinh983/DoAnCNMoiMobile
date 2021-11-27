@@ -72,7 +72,7 @@ public class GifRecyclerAdapter extends RecyclerView.Adapter<GifRecyclerAdapter.
                 response.body().forEach(group -> {
                     groupIds.add(group.getId());
                 });
-//                socket = new MessageSocket(groupIds, userCurrent);
+                socket = new MessageSocket();
             }
 
             @Override

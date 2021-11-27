@@ -31,9 +31,9 @@ public class PlayVideo extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentBack = new Intent(PlayVideo.this,ChatBoxGroup.class);
-                intentBack.putExtra("groupId",groupId);
-                startActivity(intentBack);
+//                Intent intentBack = new Intent(PlayVideo.this,ChatBoxGroup.class);
+//                intentBack.putExtra("groupId",groupId);
+//                startActivity(intentBack);
                 finish();
             }
         });

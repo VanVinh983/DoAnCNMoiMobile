@@ -82,8 +82,8 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
         listCall.enqueue(new Callback<List<ChatGroup>>() {
             @Override
             public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
-                groupSocket = new GroupSocket(response.body(),userCurrent);
-//                messageSocket = new MessageSocket(response.body(),userCurrent);
+                groupSocket = new GroupSocket();
+                messageSocket = new MessageSocket();
             }
             @Override
             public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
@@ -161,7 +161,7 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
                                 @Override
                                 public void onResponse(Call<Message> call, Response<Message> response) {
                                     Message message1 = response.body();
-//                                    messageSocket.sendMessage(message1,"true");
+                                    messageSocket.sendMessage(message1,"true");
                                     Toast.makeText(context, "Nhường trưởng nhóm thành công", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(context, ChatBoxGroup.class);
                                     intent.putExtra("groupId",chatGroup.getId());
@@ -235,7 +235,7 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
                                 @Override
                                 public void onResponse(Call<Message> call, Response<Message> response) {
                                     Message message1 = response.body();
-//                                    messageSocket.sendMessage(message1,"true");
+                                    messageSocket.sendMessage(message1,"true");
                                     Toast.makeText(context, "Yêu cầu rời nhóm thành công", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(context, ChatBoxGroup.class);
                                     intent.putExtra("groupId",chatGroup.getId());

@@ -49,8 +49,8 @@ public class SearchMessage extends AppCompatActivity {
     List<Message> allMessages;
     SearchMessageRecyclerAdapter adapter;
     Spinner spinner;
-    int count = 0;
     List<String> listItem = new ArrayList<>();
+    boolean isSearchUser = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,8 +60,6 @@ public class SearchMessage extends AppCompatActivity {
         Intent intent = getIntent();
         groupId = intent.getStringExtra("groupId");
         userCurrent = intent.getParcelableExtra("userCurrent");
-        count = 0;
-        getMessageByText("","");
         Call<ChatGroup> chatGroupCall =  dataService.getGroupById(groupId);
         chatGroupCall.enqueue(new Callback<ChatGroup>() {
             @Override
@@ -92,7 +90,15 @@ public class SearchMessage extends AppCompatActivity {
                                         for(int i = 1 ; i< listItem.size();i++){
                                             if(position == i){
                                                 getMessageByText("",membersSearch.get(position-1).getId());
+                                                isSearchUser = true;
+                                                txtSearch.setText("");
+                                                txtSearch.setEnabled(false);
                                             }
+                                        }
+                                        if(position==0){
+                                            isSearchUser = false;
+                                            txtSearch.setEnabled(true);
+//                                            getMessageByText("","");
                                         }
                                     }
 
@@ -135,14 +141,16 @@ public class SearchMessage extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String search = txtSearch.getText().toString();
-                if(search.equals("")){
-                    btnDown.setVisibility(View.INVISIBLE);
-                    btnUp.setVisibility(View.INVISIBLE);
-                    getMessageByText(search,"");
-                }else{
-                    btnDown.setVisibility(View.VISIBLE);
-                    btnUp.setVisibility(View.VISIBLE);
-                    getMessageByText(search,"");
+                if(isSearchUser == false) {
+                    if (search.equals("")) {
+                        btnDown.setVisibility(View.INVISIBLE);
+                        btnUp.setVisibility(View.INVISIBLE);
+                        getMessageByText("", "");
+                    } else {
+                        btnDown.setVisibility(View.INVISIBLE);
+                        btnUp.setVisibility(View.INVISIBLE);
+                        getMessageByText(search, "");
+                    }
                 }
             }
 
@@ -201,10 +209,7 @@ public class SearchMessage extends AppCompatActivity {
                                         linearLayoutManager.setStackFromEnd(true);
                                         recyclerView.setLayoutManager(linearLayoutManager);
                                         recyclerView.setAdapter(adapter);
-                                        int position = 0;
-                                        if (adapter.getItemCount() > 0) {
-                                            recyclerView.scrollToPosition(allMessages.size() - 1);
-                                        }
+                                        recyclerView.scrollToPosition(allMessages.size()-1);
                                         tvSize.setText("");
                                     }
                                 }
@@ -232,8 +237,9 @@ public class SearchMessage extends AppCompatActivity {
                                     messages.forEach(mess -> {
                                         if (mess.getMessageType().equals("file") || mess.getMessageType().equals("text")) {
                                             if (mess.getMessageType().equals("file")) {
-                                                if (mess.getFileName().substring(37).contains(search))
+                                                if (mess.getFileName().substring(37).contains(search)){
                                                     allMessages.add(mess);
+                                                }
                                             } else {
                                                 if (mess.getText().contains(search)) {
                                                     allMessages.add(mess);
@@ -241,6 +247,7 @@ public class SearchMessage extends AppCompatActivity {
                                             }
                                         }
                                     });
+                                    tvSize.setText("Có "+allMessages.size()+" kết quả");
                                     if (finalI >= listId.size() - 1) {
                                         Collections.sort(allMessages, new Comparator<Message>() {
                                             @Override
@@ -253,37 +260,35 @@ public class SearchMessage extends AppCompatActivity {
                                         linearLayoutManager.setStackFromEnd(true);
                                         recyclerView.setLayoutManager(linearLayoutManager);
                                         recyclerView.setAdapter(adapter);
-                                        count = allMessages.size() - 1;
-                                        tvSize.setText("Kết quả thứ " + allMessages.size() + "/" + allMessages.size());
-                                        btnDown.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                if (count == allMessages.size() - 1) {
-                                                    count = 0;
-                                                    recyclerView.smoothScrollToPosition(count);
-                                                    tvSize.setText("Kết quả thứ " + (count + 1) + "/" + allMessages.size());
-                                                } else {
-                                                    count++;
-                                                    recyclerView.smoothScrollToPosition(count);
-                                                    tvSize.setText("Kết quả thứ " + (count + 1) + "/" + allMessages.size());
-                                                }
-                                            }
-                                        });
-                                        btnUp.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                if (count == 0) {
-                                                    count = allMessages.size() - 1;
-                                                    recyclerView.smoothScrollToPosition(count);
-                                                    tvSize.setText("Kết quả thứ " + (count + 1) + "/" + allMessages.size());
-                                                } else {
-                                                    count--;
-                                                    recyclerView.smoothScrollToPosition(count);
-                                                    tvSize.setText("Kết quả thứ " + (count + 1) + "/" + allMessages.size());
-                                                }
-                                            }
-                                        });
-                                        int position = 0;
+//                                        btnDown.setOnClickListener(new View.OnClickListener() {
+//                                            @Override
+//                                            public void onClick(View v) {
+//                                                if (count == allMessages.size() - 1) {
+//                                                    count = 0;
+//                                                    recyclerView.scrollToPosition(count);
+//                                                    tvSize.setText("Kết quả thứ " + (count + 1) + "/" + allMessages.size());
+//                                                } else {
+//                                                    count++;
+//                                                    recyclerView.scrollToPosition(count);
+//                                                    tvSize.setText("Kết quả thứ " + (count + 1) + "/" + allMessages.size());
+//                                                }
+//                                            }
+//                                        });
+//                                        btnUp.setOnClickListener(new View.OnClickListener() {
+//                                            @Override
+//                                            public void onClick(View v) {
+//                                                if (count == 0) {
+//                                                    count = allMessages.size() - 1;
+//                                                    recyclerView.scrollToPosition(count);
+//                                                    tvSize.setText("Kết quả thứ " + (count + 1) + "/" + allMessages.size());
+//                                                } else {
+//                                                    count--;
+//                                                    recyclerView.scrollToPosition(count);
+//                                                    tvSize.setText("Kết quả thứ " + (count + 1) + "/" + allMessages.size());
+//                                                }
+//                                            }
+//                                        });
+//                                        int position = 0;
 //                                    if (adapter.getItemCount()>0){
 //                                        recyclerView.scrollToPosition(allMessages.size()-1);
 //                                    }
@@ -298,50 +303,39 @@ public class SearchMessage extends AppCompatActivity {
                         }
                     }
                 }else{
-                    ArrayList<Map<String, String>> mapMembers = chatGroup.getMembers();
-                    List<String> listId = new ArrayList<>();
+                    Call<List<Message>> callMess = dataService.getAllMessages(userId, chatGroup.getId());
                     allMessages = new ArrayList<>();
-                    mapMembers.forEach(map -> {
-                        listId.add(map.get("userId"));
-                    });
-                    for (int i = 0; i < listId.size(); i++) {
-                        Call<List<Message>> callMess = dataService.getAllMessages(listId.get(i), chatGroup.getId());
-                        int finalI = i;
-                        callMess.enqueue(new Callback<List<Message>>() {
-                            @Override
-                            public void onResponse(Call<List<Message>> callMess, Response<List<Message>> response) {
-                                List<Message> messages = response.body();
-                                messages.forEach(mess -> {
-                                    if(mess.getSenderId().equals(userId)) {
-                                        if (!mess.getMessageType().equals("note"))
-                                            allMessages.add(mess);
-                                    }
-                                });
-                                if (finalI >= listId.size() - 1) {
-                                    Collections.sort(allMessages, new Comparator<Message>() {
-                                        @Override
-                                        public int compare(Message o1, Message o2) {
-                                            return Integer.valueOf(o1.getCreatedAt().compareTo(o2.getCreatedAt()));
-                                        }
-                                    });
-                                    adapter = new SearchMessageRecyclerAdapter(allMessages, userCurrent, chatGroup, SearchMessage.this, search,"user");
-                                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(SearchMessage.this, LinearLayoutManager.VERTICAL, false);
-                                    linearLayoutManager.setStackFromEnd(true);
-                                    recyclerView.setLayoutManager(linearLayoutManager);
-                                    recyclerView.setAdapter(adapter);
-                                    if (adapter.getItemCount() > 0) {
-                                        recyclerView.scrollToPosition(allMessages.size() - 1);
-                                    }
-                                    tvSize.setText("");
+                    callMess.enqueue(new Callback<List<Message>>() {
+                        @Override
+                        public void onResponse(Call<List<Message>> callMess, Response<List<Message>> response) {
+//                            Toast.makeText(SearchMessage.this, ""+response.body().size(), Toast.LENGTH_SHORT).show();
+                            List<Message> messages = response.body();
+                            messages.forEach(mess -> {
+                                if (!mess.getMessageType().equals("note")){
+                                    allMessages.add(mess);
                                 }
+                            });
+                            Collections.sort(allMessages, new Comparator<Message>() {
+                                @Override
+                                public int compare(Message o1, Message o2) {
+                                    return Integer.valueOf(o1.getCreatedAt().compareTo(o2.getCreatedAt()));
+                                }
+                            });
+                            adapter = new SearchMessageRecyclerAdapter(allMessages, userCurrent, chatGroup, SearchMessage.this, search,"user");
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(SearchMessage.this, LinearLayoutManager.VERTICAL, false);
+                            linearLayoutManager.setStackFromEnd(true);
+                            recyclerView.setLayoutManager(linearLayoutManager);
+                            recyclerView.setAdapter(adapter);
+                            if (adapter.getItemCount() > 0) {
+                                recyclerView.scrollToPosition(allMessages.size() - 1);
                             }
+                            tvSize.setText("");
+                        }
 
-                            @Override
-                            public void onFailure(Call<List<Message>> callMess, Throwable t) {
-
+                        @Override
+                        public void onFailure(Call<List<Message>> callMess, Throwable t) {
                             }
-                        });
-                    }
+                    });
                 }
             }
 
