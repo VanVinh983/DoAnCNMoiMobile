@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.OpenableColumns;
+import android.text.format.DateFormat;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +52,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -63,7 +66,7 @@ import retrofit2.Response;
 
 
 public class ChatBox extends AppCompatActivity {
-    private TextView txt_username;
+    private TextView txt_username, txt_chatbox_time;
     private DataService dataService;
     private User userCurrent=null;
     private User friendCurrent=null;
@@ -94,6 +97,7 @@ public class ChatBox extends AppCompatActivity {
         mSocket.on("response-add-new-text", responeMessage);
         mSocket.on("response-add-new-file", responeAddFile);
         mSocket.on("response-reaction", responseReaction);
+        mSocket.on("check-online-offline", checkOnlineOffline);
         findViewById(R.id.btn_chatbox_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -288,6 +292,7 @@ public class ChatBox extends AppCompatActivity {
     }
     private void mapping(){
         txt_username = findViewById(R.id.txt_chatbox_username);
+        txt_chatbox_time = findViewById(R.id.txt_chatbox_time);
         recyclerViewMessage = findViewById(R.id.recylerview_message);
         input_message_text = findViewById(R.id.input_chatbox_message);
         btn_chatbox_file = findViewById(R.id.btn_chatbox_file);
@@ -467,6 +472,35 @@ public class ChatBox extends AppCompatActivity {
                     recyclerViewMessage.setLayoutManager(linearLayoutManager);
                     if (messageAdapter.getItemCount()>0){
                         recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount()-1);
+                    }
+                }
+            });
+        }
+    };
+    private Emitter.Listener checkOnlineOffline = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Object[] jsonArray = Arrays.stream(args).toArray();
+                    JSONArray arr =(JSONArray) jsonArray[0];
+                    String[] strings = new Gson().fromJson(String.valueOf(arr), String[].class);
+                    List<String> ss = new ArrayList<String>();
+                    for (String s:
+                         strings) {
+                        ss.add(s);
+                    }
+                    if (ss.contains(friendCurrent.getId())){
+                        txt_chatbox_time.setText("Mới vừa truy cập");
+                    }else {
+                        if(new Date().getTime() - friendCurrent.getUpdatedAt() < 86400000){
+                            txt_chatbox_time.setText("truy cập "+ DateUtils.getRelativeTimeSpanString(friendCurrent.getUpdatedAt())+" phút trước");
+                        }
+                        else{
+                            String date = DateFormat.getDateFormat(ChatBox.this).format(friendCurrent.getUpdatedAt());
+                            txt_chatbox_time.setText("truy cập ngày "+date);
+                        }
                     }
                 }
             });
