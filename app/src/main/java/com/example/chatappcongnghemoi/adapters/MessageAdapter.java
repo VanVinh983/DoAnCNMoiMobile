@@ -23,6 +23,7 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -142,30 +143,43 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 layoutParamsLoad.height = 70;
                 holder.img_download.setLayoutParams(layoutParamsLoad);
                 holder.img_download.setImageResource(R.drawable.download);
-            }else {
+            }else if (message.getMessageType().equals("gif")){
+                android.view.ViewGroup.LayoutParams layoutParamsGif = holder.gifImageView.getLayoutParams();
+                layoutParamsGif.width = 400;
+                layoutParamsGif.height = 350;
+                holder.gifImageView.setLayoutParams(layoutParamsGif);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(0,0);
+                holder.txt_content.setLayoutParams(layoutParams);
+                holder.image_message.setLayoutParams(layoutParams);
+                holder.img_download.setLayoutParams(layoutParams);
+                holder.viewVideo.setLayoutParams(layoutParams);
+                Glide.with(context).load(message.getFileName()).into(holder.gifImageView);
+            } else {
                 holder.txt_content.setText(message.getText());
             }
             List<Map<String,String>> mapReact = message.getReaction();
-            if(mapReact.size() > 0){
-                holder.imgReaction.setVisibility(View.VISIBLE);
-                String react = mapReact.get(mapReact.size()-1).get("react");
-                if(react.equals("thich")){
-                    holder.imgReaction.setImageResource(R.drawable.like);
-                }else if(react.equals("yeu")){
-                    holder.imgReaction.setImageResource(R.drawable.heart);
-                }else if(react.equals("cuoi")){
-                    holder.imgReaction.setImageResource(R.drawable.laughing);
-                }else if(react.equals("wow")){
-                    holder.imgReaction.setImageResource(R.drawable.wow);
-                }else if(react.equals("khoc")){
-                    holder.imgReaction.setImageResource(R.drawable.crying);
-                }else if(react.equals("gian")){
-                    holder.imgReaction.setImageResource(R.drawable.angry);
+            if (mapReact!=null){
+                if(mapReact.size() > 0){
+                    holder.imgReaction.setVisibility(View.VISIBLE);
+                    String react = mapReact.get(mapReact.size()-1).get("react");
+                    if(react.equals("thich")){
+                        holder.imgReaction.setImageResource(R.drawable.like);
+                    }else if(react.equals("yeu")){
+                        holder.imgReaction.setImageResource(R.drawable.heart);
+                    }else if(react.equals("cuoi")){
+                        holder.imgReaction.setImageResource(R.drawable.laughing);
+                    }else if(react.equals("wow")){
+                        holder.imgReaction.setImageResource(R.drawable.wow);
+                    }else if(react.equals("khoc")){
+                        holder.imgReaction.setImageResource(R.drawable.crying);
+                    }else if(react.equals("gian")){
+                        holder.imgReaction.setImageResource(R.drawable.angry);
+                    }
+                    holder.txt_quantityReaction.setText(mapReact.size()+"");
+                }else{
+                    holder.txt_quantityReaction.setText("");
+                    holder.imgReaction.setVisibility(View.INVISIBLE);
                 }
-                holder.txt_quantityReaction.setText(mapReact.size()+"");
-            }else{
-                holder.txt_quantityReaction.setText("");
-                holder.imgReaction.setVisibility(View.INVISIBLE);
             }
             Glide.with(context).load(friend.getAvatar()).into(holder.avatar);
             if (message.getSenderId().equals(userCurrent.getId())){
@@ -232,7 +246,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         private CircleImageView avatar,imgReaction;
         private View view;
         private ImageView image_message,img_download;
+        private ImageView imgPlayVideo,imgVideo;
         private GifImageView gifImageView;
+        private RelativeLayout viewVideo;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txt_content = itemView.findViewById(R.id.txt_content_message);
@@ -245,6 +261,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             img_download = itemView.findViewById(R.id.imgDownload);
             imgReaction = itemView.findViewById(R.id.imgReactionOfMessage);
             txt_quantityReaction = itemView.findViewById(R.id.tvQuantityReaction);
+            imgPlayVideo = itemView.findViewById(R.id.imgPlayVideo);
+            imgVideo = itemView.findViewById(R.id.imgVideoMessage);
+            viewVideo = itemView.findViewById(R.id.viewVideoMessage);
         }
     }
 

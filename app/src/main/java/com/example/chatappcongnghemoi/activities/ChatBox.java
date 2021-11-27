@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -24,9 +25,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.adapters.ChatBoxGroupRecyclerAdapter;
+import com.example.chatappcongnghemoi.adapters.GifForChatBoxAdapter;
 import com.example.chatappcongnghemoi.adapters.MessageAdapter;
+import com.example.chatappcongnghemoi.adapters.TypeGifForChatBoxAdapter;
 import com.example.chatappcongnghemoi.models.ChatGroup;
+import com.example.chatappcongnghemoi.models.Gif;
+import com.example.chatappcongnghemoi.models.InitGif;
 import com.example.chatappcongnghemoi.models.Message;
+import com.example.chatappcongnghemoi.models.TypeGif;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
@@ -63,11 +69,13 @@ public class ChatBox extends AppCompatActivity {
     private User friendCurrent=null;
     public static List<Message> messages;
     public static MessageAdapter messageAdapter;
-    public static RecyclerView recyclerViewMessage;
+    public static RecyclerView recyclerViewMessage, recyclerViewgif, recyclerViewtypegif;
     private EditText input_message_text;
+    public static GifForChatBoxAdapter gifForChatBoxAdapter;
+    private TypeGifForChatBoxAdapter typeGifForChatBoxAdapter;
     private ImageView btnGoToBottom;
     private MessageSocket socket;
-    private ImageButton btn_chatbox_file, btn_chatbox_gif;
+    private ImageButton btn_chatbox_file, btn_chatbox_gif, btn_cahtbox_exitgif;
     private static final int PICKFILE_RESULT_CODE = 1;
     private int  count = 0;
     private static Socket mSocket = MySocket.getInstance().getSocket();
@@ -220,7 +228,63 @@ public class ChatBox extends AppCompatActivity {
                 btnGoToBottom.setVisibility(View.INVISIBLE);
             }
         });
+        btn_chatbox_gif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getGif(userCurrent);
+                getGitType();
+                float dp = getApplicationContext().getResources().getDisplayMetrics().density;
+                ViewGroup.LayoutParams layoutParams = btn_cahtbox_exitgif.getLayoutParams();
+                layoutParams.height =(int)(50*dp);
+                layoutParams.width = (int)(50*dp);
+                btn_cahtbox_exitgif.setLayoutParams(layoutParams);
+                ViewGroup.LayoutParams layoutParamsChoose = btn_chatbox_gif.getLayoutParams();
+                layoutParamsChoose.height = 0;
+                layoutParamsChoose.width = 0;
+                btn_chatbox_gif.setLayoutParams(layoutParamsChoose);
+                ViewGroup.LayoutParams layoutParamsGif = recyclerViewgif.getLayoutParams();
+                layoutParamsGif.height =(int)(100*dp);
+                layoutParamsGif.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                recyclerViewgif.setLayoutParams(layoutParamsGif);
+            }
+        });
+        btn_cahtbox_exitgif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                float dp = getApplicationContext().getResources().getDisplayMetrics().density;
+                ViewGroup.LayoutParams layoutParams = btn_chatbox_gif.getLayoutParams();
+                layoutParams.height =(int)(50*dp);
+                layoutParams.width = (int)(50*dp);
+                btn_chatbox_gif.setLayoutParams(layoutParams);
+                ViewGroup.LayoutParams layoutParamsExit = btn_cahtbox_exitgif.getLayoutParams();
+                layoutParamsExit.height = 0;
+                layoutParamsExit.width = 0;
+                btn_cahtbox_exitgif.setLayoutParams(layoutParamsExit);
+                ViewGroup.LayoutParams layoutParamsGif = recyclerViewgif.getLayoutParams();
+                layoutParamsGif.height =0;
+                layoutParamsGif.width = 0;
+                recyclerViewgif.setLayoutParams(layoutParamsGif);
+                ViewGroup.LayoutParams layoutParamsTypeGif = recyclerViewtypegif.getLayoutParams();
+                layoutParamsTypeGif.height =0;
+                layoutParamsTypeGif.width = 0;
+                recyclerViewtypegif.setLayoutParams(layoutParamsTypeGif);
+            }
+        });
 
+    }
+    private void getGif(User sender){
+        List<Gif> gifs = new InitGif().addGif();
+        System.out.println("gifs: "+gifs.toString());
+        gifForChatBoxAdapter = new GifForChatBoxAdapter(gifs, userCurrent, friendCurrent, dataService, socket, ChatBox.this);
+        recyclerViewgif.setAdapter(gifForChatBoxAdapter);
+        recyclerViewgif.setLayoutManager(new LinearLayoutManager(ChatBox.this,RecyclerView.HORIZONTAL,false));
+    }
+
+    private void getGitType(){
+        List<TypeGif> gifs = new InitGif().addTypeGif();
+        typeGifForChatBoxAdapter = new TypeGifForChatBoxAdapter(gifs, userCurrent, friendCurrent, dataService, socket, ChatBox.this);
+        recyclerViewtypegif.setAdapter(typeGifForChatBoxAdapter);
+        recyclerViewtypegif.setLayoutManager(new LinearLayoutManager(ChatBox.this,RecyclerView.HORIZONTAL,false));
     }
     private void mapping(){
         txt_username = findViewById(R.id.txt_chatbox_username);
@@ -230,6 +294,20 @@ public class ChatBox extends AppCompatActivity {
         btn_chatbox_gif = findViewById(R.id.btn_chatbox_gif);
         btnGoToBottom = findViewById(R.id.image_btn_gobottom);
         btnGoToBottom.setVisibility(View.INVISIBLE);
+        btn_cahtbox_exitgif = findViewById(R.id.btn_chatbox_exitgif);
+        recyclerViewgif = findViewById(R.id.recyclerview_chatbox_gif);
+        recyclerViewtypegif = findViewById(R.id.recyclerview_chatbox_typegif);
+
+        ViewGroup.LayoutParams layoutParams = btn_cahtbox_exitgif.getLayoutParams();
+        layoutParams.height =0;
+        layoutParams.width = 0;
+        btn_cahtbox_exitgif.setLayoutParams(layoutParams);
+
+        ViewGroup.LayoutParams layoutParamsgif = recyclerViewgif.getLayoutParams();
+        layoutParamsgif.width=0;
+        layoutParamsgif.height=0;
+        recyclerViewtypegif.setLayoutParams(layoutParamsgif);
+        recyclerViewgif.setLayoutParams(layoutParamsgif);
     }
     private void initialize(){
         dataService = ApiService.getService();
@@ -303,11 +381,6 @@ public class ChatBox extends AppCompatActivity {
                 System.err.println("get list message fail"+t.getMessage());
             }
         });
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
     private Emitter.Listener responeMessage = new Emitter.Listener() {
