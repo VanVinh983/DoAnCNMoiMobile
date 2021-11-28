@@ -45,6 +45,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.socket.client.Socket;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -59,6 +60,7 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
     private User user = null;
     private int RESULT_LOAD_IMAGE = 1024;
     private static  final String SHARED_PREFERENCES= "saveID";
+    private static Socket mSocket = MySocket.getInstance().getSocket();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -204,6 +206,7 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                         Intent intent = new Intent(Personal.this,StartApp.class);
                         MySocket.getInstance().getSocket().disconnect();
                         startActivity(intent);
+                        mSocket.disconnect();
                         finish();
                     }
                 });
@@ -399,6 +402,7 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
     }
     public void updateOffline(){
         user.setOnline(false);
+        user.setUpdatedAt(new Date().getTime());
         Call<UserDTO> call = dataService.updateUser(user.getId(),user);
         call.enqueue(new Callback<UserDTO>() {
             @Override

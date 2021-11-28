@@ -165,7 +165,8 @@ public class ChatBoxGroup extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ChatBoxGroup.this,Home.class));
+                startActivity(new Intent(ChatBoxGroup.this, Home.class));
+                finish();
             }
         });
         txtMessage.addTextChangedListener(new TextWatcher() {
@@ -761,4 +762,11 @@ public class ChatBoxGroup extends AppCompatActivity {
             });
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(ChatBoxGroup.this, Home.class));
+        finish();
+    }
 }

@@ -101,6 +101,7 @@ public class ChatBox extends AppCompatActivity {
         findViewById(R.id.btn_chatbox_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                startActivity(new Intent(ChatBox.this, Home.class));
                 finish();
             }
         });
@@ -589,4 +590,10 @@ public class ChatBox extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(ChatBox.this, Home.class));
+        finish();
+    }
 }
