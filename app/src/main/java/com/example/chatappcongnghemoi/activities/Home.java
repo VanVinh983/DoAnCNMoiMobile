@@ -238,11 +238,13 @@ public class Home extends AppCompatActivity {
                     listCall1.enqueue(new Callback<List<Message>>() {
                         @Override
                         public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
-                            conversation.setNewMessage(response.body().get(response.body().size()-1));
-                            conversations.add(conversation);
-                            userHomeAdapter = new HomeConversationAdapter(conversations, Home.this);
-                            recyclerView.setAdapter(userHomeAdapter);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(Home.this));
+                            if(response.body().size()>0){
+                                conversation.setNewMessage(response.body().get(response.body().size()-1));
+                                conversations.add(conversation);
+                                userHomeAdapter = new HomeConversationAdapter(conversations, Home.this);
+                                recyclerView.setAdapter(userHomeAdapter);
+                                recyclerView.setLayoutManager(new LinearLayoutManager(Home.this));
+                            }
                         }
 
                         @Override
