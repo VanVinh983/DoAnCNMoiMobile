@@ -32,11 +32,16 @@ import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.example.chatappcongnghemoi.socket.MySocket;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -103,7 +108,6 @@ public class Home extends AppCompatActivity {
 
             }
         });
-
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,6 +163,10 @@ public class Home extends AppCompatActivity {
     private void socketOn(){
 //        mSocket.on("response-add-new-text", responeMessage);
 //        mSocket.on("response-add-new-file", responeAddFile);
+        mSocket.on("response-create-group",responseCreateGroup);
+        mSocket.on("response-add-user-to-group",responseAddUserToGroup);
+        mSocket.on("response-delete-group",responseDeleteGroup);
+        mSocket.on("response-leave-group",responseLeaveGroup);
     }
     public void saveIDLogout(){
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES,MODE_PRIVATE);
@@ -261,6 +269,68 @@ public class Home extends AppCompatActivity {
             }
         });
     }
-
-
+    private Emitter.Listener responseCreateGroup = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        ChatGroup chatGroup = new Gson().fromJson(data.getString("group"),ChatGroup.class);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    };
+    private Emitter.Listener responseAddUserToGroup = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        ChatGroup chatGroup = new Gson().fromJson(data.getString("group"),ChatGroup.class);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    };
+    private Emitter.Listener responseDeleteGroup = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        String groupId = data.getString("groupId");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    };
+    private Emitter.Listener responseLeaveGroup = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        ChatGroup chatGroup = new Gson().fromJson(data.getString("group"),ChatGroup.class);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    };
 }
