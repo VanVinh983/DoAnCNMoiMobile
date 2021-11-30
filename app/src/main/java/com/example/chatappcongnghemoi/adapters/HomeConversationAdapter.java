@@ -3,6 +3,8 @@ package com.example.chatappcongnghemoi.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,6 +77,10 @@ public class HomeConversationAdapter extends RecyclerView.Adapter<HomeConversati
                     mess = conversation.getFriend().getUserName()+": "+ conversation.getNewMessage().getText();
                 }
             }
+            if (conversation.getNewMessage().isRead()==false) {
+                holder.txt_message.setTextColor(Color.BLACK);
+                holder.txt_message.setTypeface(holder.txt_message.getTypeface(), Typeface.BOLD);
+            }
             holder.txt_message.setText(mess);
         } else {
             Glide.with(context).load(conversation.getChatGroup().getAvatar()).into(holder.avatar);
@@ -100,6 +106,10 @@ public class HomeConversationAdapter extends RecyclerView.Adapter<HomeConversati
                 }else {
                     mess = "Nhóm: "+ conversation.getNewMessage().getText();
                 }
+            }
+            if (conversation.getNewMessage().isRead()==false) {
+                holder.txt_message.setTextColor(Color.BLACK);
+                holder.txt_message.setTypeface(holder.txt_message.getTypeface(), Typeface.BOLD);
             }
             holder.txt_message.setText(mess);
         }

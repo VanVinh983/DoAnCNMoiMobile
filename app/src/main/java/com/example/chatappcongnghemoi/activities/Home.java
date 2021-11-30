@@ -94,18 +94,12 @@ public class Home extends AppCompatActivity {
             }
         });
         System.out.println("id la: "+new DataLoggedIn(this).getUserIdLoggedIn());
-        
-        Call<UserDTO> userDTOCall = dataService.getUserById(new DataLoggedIn(this).getUserIdLoggedIn());
-        userDTOCall.enqueue(new Callback<UserDTO>() {
-            @Override
-            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
-                userCurrent = response.body().getUser();
-                checkConversation(userCurrent);
-            }
+        loadConversation();
 
+        findViewById(R.id.txt_home_search).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFailure(Call<UserDTO> call, Throwable t) {
-
+            public void onClick(View view) {
+                startActivity(new Intent(Home.this, SearchUser.class));
             }
         });
         btnLogout.setOnClickListener(new View.OnClickListener() {
@@ -161,8 +155,8 @@ public class Home extends AppCompatActivity {
         socketOn();
     }
     private void socketOn(){
-//        mSocket.on("response-add-new-text", responeMessage);
-//        mSocket.on("response-add-new-file", responeAddFile);
+        mSocket.on("response-add-new-text", responeMessage);
+        mSocket.on("response-add-new-file", responeAddFile);
         mSocket.on("response-create-group",responseCreateGroup);
         mSocket.on("response-add-user-to-group",responseAddUserToGroup);
         mSocket.on("response-delete-group",responseDeleteGroup);
@@ -173,6 +167,23 @@ public class Home extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("userId","");
         editor.apply();
+    }
+
+    private void loadConversation(){
+        conversations = new ArrayList<>();
+        Call<UserDTO> userDTOCall = dataService.getUserById(new DataLoggedIn(this).getUserIdLoggedIn());
+        userDTOCall.enqueue(new Callback<UserDTO>() {
+            @Override
+            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                userCurrent = response.body().getUser();
+                checkConversation(userCurrent);
+            }
+
+            @Override
+            public void onFailure(Call<UserDTO> call, Throwable t) {
+
+            }
+        });
     }
 
     private void checkConversation(User user){
@@ -276,11 +287,7 @@ public class Home extends AppCompatActivity {
                 @Override
                 public void run() {
                     JSONObject data = (JSONObject) args[0];
-                    try {
-                        ChatGroup chatGroup = new Gson().fromJson(data.getString("group"),ChatGroup.class);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    loadConversation();
                 }
             });
         }
@@ -292,11 +299,7 @@ public class Home extends AppCompatActivity {
                 @Override
                 public void run() {
                     JSONObject data = (JSONObject) args[0];
-                    try {
-                        ChatGroup chatGroup = new Gson().fromJson(data.getString("group"),ChatGroup.class);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    loadConversation();
                 }
             });
         }
@@ -308,11 +311,7 @@ public class Home extends AppCompatActivity {
                 @Override
                 public void run() {
                     JSONObject data = (JSONObject) args[0];
-                    try {
-                        String groupId = data.getString("groupId");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    loadConversation();
                 }
             });
         }
@@ -324,11 +323,31 @@ public class Home extends AppCompatActivity {
                 @Override
                 public void run() {
                     JSONObject data = (JSONObject) args[0];
-                    try {
-                        ChatGroup chatGroup = new Gson().fromJson(data.getString("group"),ChatGroup.class);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    loadConversation();
+                }
+            });
+        }
+    };
+    private Emitter.Listener responeMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    loadConversation();
+                }
+            });
+        }
+    };
+    private Emitter.Listener responeAddFile = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    loadConversation();
                 }
             });
         }

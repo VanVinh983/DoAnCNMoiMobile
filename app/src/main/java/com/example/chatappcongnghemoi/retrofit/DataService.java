@@ -58,7 +58,6 @@ public interface DataService {
     @GET("messages/SearchBySenderIdAndReceiverId/{senderid}/{receiverid}?")
     Call<List<Message>> getMessageBySIdAndRIdPaging(@Path("senderid") String senderid, @Path("receiverid") String receiverid, @Query("startFrom") int startFrom);
 
-
     @POST("messages/")
     Call<Message> postMessage(@Body Message message);
 

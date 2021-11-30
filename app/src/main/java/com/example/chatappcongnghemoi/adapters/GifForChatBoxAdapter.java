@@ -65,6 +65,7 @@ public class GifForChatBoxAdapter extends RecyclerView.Adapter<GifForChatBoxAdap
                 message.setReceiverId(friend.getId());
                 message.setChatType("personal");
                 message.setMessageType("gif");
+                message.setRead(false);
                 message.setCreatedAt(new Date().getTime());
                 message.setFileName(gif.getUrl());
                 Call<Message> messageCall = dataService.postMessage(message);

@@ -126,6 +126,7 @@ public class ChatBox extends AppCompatActivity {
                 message.setReceiverId(friendId);
                 message.setChatType("personal");
                 message.setMessageType("text");
+                message.setRead(false);
                 message.setText(input_message_text.getText().toString());
                 Call<Message> messageCall = dataService.postMessage(message);
                 input_message_text.setText("");
@@ -365,6 +366,7 @@ public class ChatBox extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (messages.size()==response.body().size()){
+                            updateIsRead(messages);
                             messageAdapter = new MessageAdapter(messages, ChatBox.this,userCurrent, friendCurrent);
                             recyclerViewMessage.setAdapter(messageAdapter);
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBox.this, LinearLayoutManager.VERTICAL, false);
@@ -389,6 +391,25 @@ public class ChatBox extends AppCompatActivity {
         });
     }
 
+    private void updateIsRead(List<Message> lm){
+        for (Message m:
+             lm) {
+            m.setRead(true);
+            Call<Message> messageCall = dataService.updateMessage(m.getId(), m);
+            messageCall.enqueue(new Callback<Message>() {
+                @Override
+                public void onResponse(Call<Message> call, Response<Message> response) {
+
+                }
+
+                @Override
+                public void onFailure(Call<Message> call, Throwable t) {
+
+                }
+            });
+        }
+    }
+
     private Emitter.Listener responeMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
@@ -403,6 +424,7 @@ public class ChatBox extends AppCompatActivity {
                         isgroup = data.getString("isChatGroup");
                         Gson gson = new Gson();
                         Message message = gson.fromJson(mess, Message.class);
+                        message.setRead(true);
                         messages.add(message);
                         messageAdapter = new MessageAdapter(messages, ChatBox.this,userCurrent, friendCurrent);
                         recyclerViewMessage.setAdapter(messageAdapter);
@@ -462,6 +484,7 @@ public class ChatBox extends AppCompatActivity {
                     try {
                         mess = data.getJSONArray("messages");
                         messObject = new Gson().fromJson(mess.get(0).toString(), Message.class);
+                        messObject.setRead(true);
                         messages.add(messObject);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -548,6 +571,7 @@ public class ChatBox extends AppCompatActivity {
                                     message.setSenderId(userId);
                                     message.setReceiverId(friendCurrent.getId());
                                     message.setChatType("personal");
+                                    message.setRead(false);
                                     if (extension.equals("png") || extension.equals("jpg") || extension.equals("jpeg") || extension.equals("svg") || extension.equals("gif"))
                                         message.setMessageType("image");
                                     else

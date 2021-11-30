@@ -41,6 +41,9 @@ public class Message {
     @SerializedName("updatedAt")
     @Expose
     private Object updatedAt;
+    @SerializedName("isRead")
+    @Expose
+    private boolean isRead;
     @SerializedName("deletedAt")
     @Expose
     private Object deletedAt;
@@ -49,6 +52,14 @@ public class Message {
     private Integer v;
 
     public Message() {
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
     }
 
     public List<Map<String, String>> getReaction() {
@@ -157,8 +168,10 @@ public class Message {
                 ", messageType='" + messageType + '\'' +
                 ", text='" + text + '\'' +
                 ", fileName='" + fileName + '\'' +
+                ", reaction=" + reaction +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
+                ", isRead=" + isRead +
                 ", deletedAt=" + deletedAt +
                 ", v=" + v +
                 '}';
