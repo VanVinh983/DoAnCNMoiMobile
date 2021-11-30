@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.text.format.DateFormat;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -113,6 +116,13 @@ public class HomeConversationAdapter extends RecyclerView.Adapter<HomeConversati
             }
             holder.txt_message.setText(mess);
         }
+        if(new Date().getTime() - conversation.getNewMessage().getCreatedAt() < 86400000){
+            holder.txt_time.setText(DateUtils.getRelativeTimeSpanString(conversation.getNewMessage().getCreatedAt()));
+        }
+        else{
+            String date = DateFormat.getDateFormat(context).format(conversation.getNewMessage().getCreatedAt());
+            holder.txt_time.setText(date);
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,12 +148,13 @@ public class HomeConversationAdapter extends RecyclerView.Adapter<HomeConversati
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private CircleImageView avatar;
-        private TextView txt_name, txt_message;
+        private TextView txt_name, txt_message,txt_time;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             avatar = itemView.findViewById(R.id.image_avatart_home_item);
             txt_name = itemView.findViewById(R.id.txt_home_item_user_name);
             txt_message = itemView.findViewById(R.id.txt_home_item_first_message);
+            txt_time = itemView.findViewById(R.id.txt_home_time_message);
 
         }
     }

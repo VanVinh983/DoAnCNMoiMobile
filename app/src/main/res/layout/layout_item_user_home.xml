@@ -55,6 +55,15 @@
                 android:paddingRight="10dp" />
 
             <TextView
+                android:id="@+id/txt_home_time_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TextView"
+                android:textAlignment="textEnd"
+                android:textColor="#2196F3" />
+
+            <TextView
                 android:id="@+id/textView30"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
