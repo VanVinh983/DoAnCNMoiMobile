@@ -24,6 +24,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +41,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -54,11 +57,13 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
     private EditText input_name, input_gender, input_yearOfBirth, input_numberPhone, input_address;
     private BottomNavigationView bottomNavigationView;
     private Button btn_update_info;
+    private ImageView imageView_background;
     private CircleImageView imageView_Avatar;
     private TextView txt_introduce, txt_personal_primary, txt_search_user;
     private DataService dataService;
     private User user = null;
     private int RESULT_LOAD_IMAGE = 1024;
+    private int RESULT_LOAD_BACKGROUND = 2;
     private static  final String SHARED_PREFERENCES= "saveID";
     private static Socket mSocket = MySocket.getInstance().getSocket();
     @Override
@@ -79,6 +84,7 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
         txt_introduce = findViewById(R.id.txt_personal_introduce);
         txt_personal_primary = findViewById(R.id.txt_personal_name_primary);
         txt_search_user = findViewById(R.id.input_personal_search);
+        imageView_background = findViewById(R.id.image_personal_background);
         //initialize dataservice
         dataService = ApiService.getService();
 
@@ -139,7 +145,12 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                 openDialogAvatar(Gravity.CENTER);
             }
         });
-
+        imageView_background.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openDialogBackground(Gravity.CENTER);
+            }
+        });
         //event introduce
         txt_introduce.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,6 +172,10 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                     input_yearOfBirth.setText(user.getBirthday());
                     input_numberPhone.setText(user.getLocal().getPhone());
                     input_address.setText(user.getAddress());
+                    txt_introduce.setText(user.getDescription());
+                    if (user.getBackground()!=null){
+                        Glide.with( Personal.this).load(user.getBackground()).into(imageView_background);
+                    }
                     Glide.with( Personal.this).load(user.getAvatar()).into(imageView_Avatar);
                 }else {
                     handler.postDelayed(this, 500);
@@ -232,16 +247,16 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                     input_gender.setEnabled(true);
                     input_name.setEnabled(true);
                     input_address.setEnabled(true);
-                    input_numberPhone.setEnabled(true);
                     input_yearOfBirth.setEnabled(true);
                 } else {
-                    btn_update_info.setText("Cập nhật thông tin");
-                    input_gender.setEnabled(false);
-                    input_name.setEnabled(false);
-                    input_address.setEnabled(false);
-                    input_numberPhone.setEnabled(false);
-                    input_yearOfBirth.setEnabled(false);
-                    updateUser();
+                    if (checkinput()==true){
+                        btn_update_info.setText("Cập nhật thông tin");
+                        input_gender.setEnabled(false);
+                        input_name.setEnabled(false);
+                        input_address.setEnabled(false);
+                        input_yearOfBirth.setEnabled(false);
+                        updateUser();
+                    }
                 }
             }
         }
@@ -269,7 +284,7 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
          }else {
              dialog.setCancelable(false);
          }
-         Button btn_fullscreen = dialog.findViewById(R.id.btn_dialogavatar_fullscreen);
+         Button btn_fullscreen = dialog.findViewById(R.id.btn_dialogbackground_fullscreen);
 
          btn_fullscreen.setOnClickListener(new View.OnClickListener() {
              @Override
@@ -280,7 +295,7 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
              }
          });
 
-         Button btn_choose_image_form_device = dialog.findViewById(R.id.btn_dialog_avatar_choose_device);
+         Button btn_choose_image_form_device = dialog.findViewById(R.id.btn_dialog_background_choose_device);
          btn_choose_image_form_device.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View view) {
@@ -292,6 +307,52 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
          });
 
          dialog.show();
+    }
+    private void openDialogBackground(int gravity){
+        final Dialog dialog = new Dialog(Personal.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_blackground_personal);
+
+        Window window = dialog.getWindow();
+        if (window==null){
+            return;
+        }
+
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = gravity;
+        window.setAttributes(windowAttributes);
+
+        if (Gravity.CENTER == gravity){
+            dialog.setCancelable(true);
+        }else {
+            dialog.setCancelable(false);
+        }
+        Button btn_fullscreen = dialog.findViewById(R.id.btn_dialogbackground_fullscreen);
+
+        btn_fullscreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Personal.this, Full_Image_Avatar.class);
+                intent.putExtra("url", user.getBackground());
+                Personal.this.startActivity(intent);
+            }
+        });
+
+        Button btn_choose_image_form_device = dialog.findViewById(R.id.btn_dialog_background_choose_device);
+        btn_choose_image_form_device.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(
+                        Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Personal.this.startActivityForResult(i, RESULT_LOAD_BACKGROUND);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     @Override
@@ -338,6 +399,37 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                 Log.e("MyAmplifyApp", "Could not find file to open for input stream.", error);
             }
         }
+        if (requestCode == RESULT_LOAD_BACKGROUND && resultCode == RESULT_OK && data != null){
+            Uri selectedImage = data.getData();
+            File file1 = new File(getPath(selectedImage));
+            UUID uuid = UUID.randomUUID();
+            try {
+                InputStream exampleInputStream = getContentResolver().openInputStream(selectedImage);
+                com.amplifyframework.core.Amplify.Storage.uploadInputStream(
+                        uuid+"."+file1.getName(),
+                        exampleInputStream,
+                        result -> {
+                            Toast.makeText(Personal.this, "Hoàn Tất", Toast.LENGTH_LONG).show();
+                            user.setBackground(uuid+"."+file1.getName());
+                            Call<UserDTO> userDTOCall = dataService.updateUser(user.getId(), user);
+                            userDTOCall.enqueue(new Callback<UserDTO>() {
+                                @Override
+                                public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                                    Glide.with(Personal.this).load(user.getBackground()).into(imageView_background);
+                                }
+
+                                @Override
+                                public void onFailure(Call<UserDTO> call, Throwable t) {
+
+                                }
+                            });
+                        },
+                        storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
+                );
+            }  catch ( FileNotFoundException error) {
+                Log.e("MyAmplifyApp", "Could not find file to open for input stream.", error);
+            }
+        }
     }
     private void getUserById(String id){
         Call<UserDTO> dtoCall = dataService.getUserById(id);
@@ -354,24 +446,57 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
         });
     }
     private void updateUser(){
-       user.setUserName(input_name.getText().toString());
-       user.setGender(input_gender.getText().toString());
-       user.setBirthday(input_yearOfBirth.getText().toString());
-       user.getLocal().setPhone(input_numberPhone.getText().toString());
-       user.setAddress(input_address.getText().toString());
+        if (checkinput()==true){
+            user.setUserName(input_name.getText().toString());
+            user.setGender(input_gender.getText().toString());
+            user.setBirthday(input_yearOfBirth.getText().toString());
+            user.getLocal().setPhone(input_numberPhone.getText().toString());
+            user.setAddress(input_address.getText().toString());
 
-       Call<UserDTO> putCall = dataService.updateUser(user.getId(), user);
-       putCall.enqueue(new Callback<UserDTO>() {
-           @Override
-           public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
-              Toast.makeText(Personal.this, "Thành Công !", Toast.LENGTH_LONG).show();
-           }
+            Call<UserDTO> putCall = dataService.updateUser(user.getId(), user);
+            putCall.enqueue(new Callback<UserDTO>() {
+                @Override
+                public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                    Toast.makeText(Personal.this, "Thành Công !", Toast.LENGTH_LONG).show();
+                }
 
-           @Override
-           public void onFailure(Call<UserDTO> call, Throwable t) {
-                System.err.println("Fail Put User "+ t.getMessage().toString());
-           }
-       });
+                @Override
+                public void onFailure(Call<UserDTO> call, Throwable t) {
+                    System.err.println("Fail Put User "+ t.getMessage().toString());
+                }
+            });
+        }
+    }
+    private boolean checkinput(){
+        boolean kq = true;
+        if (input_name.getText().toString().trim().equals("")){
+            Toast.makeText(this, "Tên không được trống", Toast.LENGTH_LONG).show();
+            kq = false;
+        }
+        String gender = input_gender.getText().toString().trim();
+        if (!gender.equals("male")&&!gender.equals("female")) {
+            Toast.makeText(this, "Giới tính phải là male hoặc female", Toast.LENGTH_LONG).show();
+            kq = false;
+        }
+        try {
+            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            df.setLenient(false);
+            System.out.println( df.parse(input_yearOfBirth.getText().toString().trim()));
+        } catch (ParseException e) {
+            Toast.makeText(this, "Ngày sinh phải theo dạng Ngày/Tháng/Năm", Toast.LENGTH_LONG).show();
+            kq = false;
+        }
+        if (input_numberPhone.getText().toString().trim().length()!=10){
+            Toast.makeText(this, "Số điện thoại phải có 10 số", Toast.LENGTH_LONG).show();
+            kq = false;
+        }
+        try {
+            Long i = Long.parseLong(input_numberPhone.getText().toString().trim());
+        }catch (NumberFormatException e){
+            Toast.makeText(this, "Số điện thoại phải là chuỗi số", Toast.LENGTH_LONG).show();
+            kq = false;
+        }
+        return kq;
     }
 
     private void updateImage(String url){

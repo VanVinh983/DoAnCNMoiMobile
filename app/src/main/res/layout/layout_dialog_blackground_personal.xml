@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="20dp"
-            android:text="Ảnh đại diện"
+            android:text="Ảnh bìa"
             android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -47,7 +47,7 @@
             android:drawableTint="#2196F3"
             android:gravity="left|center_vertical"
             android:padding="5dp"
-            android:text="Xem ảnh đại diện"
+            android:text="Xem ảnh bìa"
             android:textAllCaps="false"
             android:textColor="#000000"
             android:textSize="16sp"
