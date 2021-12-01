@@ -912,7 +912,7 @@ public class InfoGroupChat extends AppCompatActivity {
                                 public void onResponse(Call<Message> call, Response<Message> response) {
                                     Message message1 = response.body();
                                     groupSocket.addUserToGroup(chatGroup,listAddMembers);
-                                    messageSocket.sendMessage(message1,"true");
+//                                    messageSocket.sendMessage(message1,"true");
                                     listAddMembers.removeAll(listAddMembers);
                                     dialog.dismiss();
                                     Toast.makeText(InfoGroupChat.this, "Thêm thành viên thành công", Toast.LENGTH_SHORT).show();
@@ -1040,7 +1040,7 @@ public class InfoGroupChat extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Message> call, Response<Message> response) {
                             Message message1 = response.body();
-                            messageSocket.sendMessage(message1,"true");
+//                            messageSocket.sendMessage(message1,"true");
                             User newLeader = null;
                             for (int i = 0;i < members.size();i++){
                                 if(!members.get(i).getId().equals(new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn())){
@@ -1094,7 +1094,7 @@ public class InfoGroupChat extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<Message> call, Response<Message> response) {
                             Message message1 = response.body();
-                            messageSocket.sendMessage(message1,"true");
+//                            messageSocket.sendMessage(message1,"true");
                             ArrayList<Map<String,String>> mapMembers = chatGroup.getMembers();
                             for(int i = 0 ; i< mapMembers.size();i++){
                                 if(mapMembers.get(i).get("userId").equals(new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn())){

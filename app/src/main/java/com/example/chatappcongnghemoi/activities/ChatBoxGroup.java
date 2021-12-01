@@ -490,6 +490,7 @@ public class ChatBoxGroup extends AppCompatActivity {
                         message.setSenderId(userId);
                         message.setReceiverId(groupId);
                         message.setChatType("group");
+                        message.setRead(true);
                         if(extension.equals("png") || extension.equals("jpg") || extension.equals("jpeg") || extension.equals("svg") || extension.equals("gif"))
                             message.setMessageType("image");
                         else if(extension.equals("mp4") || extension.equals("mkv") || extension.equals("avi") || extension.equals("webm"))
@@ -507,15 +508,15 @@ public class ChatBoxGroup extends AppCompatActivity {
                                 List<Message> list = new ArrayList<>();
                                 list.add(message1);
                                 socket.sendFile(list,"true");
-                                messages.add(message1);
-                                adapter = new ChatBoxGroupRecyclerAdapter(messages, ChatBoxGroup.this,userCurrent, members);
-                                recyclerView.setAdapter(adapter);
-                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBoxGroup.this, LinearLayoutManager.VERTICAL, false);
-                                linearLayoutManager.setStackFromEnd(true);
-                                recyclerView.setLayoutManager(linearLayoutManager);
-                                if (adapter.getItemCount()>0){
-                                    recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
-                                }
+//                                messages.add(message1);
+//                                adapter = new ChatBoxGroupRecyclerAdapter(messages, ChatBoxGroup.this,userCurrent, members);
+//                                recyclerView.setAdapter(adapter);
+//                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBoxGroup.this, LinearLayoutManager.VERTICAL, false);
+//                                linearLayoutManager.setStackFromEnd(true);
+//                                recyclerView.setLayoutManager(linearLayoutManager);
+//                                if (adapter.getItemCount()>0){
+//                                    recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
+//                                }
                             }
 
                             @Override
@@ -609,6 +610,7 @@ public class ChatBoxGroup extends AppCompatActivity {
                                     @Override
                                     public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
                                         userCurrent = response.body().getUser();
+                                        updateIsRead(messages);
                                         adapter = new ChatBoxGroupRecyclerAdapter(messages,ChatBoxGroup.this,userCurrent,members);
                                         recyclerView.setAdapter(adapter);
                                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBoxGroup.this, LinearLayoutManager.VERTICAL, false);
@@ -641,7 +643,24 @@ public class ChatBoxGroup extends AppCompatActivity {
             });
         });
     }
+    private void updateIsRead(List<Message> lm){
+        for (Message m:
+                lm) {
+            m.setRead(true);
+            Call<Message> messageCall = dataService.updateMessage(m.getId(), m);
+            messageCall.enqueue(new Callback<Message>() {
+                @Override
+                public void onResponse(Call<Message> call, Response<Message> response) {
 
+                }
+
+                @Override
+                public void onFailure(Call<Message> call, Throwable t) {
+
+                }
+            });
+        }
+    }
     private Emitter.Listener responseMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
@@ -654,6 +673,7 @@ public class ChatBoxGroup extends AppCompatActivity {
                         mess = data.getString("message");
                         Gson gson = new Gson();
                         Message message = gson.fromJson(mess, Message.class);
+                        message.setRead(true);
                         messages.add(message);
                         adapter = new ChatBoxGroupRecyclerAdapter(messages, ChatBoxGroup.this,userCurrent, members);
                         recyclerView.setAdapter(adapter);
@@ -684,6 +704,7 @@ public class ChatBoxGroup extends AppCompatActivity {
                     try {
                         mess = data.getJSONArray("messages");
                         messObject = new Gson().fromJson(mess.get(0).toString(), Message.class);
+                        messObject.setRead(true);
                         messages.add(messObject);
                     } catch (JSONException e) {
                         e.printStackTrace();

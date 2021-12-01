@@ -50,6 +50,7 @@ public class GifRecyclerAdapter extends RecyclerView.Adapter<GifRecyclerAdapter.
         this.gifs = gifs;
         this.groupId = groupId;
         this.userCurrent = userCurrent;
+        socket = new MessageSocket();
     }
 
     @NonNull
@@ -72,7 +73,6 @@ public class GifRecyclerAdapter extends RecyclerView.Adapter<GifRecyclerAdapter.
                 response.body().forEach(group -> {
                     groupIds.add(group.getId());
                 });
-                socket = new MessageSocket();
             }
 
             @Override
@@ -113,15 +113,15 @@ public class GifRecyclerAdapter extends RecyclerView.Adapter<GifRecyclerAdapter.
                                             members.add(response.body().getUser());
                                             if (members.size() == listId.size()){
                                                 socket.sendMessage(message1,"true");
-                                                ChatBoxGroup.messages.add(message1);
-                                                ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
-                                                ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
-                                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-                                                linearLayoutManager.setStackFromEnd(true);
-                                                ChatBoxGroup.recyclerView.setLayoutManager(linearLayoutManager);
-                                                if (ChatBoxGroup.adapter.getItemCount()>0){
-                                                    ChatBoxGroup.recyclerView.scrollToPosition(ChatBoxGroup.messages.size() - 1);
-                                                }
+//                                                ChatBoxGroup.messages.add(message1);
+//                                                ChatBoxGroup.adapter = new ChatBoxGroupRecyclerAdapter(ChatBoxGroup.messages, context,userCurrent, members);
+//                                                ChatBoxGroup.recyclerView.setAdapter(ChatBoxGroup.adapter);
+//                                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+//                                                linearLayoutManager.setStackFromEnd(true);
+//                                                ChatBoxGroup.recyclerView.setLayoutManager(linearLayoutManager);
+//                                                if (ChatBoxGroup.adapter.getItemCount()>0){
+//                                                    ChatBoxGroup.recyclerView.scrollToPosition(ChatBoxGroup.messages.size() - 1);
+//                                                }
                                             }
                                         }
 

@@ -64,6 +64,8 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
         this.context = context;
         this.chatGroup = chatGroup;
         this.userCurrent = userCurrent;
+        groupSocket = new GroupSocket();
+        messageSocket = new MessageSocket();
     }
 
     @NonNull
@@ -82,8 +84,6 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
         listCall.enqueue(new Callback<List<ChatGroup>>() {
             @Override
             public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
-                groupSocket = new GroupSocket();
-                messageSocket = new MessageSocket();
             }
             @Override
             public void onFailure(Call<List<ChatGroup>> call, Throwable t) {

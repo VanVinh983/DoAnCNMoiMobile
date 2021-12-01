@@ -92,6 +92,7 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
         this.context = context;
         this.userCurrent = userCurrent;
         this.members = members;
+        messageSocket = new MessageSocket();
     }
 
     @NonNull
@@ -139,7 +140,6 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                 response.body().forEach(group -> {
                     groupIds.add(group.getId());
                 });
-                messageSocket = new MessageSocket();
             }
 
             @Override
