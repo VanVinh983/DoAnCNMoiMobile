@@ -96,4 +96,7 @@ public interface DataService {
 
     @GET("messages/{id}")
     Call<Message> getMessageById(@Path("id") String id);
+
+    @GET("messages/")
+    Call<List<Message>> getAllMessage();
 }

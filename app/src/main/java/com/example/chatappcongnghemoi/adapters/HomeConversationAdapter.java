@@ -1,15 +1,21 @@
 package com.example.chatappcongnghemoi.adapters;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,8 +25,15 @@ import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.activities.ChatBox;
 import com.example.chatappcongnghemoi.activities.ChatBoxGroup;
+import com.example.chatappcongnghemoi.activities.Full_Image_Avatar;
+import com.example.chatappcongnghemoi.activities.Home;
+import com.example.chatappcongnghemoi.activities.Personal;
 import com.example.chatappcongnghemoi.models.Conversation;
+import com.example.chatappcongnghemoi.models.Message;
+import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
+import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.google.android.gms.common.api.Api;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,6 +41,9 @@ import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeConversationAdapter extends RecyclerView.Adapter<HomeConversationAdapter.ViewHolder> {
     private List<Conversation> conversations;
@@ -139,6 +155,13 @@ public class HomeConversationAdapter extends RecyclerView.Adapter<HomeConversati
                 }
             }
         });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                opendialogConversation(Gravity.CENTER, conversation);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -157,5 +180,96 @@ public class HomeConversationAdapter extends RecyclerView.Adapter<HomeConversati
             txt_time = itemView.findViewById(R.id.txt_home_time_message);
 
         }
+    }
+    private void opendialogConversation(int gravity, Conversation conversation){
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_home_conversation);
+
+        Window window = dialog.getWindow();
+        if (window==null){
+            return;
+        }
+
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttributes = window.getAttributes();
+        windowAttributes.gravity = gravity;
+        window.setAttributes(windowAttributes);
+
+        if (Gravity.CENTER == gravity){
+            dialog.setCancelable(true);
+        }else {
+            dialog.setCancelable(false);
+        }
+        TextView txtname = dialog.findViewById(R.id.txt_name_dialog_conversation);
+        Button btnXoa = dialog.findViewById(R.id.btn_dialog_conversation_xoa);
+        String reveicerid = null;
+        String userid = new DataLoggedIn(context).getUserIdLoggedIn();
+        if (conversation.getFriend()!=null){
+            txtname.setText(conversation.getFriend().getUserName());
+            reveicerid = conversation.getFriend().getId();
+        }else {
+            txtname.setText(conversation.getChatGroup().getName());
+            reveicerid = conversation.getChatGroup().getId();
+        }
+        String finalReveicerid = reveicerid;
+        btnXoa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DataService dataService = ApiService.getService();
+                Call<List<Message>> listCall = dataService.getAllMessage();
+                listCall.enqueue(new Callback<List<Message>>() {
+                    @Override
+                    public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
+                        List<Message> list = response.body();
+                        for (Message message: list) {
+                            if (message.getSenderId().equals(userid) && message.getReceiverId().equals(finalReveicerid) ){
+                                Call<Message> messageCall = dataService.deleteMessage(message.getId());
+                                messageCall.enqueue(new Callback<Message>() {
+                                    @Override
+                                    public void onResponse(Call<Message> call, Response<Message> response) {
+                                        Intent intent = new Intent(context, Home.class);
+                                        context.startActivity(intent);
+                                        ((Activity) context).finish();
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Message> call, Throwable t) {
+
+                                    }
+                                });
+                            }
+                            if (message.getSenderId().equals(finalReveicerid) && message.getReceiverId().equals(userid)){
+                                Call<Message> messageCall = dataService.deleteMessage(message.getId());
+                                messageCall.enqueue(new Callback<Message>() {
+                                    @Override
+                                    public void onResponse(Call<Message> call, Response<Message> response) {
+                                        Intent intent = new Intent(context, Home.class);
+                                        context.startActivity(intent);
+                                        ((Activity) context).finish();
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Message> call, Throwable t) {
+
+                                    }
+                                });
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Message>> call, Throwable t) {
+
+                    }
+                });
+
+            }
+        });
+
+        dialog.show();
     }
 }

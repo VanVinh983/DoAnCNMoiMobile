@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/txt_name_dialog_conversation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Van Vinh"
+        android:textColor="#070707"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView34"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_underline" />
+
+    <Button
+        android:id="@+id/btn_dialog_conversation_xoa"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="#FFFFFF"
+        android:text="Xóa cuộc trò chuyện"
+        android:textColor="#070707"
+        android:textSize="16sp"
+        app:icon="@drawable/delete"
+        app:iconSize="30dp"
+        app:iconTint="#000000"
+        app:strokeColor="#000000"
+        app:strokeWidth="1dp" />
+
+</LinearLayout>
