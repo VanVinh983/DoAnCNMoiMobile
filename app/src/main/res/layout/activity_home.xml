@@ -16,47 +16,53 @@
 
         <ImageView
             android:id="@+id/imageView5"
-            android:layout_width="30dp"
+            android:layout_width="50dp"
             android:layout_height="30dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="10dp"
+            android:layout_weight="1"
             app:srcCompat="@drawable/loupe"
             app:tint="@color/white" />
 
         <TextView
             android:id="@+id/txt_home_search"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
             android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
             android:text="Tìm kiếm bạn bè"
             android:textColor="@color/white"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
 
         <ImageView
             android:id="@+id/btn_personal_addfriend"
             android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:layout_marginLeft="80dp"
-            android:layout_marginTop="10dp"
+            android:layout_weight="1"
             app:srcCompat="@drawable/add_user_"
             app:tint="@color/white" />
 
         <ImageView
             android:id="@+id/input_personal_creategroundfriends"
-            android:layout_width="40dp"
-            android:layout_height="35dp"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_weight="1"
             app:srcCompat="@drawable/add_group"
             app:tint="@color/white" />
 
         <ImageView
             android:id="@+id/btnLogout"
-            android:layout_width="40dp"
-            android:layout_height="35dp"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            app:srcCompat="@drawable/logout"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/ic_baseline_power_settings_new_24"
             app:tint="@color/white" />
     </LinearLayout>
 
