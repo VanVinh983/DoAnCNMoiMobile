@@ -33,6 +33,7 @@ import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
+import com.example.chatappcongnghemoi.socket.MessageSocket;
 import com.google.android.gms.common.api.Api;
 
 import java.util.Collections;
@@ -182,6 +183,7 @@ public class HomeConversationAdapter extends RecyclerView.Adapter<HomeConversati
         }
     }
     private void opendialogConversation(int gravity, Conversation conversation){
+        MessageSocket socket = new MessageSocket();
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_dialog_home_conversation);
@@ -225,37 +227,60 @@ public class HomeConversationAdapter extends RecyclerView.Adapter<HomeConversati
                     public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
                         List<Message> list = response.body();
                         for (Message message: list) {
-                            if (message.getSenderId().equals(userid) && message.getReceiverId().equals(finalReveicerid) ){
-                                Call<Message> messageCall = dataService.deleteMessage(message.getId());
-                                messageCall.enqueue(new Callback<Message>() {
-                                    @Override
-                                    public void onResponse(Call<Message> call, Response<Message> response) {
-                                        Intent intent = new Intent(context, Home.class);
-                                        context.startActivity(intent);
-                                        ((Activity) context).finish();
-                                    }
+                            if (conversation.getFriend()!=null){
+                                if (message.getSenderId().equals(userid) && message.getReceiverId().equals(finalReveicerid) ){
+                                    Call<Message> messageCall = dataService.deleteMessage(message.getId());
+                                    messageCall.enqueue(new Callback<Message>() {
+                                        @Override
+                                        public void onResponse(Call<Message> call, Response<Message> response) {
+                                            socket.deleteMessage(message);
+                                            Intent intent = new Intent(context, Home.class);
+                                            context.startActivity(intent);
+                                            ((Activity) context).finish();
+                                        }
 
-                                    @Override
-                                    public void onFailure(Call<Message> call, Throwable t) {
+                                        @Override
+                                        public void onFailure(Call<Message> call, Throwable t) {
 
-                                    }
-                                });
-                            }
-                            if (message.getSenderId().equals(finalReveicerid) && message.getReceiverId().equals(userid)){
-                                Call<Message> messageCall = dataService.deleteMessage(message.getId());
-                                messageCall.enqueue(new Callback<Message>() {
-                                    @Override
-                                    public void onResponse(Call<Message> call, Response<Message> response) {
-                                        Intent intent = new Intent(context, Home.class);
-                                        context.startActivity(intent);
-                                        ((Activity) context).finish();
-                                    }
+                                        }
+                                    });
+                                }
+                                if (message.getSenderId().equals(finalReveicerid) && message.getReceiverId().equals(userid)){
+                                    Call<Message> messageCall = dataService.deleteMessage(message.getId());
+                                    messageCall.enqueue(new Callback<Message>() {
+                                        @Override
+                                        public void onResponse(Call<Message> call, Response<Message> response) {
+                                            socket.deleteMessage(message);
+                                            Intent intent = new Intent(context, Home.class);
+                                            context.startActivity(intent);
+                                            ((Activity) context).finish();
+                                        }
 
-                                    @Override
-                                    public void onFailure(Call<Message> call, Throwable t) {
+                                        @Override
+                                        public void onFailure(Call<Message> call, Throwable t) {
 
-                                    }
-                                });
+                                        }
+                                    });
+                                }
+                            }else {
+                                if (message.getReceiverId().equals(conversation.getChatGroup().getId())||message.getSenderId().equals(conversation.getChatGroup().getId())){
+                                    System.out.println("có nhận");
+                                    Call<Message> messageCall = dataService.deleteMessage(message.getId());
+                                    messageCall.enqueue(new Callback<Message>() {
+                                        @Override
+                                        public void onResponse(Call<Message> call, Response<Message> response) {
+                                            socket.deleteMessage(message);
+                                            Intent intent = new Intent(context, Home.class);
+                                            context.startActivity(intent);
+                                            ((Activity) context).finish();
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<Message> call, Throwable t) {
+
+                                        }
+                                    });
+                                }
                             }
                         }
 

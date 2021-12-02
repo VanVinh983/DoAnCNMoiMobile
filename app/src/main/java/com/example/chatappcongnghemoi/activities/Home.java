@@ -156,6 +156,7 @@ public class Home extends AppCompatActivity {
     }
     private void socketOn(){
         mSocket.on("response-add-new-text", responeMessage);
+        mSocket.on("response-delete-text", responeDeleteMessage);
         mSocket.on("response-add-new-file", responeAddFile);
         mSocket.on("response-create-group",responseCreateGroup);
         mSocket.on("response-add-user-to-group",responseAddUserToGroup);
@@ -253,16 +254,24 @@ public class Home extends AppCompatActivity {
                 for (ChatGroup chatGroup: chatGroups) {
                     Conversation conversation = new Conversation();
                     conversation.setChatGroup(chatGroup);
-                    Call<List<Message>> listCall1 = dataService.getMessageBySIdAndRId(user.getId(), chatGroup.getId());
+                    Call<List<Message>> listCall1 = dataService.getAllMessage();
                     listCall1.enqueue(new Callback<List<Message>>() {
                         @Override
                         public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
                             if(response.body().size()>0){
-                                conversation.setNewMessage(response.body().get(response.body().size()-1));
-                                conversations.add(conversation);
-                                userHomeAdapter = new HomeConversationAdapter(conversations, Home.this);
-                                recyclerView.setAdapter(userHomeAdapter);
-                                recyclerView.setLayoutManager(new LinearLayoutManager(Home.this));
+                                List<Message> list = new ArrayList<>();
+                                for (Message message: response.body()) {
+                                    if (message.getReceiverId().equals(chatGroup.getId())||message.getSenderId().equals(chatGroup.getId())){
+                                        list.add(message);
+                                    }
+                                }
+                                if (list.size()>0){
+                                    conversation.setNewMessage(list.get(list.size()-1));
+                                    conversations.add(conversation);
+                                    userHomeAdapter = new HomeConversationAdapter(conversations, Home.this);
+                                    recyclerView.setAdapter(userHomeAdapter);
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(Home.this));
+                                }
                             }
                         }
 
@@ -341,6 +350,18 @@ public class Home extends AppCompatActivity {
         }
     };
     private Emitter.Listener responeAddFile = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    loadConversation();
+                }
+            });
+        }
+    };
+    private Emitter.Listener responeDeleteMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             runOnUiThread(new Runnable() {
