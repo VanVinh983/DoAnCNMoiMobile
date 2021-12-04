@@ -94,6 +94,14 @@ public class ChatBoxOption extends AppCompatActivity {
                 deleteConversation();
             }
         });
+        btn_personal_page.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(ChatBoxOption.this, PersonalOfOthers.class);
+                i.putExtra("user", friend);
+                startActivity(i);
+            }
+        });
     }
     private void mapping(){
         avatar = findViewById(R.id.image_avatar_option_chatbox);

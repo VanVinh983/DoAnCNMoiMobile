@@ -33,7 +33,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:padding="10dp"
-            android:text="Tùy chọn"
+            android:text="Thông tin cuộc hội thoại"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold" />
