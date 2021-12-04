@@ -8,8 +8,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.adapters.MessageAdapter;
@@ -28,6 +29,7 @@ import retrofit2.Response;
 
 public class SearchMessageForChatBox extends AppCompatActivity {
     private EditText input_search;
+    private TextView txt_count;
     private DataService dataService;
     private User user, friend;
     private RecyclerView recyclerView;
@@ -42,6 +44,13 @@ public class SearchMessageForChatBox extends AppCompatActivity {
         String userId = intent.getStringExtra("userId");
         String friendId = intent.getStringExtra("friendId");
         dataService = ApiService.getService();
+
+        findViewById(R.id.btn_chatbox_searchmessage_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         Call<UserDTO> userDTOCall = dataService.getUserById(userId);
         userDTOCall.enqueue(new Callback<UserDTO>() {
@@ -100,10 +109,17 @@ public class SearchMessageForChatBox extends AppCompatActivity {
                 if (!input.equals("")){
                     List<Message> messageSearch = new ArrayList<>();
                     for (Message message: messages) {
-                        if (message.getText().contains(input)){
-                            messageSearch.add(message);
+                        if (message.getMessageType().equals("text")){
+                            if (message.getText().contains(input)){
+                                messageSearch.add(message);
+                            }
+                        }else {
+                            if (message.getFileName().contains(input)){
+                                messageSearch.add(message);
+                            }
                         }
                     }
+                    txt_count.setText("Có "+messageSearch.size()+" kết quả");
                     messageAdapter = new MessageAdapter(messageSearch, SearchMessageForChatBox.this, user, friend);
                     recyclerView.setAdapter(messageAdapter);
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(SearchMessageForChatBox.this, LinearLayoutManager.VERTICAL, false);
@@ -112,6 +128,18 @@ public class SearchMessageForChatBox extends AppCompatActivity {
                     if (messageAdapter.getItemCount()>0){
                         recyclerView.smoothScrollToPosition(messageAdapter.getItemCount()-1);
                     }
+                }else {
+                    txt_count.setText("");
+                    List<Message> messageSearchs = new ArrayList<>();
+                    messageAdapter = new MessageAdapter(messageSearchs, SearchMessageForChatBox.this, user, friend);
+                    recyclerView.setAdapter(messageAdapter);
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(SearchMessageForChatBox.this, LinearLayoutManager.VERTICAL, false);
+                    linearLayoutManager.setStackFromEnd(true);
+                    recyclerView.setLayoutManager(linearLayoutManager);
+                    if (messageAdapter.getItemCount()>0){
+                        recyclerView.smoothScrollToPosition(messageAdapter.getItemCount()-1);
+                    }
+
                 }
 
             }
@@ -125,5 +153,6 @@ public class SearchMessageForChatBox extends AppCompatActivity {
     private void mapping(){
         input_search = findViewById(R.id.input_search_message_chatbox);
         recyclerView = findViewById(R.id.recyclerview_searchmessage_chatbox);
+        txt_count = findViewById(R.id.txt_count_result_message_chatbox);
     }
 }

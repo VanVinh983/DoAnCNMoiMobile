@@ -16,7 +16,7 @@
         android:paddingRight="10dp">
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/btn_chatbox_searchmessage_back"
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -52,7 +52,6 @@
         android:layout_height="150dp"
         android:layout_weight="1"
         android:padding="10dp"
-        android:text="có 12 kết quả"
         android:textColor="#000000"
         android:textSize="18sp"
         android:textStyle="normal" />
