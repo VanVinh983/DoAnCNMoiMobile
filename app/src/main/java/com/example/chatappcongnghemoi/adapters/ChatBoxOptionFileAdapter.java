@@ -1,16 +1,23 @@
 package com.example.chatappcongnghemoi.adapters;
 
 import android.content.Context;
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.storage.options.StorageDownloadFileOptions;
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.activities.AmplifyInitialize;
 
+import java.io.File;
 import java.util.List;
 
 public class ChatBoxOptionFileAdapter extends RecyclerView.Adapter<ChatBoxOptionFileAdapter.ViewHolder> {
@@ -34,6 +41,24 @@ public class ChatBoxOptionFileAdapter extends RecyclerView.Adapter<ChatBoxOption
         String s = list.get(position);
 //        String url = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/"+s;
         holder.txt_name.setText(s.substring(37));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AmplifyInitialize(context).amplifyInitialize();
+                File file = null;
+                file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/appchat/"+s.substring(37));
+                Amplify.Storage.downloadFile(
+                        s,
+                        file,
+                        StorageDownloadFileOptions.defaultInstance(),
+                        progress -> Toast.makeText(context, "Đang tải..."+ progress.getCurrentBytes()+"bytes", Toast.LENGTH_SHORT).show(),
+                        result -> {
+                            Toast.makeText(context, "Dowload File Successfully", Toast.LENGTH_LONG).show();
+                        },
+                        error -> Log.e("MyAmplifyApp",  "Download Failure", error)
+                );
+            }
+        });
     }
 
     @Override

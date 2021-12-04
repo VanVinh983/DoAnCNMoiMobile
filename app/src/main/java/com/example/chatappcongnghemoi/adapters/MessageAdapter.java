@@ -141,7 +141,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 android.view.ViewGroup.LayoutParams layoutParamsLoad = holder.img_download.getLayoutParams();
                 layoutParamsLoad.width = 70;
                 layoutParamsLoad.height = 70;
-                holder.img_download.setLayoutParams(layoutParamsLoad);
+                holder.img_download.setLayoutParams(layoutParams);
                 holder.img_download.setImageResource(R.drawable.download);
             }else if (message.getMessageType().equals("gif")){
                 android.view.ViewGroup.LayoutParams layoutParamsGif = holder.gifImageView.getLayoutParams();

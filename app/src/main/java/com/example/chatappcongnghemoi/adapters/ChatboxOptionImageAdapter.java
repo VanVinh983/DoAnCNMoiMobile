@@ -1,6 +1,7 @@
 package com.example.chatappcongnghemoi.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
+import com.example.chatappcongnghemoi.activities.Full_Image_Avatar;
+import com.example.chatappcongnghemoi.activities.Personal;
 
 import java.util.List;
 
@@ -35,6 +38,14 @@ public class ChatboxOptionImageAdapter extends RecyclerView.Adapter<ChatboxOptio
         String imageUrl = urlLinks.get(position);
         String url = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/"+imageUrl;
         Glide.with(context).load(url).into(holder.imageView);
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, Full_Image_Avatar.class);
+                intent.putExtra("url", url);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
