@@ -17,6 +17,9 @@
         android:theme="@style/Theme.ChatAppCongNgheMoi"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activities.SearchMessageForChatBox"
+            android:exported="false" />
+        <activity
             android:name=".activities.ChatBoxOption"
             android:exported="false" />
         <activity

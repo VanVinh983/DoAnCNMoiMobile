@@ -102,6 +102,15 @@ public class ChatBoxOption extends AppCompatActivity {
                 startActivity(i);
             }
         });
+        btn_search_message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(ChatBoxOption.this, SearchMessageForChatBox.class);
+                intent1.putExtra("userId", user.getId());
+                intent1.putExtra("friendId", friend.getId());
+                startActivity(intent1);
+            }
+        });
     }
     private void mapping(){
         avatar = findViewById(R.id.image_avatar_option_chatbox);
