@@ -189,39 +189,40 @@ public class ChatBoxGroup extends AppCompatActivity {
 
             }
         });
-        Handler handler1 = new Handler();
-        handler1.postDelayed(new Runnable() {
+        socket = new MessageSocket();
+        Call<UserDTO> userDTOCall = dataService.getUserById(new DataLoggedIn(this).getUserIdLoggedIn());
+        userDTOCall.enqueue(new Callback<UserDTO>() {
             @Override
-            public void run() {
-                if (userCurrent.getId()!=null){
-                    Call<List<ChatGroup>> listCall = dataService.getChatGroupByUserId(userCurrent.getId());
-                    listCall.enqueue(new Callback<List<ChatGroup>>() {
-                        @Override
-                        public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
-                            List<String> groupIds = new ArrayList<>();
-                            response.body().forEach(group -> {
-                                groupIds.add(group.getId());
-                            });
-                            socket = new MessageSocket();
-                            getGifs(userCurrent);
-                            getTypeGifs(userCurrent);
-                            mSocket.on("response-add-new-text", responseMessage);
-                            mSocket.on("response-delete-group",responseDeleteGroup);
-                            mSocket.on("response-leave-group",responseLeaveGroup);
-                            mSocket.on("response-add-new-file", responseAddFile);
-                            mSocket.on("response-reaction",responseReaction);
-                        }
-                        @Override
-                        public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
-                            System.err.println("fail get list group by user"+t.getMessage());
-                        }
-                    });
-                    handler1.removeCallbacks(this);
-                }else {
-                    handler1.postDelayed(this, 500);
-                }
+            public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                userCurrent = response.body().getUser();
+                Call<List<ChatGroup>> listCall = dataService.getChatGroupByUserId(userCurrent.getId());
+                listCall.enqueue(new Callback<List<ChatGroup>>() {
+                    @Override
+                    public void onResponse(Call<List<ChatGroup>> call, Response<List<ChatGroup>> response) {
+                        List<String> groupIds = new ArrayList<>();
+                        response.body().forEach(group -> {
+                            groupIds.add(group.getId());
+                        });
+                        getGifs(userCurrent);
+                        getTypeGifs(userCurrent);
+                        mSocket.on("response-add-new-text", responseMessage);
+                        mSocket.on("response-delete-group",responseDeleteGroup);
+                        mSocket.on("response-leave-group",responseLeaveGroup);
+                        mSocket.on("response-add-new-file", responseAddFile);
+                        mSocket.on("response-reaction",responseReaction);
+                    }
+                    @Override
+                    public void onFailure(Call<List<ChatGroup>> call, Throwable t) {
+                        System.err.println("fail get list group by user"+t.getMessage());
+                    }
+                });
             }
-        },500);
+
+            @Override
+            public void onFailure(Call<UserDTO> call, Throwable t) {
+
+            }
+        });
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -231,6 +232,7 @@ public class ChatBoxGroup extends AppCompatActivity {
                 message.setReceiverId(groupId);
                 message.setChatType("group");
                 message.setMessageType("text");
+                message.setRead(true);
                 message.setCreatedAt(new Date().getTime());
                 message.setText(txtMessage.getText().toString());
                 Call<Message> messageCall = dataService.postMessage(message);
@@ -240,7 +242,7 @@ public class ChatBoxGroup extends AppCompatActivity {
                     public void onResponse(Call<Message> call, Response<Message> response) {
                         Message message1 = response.body();
                         socket.sendMessage(message1,"true");
-                        btnGoToBottom.setVisibility(View.INVISIBLE);
+//                        btnGoToBottom.setVisibility(View.INVISIBLE);
 //                        messages.add(message1);
 //                        adapter = new ChatBoxGroupRecyclerAdapter(messages, ChatBoxGroup.this,userCurrent, members);
 //                        recyclerView.setAdapter(adapter);
@@ -265,6 +267,7 @@ public class ChatBoxGroup extends AppCompatActivity {
                 Intent intentMenu = new Intent(ChatBoxGroup.this,InfoGroupChat.class);
                 intentMenu.putExtra("groupId",groupId);
                 startActivity(intentMenu);
+                finish();
             }
         });
         btnOption.setOnClickListener(new View.OnClickListener() {
@@ -432,7 +435,6 @@ public class ChatBoxGroup extends AppCompatActivity {
         }
     }
     public static void showGhim(ChatGroup chatGroup,Context context,List<User> members,User userCurrent){
-        Toast.makeText(context, ""+chatGroup.getPins(), Toast.LENGTH_SHORT).show();
         Dialog dialogGhim =new Dialog(context);
         dialogGhim.setContentView(R.layout.dialog_ghim_message);
         Window window = dialogGhim.getWindow();
@@ -499,7 +501,6 @@ public class ChatBoxGroup extends AppCompatActivity {
                             message.setMessageType("file");
                         message.setCreatedAt(new Date().getTime());
                         message.setFileName(uuid+"."+file.getName());
-                        Toast.makeText(ChatBoxGroup.this, ""+message.getMessageType(), Toast.LENGTH_SHORT).show();
                         Call<Message> messageCall = dataService.postMessage(message);
                         messageCall.enqueue(new Callback<Message>() {
                             @Override

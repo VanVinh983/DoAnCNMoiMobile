@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.activities.AddGroupChat;
 import com.example.chatappcongnghemoi.activities.PersonalOfOthers;
@@ -43,7 +44,7 @@ public class FriendsRecyclerAdapterAddGroup extends RecyclerView.Adapter<Friends
         User user = users.get(position);
         try {
             if (user.getAvatar() != null)
-                Picasso.get().load(user.getAvatar()).into(holder.avatar);
+                Glide.with(context).load(user.getAvatar()).into(holder.avatar);
         } catch (NullPointerException e) {
             holder.avatar.setImageResource(R.drawable.avatar);
         }

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.models.User;
 import com.squareup.picasso.Picasso;
@@ -33,7 +34,7 @@ public class ImageFriendsWhenClickAddGroupRecyclerAdapter extends RecyclerView.A
     @Override
     public void onBindViewHolder(@NonNull ImageFriendsWhenClickAddGroupRecyclerAdapter.ViewHolder holder, int position) {
         User user = users.get(position);
-        Picasso.get().load(user.getAvatar()).into(holder.avatar);
+        Glide.with(context).load(user.getAvatar()).into(holder.avatar);
     }
 
     @Override

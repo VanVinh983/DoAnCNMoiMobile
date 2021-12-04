@@ -62,6 +62,7 @@ public class Home extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         getSupportActionBar().hide();
+
         btnLogout = findViewById(R.id.btnLogout);
         btnAddGroup = findViewById(R.id.input_personal_creategroundfriends);
         btnAddGroup.setOnClickListener(new View.OnClickListener() {

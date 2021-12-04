@@ -161,7 +161,7 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
                                 @Override
                                 public void onResponse(Call<Message> call, Response<Message> response) {
                                     Message message1 = response.body();
-                                    messageSocket.sendMessage(message1,"true");
+//                                    messageSocket.sendMessage(message1,"true");
                                     Toast.makeText(context, "Nhường trưởng nhóm thành công", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(context, ChatBoxGroup.class);
                                     intent.putExtra("groupId",chatGroup.getId());
@@ -235,7 +235,7 @@ public class MembersOfInfoGroupRecyclerAdapter extends RecyclerView.Adapter<Memb
                                 @Override
                                 public void onResponse(Call<Message> call, Response<Message> response) {
                                     Message message1 = response.body();
-                                    messageSocket.sendMessage(message1,"true");
+//                                    messageSocket.sendMessage(message1,"true");
                                     Toast.makeText(context, "Yêu cầu rời nhóm thành công", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(context, ChatBoxGroup.class);
                                     intent.putExtra("groupId",chatGroup.getId());

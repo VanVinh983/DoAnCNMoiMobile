@@ -223,7 +223,7 @@ public class InfoGroupChat extends AppCompatActivity {
                                 @Override
                                 public void onResponse(Call<Message> call, Response<Message> response) {
                                     Message message1 = response.body();
-                                    messageSocket.sendMessage(message1,"true");
+//                                    messageSocket.sendMessage(message1,"true");
                                     dialog.dismiss();
                                     Toast.makeText(InfoGroupChat.this, "Đổi tên nhóm thành công", Toast.LENGTH_SHORT).show();
                                     tvGroupName.setText(newName);
@@ -371,7 +371,7 @@ public class InfoGroupChat extends AppCompatActivity {
         recyclerViewImageSent = findViewById(R.id.recyclerview_imageSent);
         btnFileSent = findViewById(R.id.btnFileSent);
         btnSearchMessage = findViewById(R.id.imgSearchMessageInfoChatGroup);
-        btnNotification = findViewById(R.id.btnNotification);
+//        btnNotification = findViewById(R.id.btnNotification);
     }
     public void init(){
         Intent intent = getIntent();
@@ -387,8 +387,7 @@ public class InfoGroupChat extends AppCompatActivity {
                 if(chatGroup.getUserId().equals(new DataLoggedIn(InfoGroupChat.this).getUserIdLoggedIn())){
                     btnDeleteGroup.setVisibility(View.VISIBLE);
                 }
-                String url_s3 = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/";
-                Glide.with(InfoGroupChat.this).load(url_s3+chatGroup.getAvatar()).into(imgAvatarGroup);
+                Glide.with(InfoGroupChat.this).load(chatGroup.getAvatar()).into(imgAvatarGroup);
                 getImageSent(chatGroup);
             }
 
@@ -586,8 +585,8 @@ public class InfoGroupChat extends AppCompatActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(InfoGroupChat.this, ""+chatGroup, Toast.LENGTH_SHORT).show();
-//                dialog.dismiss();
+//                Toast.makeText(InfoGroupChat.this, ""+chatGroup, Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             }
         });
         btnConfirm.setOnClickListener(new View.OnClickListener() {
@@ -620,7 +619,7 @@ public class InfoGroupChat extends AppCompatActivity {
                                 }
                             });
                             Message message1 = response.body();
-                            messageSocket.sendMessage(message1,"true");
+//                            messageSocket.sendMessage(message1,"true");
                             dialog.dismiss();
                             Toast.makeText(InfoGroupChat.this, "Đổi hình nền chat thành công", Toast.LENGTH_SHORT).show();
                         }

@@ -1,16 +1,23 @@
 package com.example.chatappcongnghemoi.adapters;
 
+import android.app.DownloadManager;
 import android.content.Context;
+import android.net.Uri;
+import android.os.Environment;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.CookieManager;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.models.Message;
 import com.example.chatappcongnghemoi.models.User;
@@ -68,6 +75,41 @@ public class MessageFileSentRecyclerAdapter extends RecyclerView.Adapter<Message
         String fileName = message.getFileName().substring(37);
         holder.tvFileNameFileSent.setText(fileName);
         String extension = fileName.substring(fileName.indexOf(".")+1);
+        if(extension.equals("docx")||extension.equals("doc")){
+            holder.imgFileSent.setImageResource(R.drawable.doc);
+        }else if(extension.equals("txt")){
+            holder.imgFileSent.setImageResource(R.drawable.txt);
+        }else if(extension.equals("ppt") || extension.equals("pptx") || extension.equals("pptm")){
+            holder.imgFileSent.setImageResource(R.drawable.ppt);
+        }else if(extension.equals("pdf")){
+            holder.imgFileSent.setImageResource(R.drawable.pdf);
+        }else if(extension.equals("zip")){
+            holder.imgFileSent.setImageResource(R.drawable.zip);
+        }else if(extension.equals("mp3")){
+            holder.imgFileSent.setImageResource(R.drawable.mp3);
+        }else if(extension.equals("msg")){
+            holder.imgFileSent.setImageResource(R.drawable.msg_file);
+        }else if(extension.equals("eps")){
+            holder.imgFileSent.setImageResource(R.drawable.eps);
+        }
+        holder.btnDownload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url_s3 = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/";
+                String url = url_s3 + message.getFileName();
+                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+                String title = URLUtil.guessFileName(url,null,null);
+                request.setTitle(title);
+                request.setDescription("Đang tải");
+                String cookie = CookieManager.getInstance().getCookie(url);
+                request.addRequestHeader("cookie",cookie);
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,url);
+                DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+                downloadManager.enqueue(request);
+                Toast.makeText(context, "Đang tải", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

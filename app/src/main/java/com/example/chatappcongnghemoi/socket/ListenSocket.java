@@ -187,7 +187,7 @@ public class ListenSocket extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        socket.disconnect();
+//        socket.disconnect();
     }
 
 }

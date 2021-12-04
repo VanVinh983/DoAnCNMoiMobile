@@ -280,13 +280,13 @@ public class ChatBoxGroupRecyclerAdapter extends RecyclerView.Adapter<ChatBoxGro
                 String url_s3 = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/";
                 String url = url_s3 + message.getFileName();
                 DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-                String title = URLUtil.guessFileName(url,null,null);
+                String title = URLUtil.guessFileName(url,null,message.getFileName().substring(message.getFileName().lastIndexOf(".")+1));
                 request.setTitle(title);
                 request.setDescription("Đang tải");
                 String cookie = CookieManager.getInstance().getCookie(url);
                 request.addRequestHeader("cookie",cookie);
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,url);
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,message.getFileName().substring(37));
                 DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
                 downloadManager.enqueue(request);
                 Toast.makeText(context, "Đang tải", Toast.LENGTH_SHORT).show();

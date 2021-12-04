@@ -40,8 +40,7 @@ public class GroupRecyclerAdapter extends RecyclerView.Adapter<GroupRecyclerAdap
     @Override
     public void onBindViewHolder(@NonNull GroupRecyclerAdapter.ViewHolder holder, int position) {
         ChatGroup group = chatGroups.get(position);
-        String url_s3 = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/";
-        Glide.with(context).load(url_s3+group.getAvatar()).into(holder.avatar);
+        Glide.with(context).load(group.getAvatar()).into(holder.avatar);
         holder.sizeGroup.setText(group.getMembers().size() + " thành viên");
         holder.groupName.setText(group.getName());
         holder.itemView.setOnClickListener(new View.OnClickListener() {

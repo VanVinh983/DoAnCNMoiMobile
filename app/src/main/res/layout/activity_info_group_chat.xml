@@ -86,12 +86,6 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/add_user" />
 
-            <ImageButton
-                android:id="@+id/btnNotification"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/bell" />
         </LinearLayout>
         <View
             android:layout_width="match_parent"
