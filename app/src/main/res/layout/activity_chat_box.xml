@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
-            android:id="@+id/btn_chatbox_back"
+            android:id="@+id/btn_chatboxoption_back"
             android:layout_width="90dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -51,6 +51,18 @@
                 android:layout_height="wrap_content"
                 android:text="truy cập 2 phút trước" />
         </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btn_chatbox_option"
+            android:layout_width="110dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#00FFFFFF"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ic_baseline_dehaze_24"
+            app:tint="#FFFFFF"
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -72,7 +84,7 @@
             android:backgroundTint="#00FFFFFF"
             android:scaleType="centerInside"
             app:srcCompat="@drawable/option"
-            tools:ignore="SpeakableTextPresentCheck" />
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
         <ImageButton
             android:id="@+id/btn_chatbox_gif"
@@ -82,7 +94,7 @@
             android:backgroundTint="#00FFFFFF"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/ic_baseline_gif_24"
-            tools:ignore="SpeakableTextPresentCheck" />
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
         <ImageButton
             android:id="@+id/btn_chatbox_exitgif"
@@ -91,7 +103,8 @@
             android:layout_weight="1"
             android:backgroundTint="#00FFFFFF"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/close" />
+            app:srcCompat="@drawable/close"
+            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
         <EditText
             android:id="@+id/input_chatbox_message"

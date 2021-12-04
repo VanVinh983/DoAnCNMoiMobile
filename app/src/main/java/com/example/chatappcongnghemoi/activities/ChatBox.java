@@ -24,9 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.chatappcongnghemoi.R;
-import com.example.chatappcongnghemoi.adapters.ChatBoxGroupRecyclerAdapter;
 import com.example.chatappcongnghemoi.adapters.GifForChatBoxAdapter;
 import com.example.chatappcongnghemoi.adapters.MessageAdapter;
 import com.example.chatappcongnghemoi.adapters.TypeGifForChatBoxAdapter;
@@ -57,7 +55,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import retrofit2.Call;
@@ -98,7 +95,7 @@ public class ChatBox extends AppCompatActivity {
         mSocket.on("response-add-new-file", responeAddFile);
         mSocket.on("response-reaction", responseReaction);
         mSocket.on("check-online-offline", checkOnlineOffline);
-        findViewById(R.id.btn_chatbox_back).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btn_chatboxoption_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(ChatBox.this, Home.class));
@@ -278,6 +275,15 @@ public class ChatBox extends AppCompatActivity {
                 layoutParamsTypeGif.height =0;
                 layoutParamsTypeGif.width = 0;
                 recyclerViewtypegif.setLayoutParams(layoutParamsTypeGif);
+            }
+        });
+        findViewById(R.id.btn_chatbox_option).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(ChatBox.this, ChatBoxOption.class);
+                intent1.putExtra("friendId", friendCurrent.getId());
+                intent1.putExtra("userId", userCurrent.getId());
+                startActivity(intent1);
             }
         });
 
