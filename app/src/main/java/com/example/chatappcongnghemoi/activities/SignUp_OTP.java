@@ -124,6 +124,7 @@ public class SignUp_OTP extends AppCompatActivity {
         local.setPhone(phone);
         local.setPassword(BCrypt.hashpw("123456",BCrypt.gensalt(10)));
         User user = new User(local,username);
+        user.setActive(true);
         Call<UserDTO> callback = dataService.createUser(user);
         callback.enqueue(new Callback<UserDTO>() {
             @Override

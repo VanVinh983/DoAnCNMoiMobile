@@ -50,7 +50,9 @@ public class User implements Parcelable {
     @SerializedName("isOnline")
     @Expose
     private boolean isOnline;
-
+    @SerializedName("isActive")
+    @Expose
+    private boolean isActive;
     @SerializedName("description")
     @Expose
     private String description;
@@ -84,6 +86,25 @@ public class User implements Parcelable {
         this.background = background;
     }
 
+    public User(Local local, String id, String userName, String gender, String birthday, String address, String avatar, String role, Long updatedAt, Long deletedAt, Long createdAt, Integer v, boolean isOnline, boolean isActive, String description, String background) {
+        this.local = local;
+        this.id = id;
+        this.userName = userName;
+        this.gender = gender;
+        this.birthday = birthday;
+        this.address = address;
+        this.avatar = avatar;
+        this.role = role;
+        this.updatedAt = updatedAt;
+        this.deletedAt = deletedAt;
+        this.createdAt = createdAt;
+        this.v = v;
+        this.isOnline = isOnline;
+        this.isActive = isActive;
+        this.description = description;
+        this.background = background;
+    }
+
     public String getBackground() {
         String preUrl = "https://stores3appchatmobile152130-dev.s3.ap-southeast-1.amazonaws.com/public/";
         return preUrl+background;
@@ -112,6 +133,14 @@ public class User implements Parcelable {
     public User(Local local, String userName) {
         this.local = local;
         this.userName = userName;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     protected User(Parcel in) {
