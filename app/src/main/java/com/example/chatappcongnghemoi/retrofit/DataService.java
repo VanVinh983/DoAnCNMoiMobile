@@ -7,6 +7,7 @@ import com.example.chatappcongnghemoi.models.Contact;
 import com.example.chatappcongnghemoi.models.ContactDTO;
 import com.example.chatappcongnghemoi.models.ContactList;
 import com.example.chatappcongnghemoi.models.Message;
+import com.example.chatappcongnghemoi.models.Notification;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 
@@ -99,4 +100,15 @@ public interface DataService {
 
     @GET("messages/")
     Call<List<Message>> getAllMessage();
+
+    @POST("notifications")
+    Call<Notification> postNotification(@Body Notification notification);
+
+    @DELETE("notifications/{id}")
+    Call<String> deleteNotification(@Path("id") String id);
+
+    @GET("notifications/search/{senderId}/{receiverId}/add_contact")
+    Call<Notification> getNotificationByContact(@Path("senderId") String senderId, @Path("receiverId") String receiverId);
+
+
 }

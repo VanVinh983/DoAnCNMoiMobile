@@ -26,6 +26,7 @@ import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.activities.PersonalOfOthers;
 import com.example.chatappcongnghemoi.models.Contact;
 import com.example.chatappcongnghemoi.models.ContactDTO;
+import com.example.chatappcongnghemoi.models.Notification;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataService;
@@ -76,7 +77,9 @@ public class FirendRequestRecyclerAdapter extends RecyclerView.Adapter<FirendReq
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case DialogInterface.BUTTON_NEGATIVE:
-                                deleteApi(contacts.get(position).getId());
+                                Contact contact = contacts.get(position);
+                                deleteApi(contact.getId());
+                                getNotificationToDelete(contact.getSenderId(), contact.getReceiverId());
                                 new ContactSocket().removeRequestContactReceiver(user);
                                 break;
                             case DialogInterface.BUTTON_POSITIVE:
@@ -98,6 +101,7 @@ public class FirendRequestRecyclerAdapter extends RecyclerView.Adapter<FirendReq
                 Contact contact = contacts.get(0);
                 contact.setStatus(true);
                 new ContactSocket().acceptFriendRequest(user);
+                getNotificationToDelete(contact.getSenderId(), contact.getReceiverId());
                 putApi(contact.getId(), contact);
             }
         });
@@ -154,7 +158,6 @@ public class FirendRequestRecyclerAdapter extends RecyclerView.Adapter<FirendReq
         callback.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-
                 Toast.makeText(context, "Xóa yêu cầu kết bạn thành công", Toast.LENGTH_SHORT).show();
                 restartActivity((Activity) context);
             }
@@ -170,6 +173,40 @@ public class FirendRequestRecyclerAdapter extends RecyclerView.Adapter<FirendReq
         Intent intent = new Intent(act, act.getClass());
         act.finish();
         act.startActivity(intent);
+    }
+
+    private void deleteNotification(String id) {
+        DataService dataService = ApiService.getService();
+        Call<String> callback = dataService.deleteNotification(id);
+        callback.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void getNotificationToDelete(String senderId, String receiverId) {
+        DataService dataService = ApiService.getService();
+        Call<Notification> callback = dataService.getNotificationByContact(senderId, receiverId);
+        callback.enqueue(new Callback<Notification>() {
+            @Override
+            public void onResponse(Call<Notification> call, Response<Notification> response) {
+                if(response.body().getId() != null) {
+                    deleteNotification(response.body().getId());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Notification> call, Throwable t) {
+
+            }
+        });
     }
 
 }

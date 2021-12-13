@@ -15,16 +15,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.chatappcongnghemoi.R;
 import com.example.chatappcongnghemoi.models.Contact;
 import com.example.chatappcongnghemoi.models.ContactDTO;
+import com.example.chatappcongnghemoi.models.Notification;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
 import com.example.chatappcongnghemoi.retrofit.DataLoggedIn;
 import com.example.chatappcongnghemoi.retrofit.DataService;
 import com.example.chatappcongnghemoi.socket.ContactSocket;
+import com.example.chatappcongnghemoi.socket.MySocket;
 import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -40,13 +44,14 @@ public class PersonalOfOthers extends AppCompatActivity {
     private User user;
     private DataService dataService;
     private Contact contact;
+    private static Socket mSocket = MySocket.getInstance().getSocket();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_of_others);
         Objects.requireNonNull(getSupportActionBar()).hide();
-
 
         imgAvatar = findViewById(R.id.personal_friend_image_personal_avatar);
         txtMainUserName = findViewById(R.id.txt_personal_friend_name_primary);
@@ -58,8 +63,20 @@ public class PersonalOfOthers extends AppCompatActivity {
         btnBack = findViewById(R.id.button13);
         btnAddFriend = findViewById(R.id.button9);
         btnAddNewMessage = findViewById(R.id.btn_addnewmessage);
-
         dataService = ApiService.getService();
+
+        mSocket.on("response-deny-friend-request", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                restartActivity(PersonalOfOthers.this);
+            }
+        });
+        mSocket.on("response-accept-Friend-Request",  new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+               restartActivity(PersonalOfOthers.this);
+            }
+        });
 
         Intent intent = getIntent();
         if (intent.hasExtra("user")) {
@@ -111,6 +128,8 @@ public class PersonalOfOthers extends AppCompatActivity {
         contact.setReceiverId(user.getId());
         contact.setStatus(false);
 
+        postNotification(contact);
+
         Call<ContactDTO> callback = dataService.postContact(contact);
         callback.enqueue(new Callback<ContactDTO>() {
             @Override
@@ -125,6 +144,28 @@ public class PersonalOfOthers extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    private void postNotification(Contact contact_) {
+        Notification notification = new Notification();
+        notification.setSenderId(contact_.getSenderId());
+        notification.setReceiverId(contact_.getReceiverId());
+        notification.setType("add_contact");
+
+
+        Call<Notification> callback = dataService.postNotification(notification);
+        callback.enqueue(new Callback<Notification>() {
+            @Override
+            public void onResponse(Call<Notification> call, Response<Notification> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Notification> call, Throwable t) {
+
+            }
+        });
     }
 
     private void deleteContact() {
@@ -138,6 +179,7 @@ public class PersonalOfOthers extends AppCompatActivity {
                         else if (btnAddFriend.getText().toString().equals("Hủy kết bạn"))
                             new ContactSocket().deleteFriend(user);
                         deleteApi(contact.getId());
+                        getNotificationToDelete(contact.getSenderId(), contact.getReceiverId());
                         break;
                     case DialogInterface.BUTTON_POSITIVE:
                         break;
@@ -177,6 +219,39 @@ public class PersonalOfOthers extends AppCompatActivity {
         });
     }
 
+    private void deleteNotification(String id) {
+        DataService dataService = ApiService.getService();
+        Call<String> callback = dataService.deleteNotification(id);
+        callback.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private void getNotificationToDelete(String senderId, String receiverId) {
+        DataService dataService = ApiService.getService();
+        Call<Notification> callback = dataService.getNotificationByContact(senderId, receiverId);
+        callback.enqueue(new Callback<Notification>() {
+            @Override
+            public void onResponse(Call<Notification> call, Response<Notification> response) {
+               if(response.body().getId() != null) {
+                   deleteNotification(response.body().getId());
+               }
+            }
+
+            @Override
+            public void onFailure(Call<Notification> call, Throwable t) {
+
+            }
+        });
+    }
 
     private void checkFriend() {
         Call<ContactDTO> callback = dataService.checkContact(new DataLoggedIn(this).getUserIdLoggedIn(), user.getId());
@@ -205,4 +280,5 @@ public class PersonalOfOthers extends AppCompatActivity {
         act.finish();
         act.startActivity(intent);
     }
+
 }

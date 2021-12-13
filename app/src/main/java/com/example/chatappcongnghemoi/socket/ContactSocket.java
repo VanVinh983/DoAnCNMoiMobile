@@ -97,7 +97,8 @@ public class ContactSocket {
                         JSONObject jsonSender = new JSONObject();
                         jsonSender.put("senderId", sender.getId());
                         System.out.println("==> remove-request-contact-receiver: " + jsonSender.toString());
-                        socket.emit("remove-request-contact-receiver", jsonSender);
+//                        socket.emit("remove-request-contact-receiver", jsonSender);
+                        socket.emit("deny-friend-request", jsonSender);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

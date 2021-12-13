@@ -16,6 +16,7 @@ import com.example.chatappcongnghemoi.adapters.MessageAdapter;
 import com.example.chatappcongnghemoi.models.Contact;
 import com.example.chatappcongnghemoi.models.ContactList;
 import com.example.chatappcongnghemoi.models.Message;
+import com.example.chatappcongnghemoi.models.Notification;
 import com.example.chatappcongnghemoi.models.User;
 import com.example.chatappcongnghemoi.models.UserDTO;
 import com.example.chatappcongnghemoi.retrofit.ApiService;
@@ -35,6 +36,7 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FriendRequestActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -66,7 +68,7 @@ public class FriendRequestActivity extends AppCompatActivity {
         });
 
         mSocket.on("response-add-new-contact", responeAddNewContact);
-        mSocket.on("response-remove-request-contact", responeAddNewContact);
+        mSocket.on("response-deny-friend-request", responeAddNewContact);
         mSocket.on("response-accept-Friend-Request", responeAddNewContact);
 
     }
