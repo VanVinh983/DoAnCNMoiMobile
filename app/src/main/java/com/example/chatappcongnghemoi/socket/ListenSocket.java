@@ -123,27 +123,28 @@ public class ListenSocket extends AppCompatActivity {
                      */
                     else if (callingDTO.getStatus().equals("cancel") &&
                             (callingDTO.getCallerId().equals(getUserId()) || callingDTO.getReceiverId().equals(getUserId()))) {
-                        // Start Video Call When User is calling or receiver calling
-
-                        // Get Current Activity is visible
-                        ActivityManager am = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
-                        ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
-
-                        if (cn.getClassName().equals(OutgoingCallActivity.class.getName()) || cn.getClassName().equals(IncomingCallActivity.class.getName())) {
-                            startActivity(new Intent(ListenSocket.this, PhoneBookActivity.class));
-                            Toast.makeText(ListenSocket.this, "Kết thúc cuộc gọi", Toast.LENGTH_SHORT).show();
-                        }
+                        cancelCall();
                     }
                 }
             });
         }
     };
 
+    private void cancelCall() {
+        // Get Current Activity is visible
+        ActivityManager am = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+        ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
+        if (cn.getClassName().equals(OutgoingCallActivity.class.getName()) || cn.getClassName().equals(IncomingCallActivity.class.getName())) {
+            startActivity(new Intent(ListenSocket.this, PhoneBookActivity.class));
+        }
+    }
+
 
     /**
      * @param room: callerId
      */
     private void startVideoCall(String room) {
+        cancelCall();
         System.out.println("====> ON START VIDEO CALL: ");
         try {
             JitsiMeetConferenceOptions options = new JitsiMeetConferenceOptions.Builder()
@@ -156,7 +157,6 @@ public class ListenSocket extends AppCompatActivity {
                     .setWelcomePageEnabled(false)
                     .build();
             JitsiMeetActivity.launch(ListenSocket.this, options);
-
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -167,6 +167,7 @@ public class ListenSocket extends AppCompatActivity {
      */
     private void startAudioCall(String room) {
         System.out.println("====> ON START AUDIO CALL: ");
+        cancelCall();
         try {
             JitsiMeetConferenceOptions options = new JitsiMeetConferenceOptions.Builder()
                     .setServerURL(new URL("https://meet.jit.si"))
@@ -178,7 +179,6 @@ public class ListenSocket extends AppCompatActivity {
                     .setWelcomePageEnabled(false)
                     .build();
             JitsiMeetActivity.launch(ListenSocket.this, options);
-
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

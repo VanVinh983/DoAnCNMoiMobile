@@ -78,11 +78,11 @@ public class PersonalOfOthers extends AppCompatActivity {
         btnAddFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (btnAddFriend.getText().toString().equals("Hủy kết bạn")) {
-                    deleteContact();
-                } else {
+                if (btnAddFriend.getText().toString().equals("Kết bạn")) {
                     postContact();
                     new ContactSocket().addNewContact(user);
+                } else {
+                    deleteContact();
                 }
             }
         });
@@ -133,8 +133,11 @@ public class PersonalOfOthers extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case DialogInterface.BUTTON_NEGATIVE:
+                        if (btnAddFriend.getText().toString().equals("Hủy yêu cầu"))
+                            new ContactSocket().removeRequestContact(user);
+                        else if (btnAddFriend.getText().toString().equals("Hủy kết bạn"))
+                            new ContactSocket().deleteFriend(user);
                         deleteApi(contact.getId());
-                        new ContactSocket().removeRequestContact(user);
                         break;
                     case DialogInterface.BUTTON_POSITIVE:
                         break;
@@ -143,9 +146,15 @@ public class PersonalOfOthers extends AppCompatActivity {
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Bạn có muốn xóa yêu cầu kết bạn này?")
-                .setPositiveButton("Không", dialogClickListener)
-                .setNegativeButton("Có", dialogClickListener).show();
+        if (btnAddFriend.getText().toString().equals("Hủy yêu cầu"))
+            builder.setMessage("Bạn có muốn thu hồi lời mời kết bạn này?")
+                    .setPositiveButton("Không", dialogClickListener)
+                    .setNegativeButton("Có", dialogClickListener).show();
+        else if (btnAddFriend.getText().toString().equals("Hủy kết bạn"))
+            builder.setMessage("Bạn có muốn xóa yêu cầu kết bạn này?")
+                    .setPositiveButton("Không", dialogClickListener)
+                    .setNegativeButton("Có", dialogClickListener).show();
+
     }
 
     private void deleteApi(String id) {
@@ -154,7 +163,10 @@ public class PersonalOfOthers extends AppCompatActivity {
         callback.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Toast.makeText(PersonalOfOthers.this, "Xóa bạn bè thành công", Toast.LENGTH_SHORT).show();
+                if (btnAddFriend.getText().toString().equals("Hủy yêu cầu"))
+                    Toast.makeText(PersonalOfOthers.this, "Thu hồi lời mời kết bạn thành công", Toast.LENGTH_SHORT).show();
+                else if (btnAddFriend.getText().toString().equals("Hủy kết bạn"))
+                    Toast.makeText(PersonalOfOthers.this, "Xóa bạn bè thành công", Toast.LENGTH_SHORT).show();
                 restartActivity(PersonalOfOthers.this);
             }
 
@@ -174,8 +186,10 @@ public class PersonalOfOthers extends AppCompatActivity {
                 contact = response.body().getContact();
                 if (contact == null)
                     btnAddFriend.setText("Kết bạn");
-                else
+                else if (contact != null && contact.getStatus())
                     btnAddFriend.setText("Hủy kết bạn");
+                else
+                    btnAddFriend.setText("Hủy yêu cầu");
             }
 
             @Override

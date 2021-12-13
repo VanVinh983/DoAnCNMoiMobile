@@ -63,6 +63,30 @@ public class ContactSocket {
 
     }
 
+    public void deleteFriend(User receiver) {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (socket.connected()) {
+                    try {
+                        JSONObject jsonSender = new JSONObject();
+                        jsonSender.put("receiverId", receiver.getId());
+                        socket.emit("delete-friend", jsonSender);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    handler.removeCallbacks(this);
+                } else {
+                    System.out.println("==== Add New Contact on ContactSoket Failed ====");
+                    socket.connect();
+                    handler.postDelayed(this, 1000);
+                }
+            }
+        }, 1000);
+
+    }
+
     public void removeRequestContactReceiver(User sender) {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
