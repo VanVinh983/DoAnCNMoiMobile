@@ -178,7 +178,9 @@ public class Home extends AppCompatActivity {
             @Override
             public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
                 userCurrent = response.body().getUser();
-                checkConversation(userCurrent);
+                if(userCurrent!=null) {
+                    checkConversation(userCurrent);
+                }
             }
 
             @Override
