@@ -435,7 +435,9 @@ public class ChatBox extends AppCompatActivity {
                         Gson gson = new Gson();
                         Message message = gson.fromJson(mess, Message.class);
                         message.setRead(true);
-                        messages.add(message);
+                        if (!messages.get(messages.size()-1).getId().equals(message.getId())){
+                            messages.add(message);
+                        }
                         messageAdapter = new MessageAdapter(messages, ChatBox.this,userCurrent, friendCurrent);
                         recyclerViewMessage.setAdapter(messageAdapter);
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBox.this, LinearLayoutManager.VERTICAL, false);
