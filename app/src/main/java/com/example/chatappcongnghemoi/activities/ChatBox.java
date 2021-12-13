@@ -495,7 +495,9 @@ public class ChatBox extends AppCompatActivity {
                         mess = data.getJSONArray("messages");
                         messObject = new Gson().fromJson(mess.get(0).toString(), Message.class);
                         messObject.setRead(true);
-                        messages.add(messObject);
+                        if (!messages.get(messages.size()-1).getId().equals(messObject.getId())){
+                            messages.add(messObject);
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -525,16 +527,10 @@ public class ChatBox extends AppCompatActivity {
                          strings) {
                         ss.add(s);
                     }
-                    if (ss.contains(friendCurrent.getId())){
+                    if (ss.contains(friendCurrent.getId())) {
                         txt_chatbox_time.setText("Mới vừa truy cập");
                     }else {
-                        if(new Date().getTime() - friendCurrent.getUpdatedAt() < 86400000){
-                            txt_chatbox_time.setText("truy cập "+ DateUtils.getRelativeTimeSpanString(friendCurrent.getUpdatedAt())+" phút trước");
-                        }
-                        else{
-                            String date = DateFormat.getDateFormat(ChatBox.this).format(friendCurrent.getUpdatedAt());
-                            txt_chatbox_time.setText("truy cập ngày "+date);
-                        }
+                        txt_chatbox_time.setText("đã ngắt kết nối");
                     }
                 }
             });
