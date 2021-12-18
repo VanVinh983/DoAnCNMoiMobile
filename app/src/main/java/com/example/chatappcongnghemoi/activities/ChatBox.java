@@ -365,32 +365,33 @@ public class ChatBox extends AppCompatActivity {
         listCall.enqueue(new Callback<List<Message>>() {
             @Override
             public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
-               System.out.println("so luong tin nhan la: "+ response.body().size());
                 messages = new ArrayList<>();
-                for (Message message:
-                     response.body()) {
-                    messages.add(message);
-                }
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (messages.size()==response.body().size()){
-                            updateIsRead(messages);
-                            messageAdapter = new MessageAdapter(messages, ChatBox.this,userCurrent, friendCurrent);
-                            recyclerViewMessage.setAdapter(messageAdapter);
-                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBox.this, LinearLayoutManager.VERTICAL, false);
-                            linearLayoutManager.setStackFromEnd(true);
-                            recyclerViewMessage.setLayoutManager(linearLayoutManager);
-                            if (messageAdapter.getItemCount()>0){
-                                recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount()-1);
-                            }
-                            handler.removeCallbacks(this);
-                        }else {
-                            handler.postDelayed(this,500);
-                        }
+                if (response.body()!=null){
+                    for (Message message:
+                            response.body()) {
+                        messages.add(message);
                     }
-                },500);
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (messages.size()==response.body().size()){
+                                updateIsRead(messages);
+                                messageAdapter = new MessageAdapter(messages, ChatBox.this,userCurrent, friendCurrent);
+                                recyclerViewMessage.setAdapter(messageAdapter);
+                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatBox.this, LinearLayoutManager.VERTICAL, false);
+                                linearLayoutManager.setStackFromEnd(true);
+                                recyclerViewMessage.setLayoutManager(linearLayoutManager);
+                                if (messageAdapter.getItemCount()>0){
+                                    recyclerViewMessage.smoothScrollToPosition(messageAdapter.getItemCount()-1);
+                                }
+                                handler.removeCallbacks(this);
+                            }else {
+                                handler.postDelayed(this,500);
+                            }
+                        }
+                    },500);
+                }
             }
 
             @Override

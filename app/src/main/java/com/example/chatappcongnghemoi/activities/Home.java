@@ -212,27 +212,27 @@ public class Home extends AppCompatActivity {
                     listCall.enqueue(new Callback<List<Message>>() {
                         @Override
                         public void onResponse(Call<List<Message>> call, Response<List<Message>> response) {
-                            if (response.body().size()>0){
-                                Conversation conversation = new Conversation();
-                                conversation.setNewMessage(response.body().get(response.body().size()-1));
-                                Call<UserDTO> userDTOCall = dataService.getUserById(s);
-                                userDTOCall.enqueue(new Callback<UserDTO>() {
-                                    @Override
-                                    public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
-                                        conversation.setFriend(response.body().getUser());
-                                        conversations.add(conversation);
-                                        System.out.println("cuoc hoi thoai la: "+conversations);
-                                        userHomeAdapter = new HomeConversationAdapter(conversations, Home.this);
-                                        recyclerView.setAdapter(userHomeAdapter);
-                                        recyclerView.setLayoutManager(new LinearLayoutManager(Home.this));
-                                    }
+                                if (response.body().size()>0){
+                                    Conversation conversation = new Conversation();
+                                    conversation.setNewMessage(response.body().get(response.body().size()-1));
+                                    Call<UserDTO> userDTOCall = dataService.getUserById(s);
+                                    userDTOCall.enqueue(new Callback<UserDTO>() {
+                                        @Override
+                                        public void onResponse(Call<UserDTO> call, Response<UserDTO> response) {
+                                            conversation.setFriend(response.body().getUser());
+                                            conversations.add(conversation);
+                                            System.out.println("cuoc hoi thoai la: "+conversations);
+                                            userHomeAdapter = new HomeConversationAdapter(conversations, Home.this);
+                                            recyclerView.setAdapter(userHomeAdapter);
+                                            recyclerView.setLayoutManager(new LinearLayoutManager(Home.this));
+                                        }
 
-                                    @Override
-                                    public void onFailure(Call<UserDTO> call, Throwable t) {
+                                        @Override
+                                        public void onFailure(Call<UserDTO> call, Throwable t) {
 
-                                    }
-                                });
-                            }
+                                        }
+                                    });
+                                }
                         }
 
                         @Override

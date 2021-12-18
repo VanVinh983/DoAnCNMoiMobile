@@ -53,7 +53,7 @@ public interface DataService {
     @POST("users/")
     Call<UserDTO> createUser(@Body User user);
 
-    @GET("messages/SearchBySenderIdAndReceiverId/{senderid}/{receiverid}")
+    @GET("messages/SearchBySenderIdAndReceiverId/{senderid}/{receiverid}?startFrom=0")
     Call<List<Message>> getMessageBySIdAndRId(@Path("senderid") String senderid, @Path("receiverid") String receiverid);
 
     @GET("messages/SearchBySenderIdAndReceiverId/{senderid}/{receiverid}?")
