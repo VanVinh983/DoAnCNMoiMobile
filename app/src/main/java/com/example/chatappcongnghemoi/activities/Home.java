@@ -139,6 +139,7 @@ public class Home extends AppCompatActivity {
                                     saveIDLogout();
                                     Intent intent = new Intent(Home.this,StartApp.class);
                                     startActivity(intent);
+                                    MySocket.getInstance().getSocket().disconnect();
                                     finish();
                                 }
                             }

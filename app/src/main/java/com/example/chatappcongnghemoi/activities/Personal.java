@@ -22,9 +22,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,8 +57,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Personal extends AppCompatActivity implements View.OnClickListener {
-    private EditText input_name, input_gender, input_yearOfBirth, input_numberPhone, input_address;
+    private EditText input_name, input_yearOfBirth, input_numberPhone, input_address;
     private BottomNavigationView bottomNavigationView;
+    private RadioGroup radiogroupGender;
+    private RadioButton radioBtnMale, radioBtnFemale;
     private Button btn_update_info;
     private ImageView imageView_background;
     private CircleImageView imageView_Avatar;
@@ -77,9 +82,11 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
         input_name = findViewById(R.id.input_personal_name);
         input_address = findViewById(R.id.input_personal_address);
         input_numberPhone = findViewById(R.id.input_personal_numberphone);
-        input_gender = findViewById(R.id.input_personal_gender);
         input_yearOfBirth = findViewById(R.id.input_personal_yearOfBirth);
         btn_update_info = findViewById(R.id.btn_personal_update);
+        radioBtnMale = findViewById(R.id.radio_male);
+        radioBtnFemale = findViewById(R.id.radio_female);
+        radiogroupGender = findViewById(R.id.radiogroup_gender);
         imageView_Avatar = findViewById(R.id.image_personal_avatar);
         txt_introduce = findViewById(R.id.txt_personal_introduce);
         txt_personal_primary = findViewById(R.id.txt_personal_name_primary);
@@ -89,8 +96,8 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
         dataService = ApiService.getService();
 
         //set edit text can't input letter
-
-        input_gender.setEnabled(false);
+        radioBtnFemale.setEnabled(false);
+        radioBtnMale.setEnabled(false);
         input_name.setEnabled(false);
         input_address.setEnabled(false);
         input_numberPhone.setEnabled(false);
@@ -168,7 +175,12 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                 if (user != null){
                     txt_personal_primary.setText(user.getUserName());
                     input_name.setText(user.getUserName());
-                    input_gender.setText(user.getGender());
+//                    input_gender.setText(user.getGender());
+                    if (user.getGender().equals("male")){
+                        radioBtnMale.setChecked(true);
+                    }else if (user.getGender().equals("female")){
+                        radioBtnFemale.setChecked(true);
+                    }
                     input_yearOfBirth.setText(user.getBirthday());
                     input_numberPhone.setText(user.getLocal().getPhone());
                     input_address.setText(user.getAddress());
@@ -229,7 +241,6 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
             }
         });
     }
-
     public void saveIDLogout(){
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCES,MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -244,14 +255,17 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
                 if (btn_update_info.getText().equals("Cập nhật thông tin")) {
                     btn_update_info.setText("Lưu");
                     //set edit text can input letter
-                    input_gender.setEnabled(true);
+                    radioBtnMale.setEnabled(true);
+                    radioBtnFemale.setEnabled(true);
                     input_name.setEnabled(true);
                     input_address.setEnabled(true);
                     input_yearOfBirth.setEnabled(true);
                 } else {
                     if (checkinput()==true){
                         btn_update_info.setText("Cập nhật thông tin");
-                        input_gender.setEnabled(false);
+//                        input_gender.setEnabled(false);
+                        radioBtnFemale.setEnabled(false);
+                        radioBtnMale.setEnabled(false);
                         input_name.setEnabled(false);
                         input_address.setEnabled(false);
                         input_yearOfBirth.setEnabled(false);
@@ -448,7 +462,15 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
     private void updateUser(){
         if (checkinput()==true){
             user.setUserName(input_name.getText().toString());
-            user.setGender(input_gender.getText().toString());
+//            user.setGender(input_gender.getText().toString());
+            String gender = "";
+            if (radioBtnFemale.isChecked()){
+                gender = "female";
+            }
+            if (radioBtnMale.isChecked()){
+                gender = "male";
+            }
+            user.setGender(gender);
             user.setBirthday(input_yearOfBirth.getText().toString());
             user.getLocal().setPhone(input_numberPhone.getText().toString());
             user.setAddress(input_address.getText().toString());
@@ -473,18 +495,15 @@ public class Personal extends AppCompatActivity implements View.OnClickListener 
             Toast.makeText(this, "Tên không được trống", Toast.LENGTH_LONG).show();
             kq = false;
         }
-        String gender = input_gender.getText().toString().trim();
-        if (!gender.equals("male")&&!gender.equals("female")) {
-            Toast.makeText(this, "Giới tính phải là male hoặc female", Toast.LENGTH_LONG).show();
-            kq = false;
-        }
-        try {
-            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-            df.setLenient(false);
-            System.out.println( df.parse(input_yearOfBirth.getText().toString().trim()));
-        } catch (ParseException e) {
-            Toast.makeText(this, "Ngày sinh phải theo dạng Ngày/Tháng/Năm", Toast.LENGTH_LONG).show();
-            kq = false;
+        if (input_yearOfBirth.getText().toString().trim()!=null){
+            try {
+                SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                df.setLenient(false);
+                System.out.println( df.parse(input_yearOfBirth.getText().toString().trim()));
+            } catch (ParseException e) {
+                Toast.makeText(this, "Ngày sinh phải theo dạng Ngày/Tháng/Năm", Toast.LENGTH_LONG).show();
+                kq = false;
+            }
         }
         if (input_numberPhone.getText().toString().trim().length()!=10){
             Toast.makeText(this, "Số điện thoại phải có 10 số", Toast.LENGTH_LONG).show();

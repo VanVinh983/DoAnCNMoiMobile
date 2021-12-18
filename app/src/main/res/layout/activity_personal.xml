@@ -128,7 +128,7 @@
                 android:padding="10dp"
                 android:textColor="#000000"
                 android:textColorHint="#13A0DF"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="normal|italic" />
 
             <TableLayout
@@ -149,7 +149,7 @@
                         android:padding="10dp"
                         android:text="Tên"
                         android:textColor="#000000"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <EditText
@@ -164,7 +164,7 @@
                         android:inputType="textPersonName"
                         android:padding="10dp"
                         android:textColor="#494848"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         tools:ignore="TouchTargetSizeCheck" />
                 </TableRow>
 
@@ -181,23 +181,38 @@
                         android:padding="10dp"
                         android:text="Giới tính"
                         android:textColor="#000000"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
-                    <EditText
-                        android:id="@+id/input_personal_gender"
+                    <RadioGroup
+                        android:id="@+id/radiogroup_gender"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="#007C5656"
-                        android:ems="10"
-                        android:gravity="center_horizontal|left"
-                        android:hint="giới tính"
-                        android:inputType="textPersonName"
-                        android:padding="10dp"
-                        android:textColor="#494848"
-                        android:textSize="20sp"
-                        tools:ignore="TouchTargetSizeCheck" />
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radio_female"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="true"
+                            android:text="Female"
+                            android:textColor="#000000"
+                            android:textSize="18sp" />
+
+                        <RadioButton
+                            android:id="@+id/radio_male"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="false"
+                            android:text="Male"
+                            android:textColor="#000000"
+                            android:textSize="18sp" />
+
+                    </RadioGroup>
+
                 </TableRow>
 
                 <TableRow
@@ -213,7 +228,7 @@
                         android:padding="10dp"
                         android:text="Ngày sinh"
                         android:textColor="#000000"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <EditText
@@ -228,7 +243,7 @@
                         android:inputType="textPersonName"
                         android:padding="10dp"
                         android:textColor="#494848"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         tools:ignore="TouchTargetSizeCheck" />
                 </TableRow>
 
@@ -245,7 +260,7 @@
                         android:padding="10dp"
                         android:text="Điện thoại"
                         android:textColor="#000000"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <EditText
@@ -260,7 +275,7 @@
                         android:inputType="textPersonName"
                         android:padding="10dp"
                         android:textColor="#494848"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         tools:ignore="TouchTargetSizeCheck" />
                 </TableRow>
 
@@ -277,7 +292,7 @@
                         android:padding="10dp"
                         android:text="Địa chỉ"
                         android:textColor="#000000"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <EditText
@@ -292,7 +307,7 @@
                         android:inputType="textMultiLine"
                         android:padding="10dp"
                         android:textColor="#494848"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         tools:ignore="TouchTargetSizeCheck" />
                 </TableRow>
 
@@ -308,7 +323,7 @@
                 android:padding="10dp"
                 android:text="Cập nhật thông tin"
                 android:textAllCaps="false"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 app:cornerRadius="20dp" />
 
